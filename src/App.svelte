@@ -12,6 +12,8 @@
   let userData = null;
   /** @type {string} */
   let currentView = 'login'; // 'login' or 'dashboard'
+  /** @type {boolean} */
+  let showTelegramWidget = false;
   
   // Handle Telegram authorization callback
   function onTelegramAuth(user) {
@@ -31,6 +33,7 @@
     userData = null;
     currentView = 'login';
     authStatus = 'Production by V Saraylo';
+    showTelegramWidget = false;
     // Update URL without page reload
     history.pushState({}, '', '/');
   }
@@ -58,17 +61,7 @@
   
   // Function to trigger Telegram Login Widget
   function handleTelegramAuth() {
-    // Create the Telegram Login Widget script dynamically
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://telegram.org/js/telegram-widget.js?22';
-    script.setAttribute('data-telegram-login', 'Saraylo_bot');
-    script.setAttribute('data-size', 'large');
-    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-    script.setAttribute('data-request-access', 'write');
-    
-    // Add the script to the document body
-    document.body.appendChild(script);
+    showTelegramWidget = true;
   }
 </script>
 
@@ -123,21 +116,25 @@
         <p class="production-info-static"><strong>Добро пожаловать</strong></p>
         
         <!-- Telegram Login Button -->
-        <button 
-          class="telegram-auth-button" 
-          on:click={handleTelegramAuth}
-          disabled={isLoading || isAuthorized}
-          aria-label="Авторизоваться через Telegram"
-        >
-          {#if isLoading}
-            <div class="loading-spinner"></div>
-          {:else}
-            <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-            </svg>
-            <span>Авторизоваться через Telegram</span>
-          {/if}
-        </button>
+        {#if !showTelegramWidget}
+          <button 
+            class="telegram-auth-button" 
+            on:click={handleTelegramAuth}
+            disabled={isLoading || isAuthorized}
+            aria-label="Авторизоваться через Telegram"
+          >
+            {#if isLoading}
+              <div class="loading-spinner"></div>
+            {:else}
+              <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+              </svg>
+              <span>Авторизоваться через Telegram</span>
+            {/if}
+          </button>
+        {:else}
+          <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="Saraylo_bot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+        {/if}
         
         {#if authStatus}
           <p class="auth-status">{authStatus}</p>
