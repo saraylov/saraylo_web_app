@@ -70,7 +70,7 @@
 
 <div class="container">
   <div class="glass-panel">
-    <h1 class="main-title">Квантовый Беговой Тренер</h1>
+    <h1 class="main-title">Saraylo Run</h1>
     
     <h2 class="subtitle">Интеллектуальный анализ вашего физиологического состояния в реальном времени для оптимизации тренировок</h2>
     
