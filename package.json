@@ -11,12 +11,15 @@
     "dev": "vite",
     "dev:test": "vite --config viteTest.config.ts",
     "dev:web": "vite --config viteWeb.config.ts",
+    "dev:improved": "vite --config viteImproved.config.ts",
     "build": "vite build",
     "build:test": "vite build --config viteTest.config.ts",
     "build:web": "vite build --config viteWeb.config.ts",
+    "build:improved": "vite build --config viteImproved.config.ts",
     "preview": "vite preview",
     "preview:test": "vite preview --config viteTest.config.ts",
     "preview:web": "vite preview --config viteWeb.config.ts",
+    "preview:improved": "vite preview --config viteImproved.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
