@@ -61,17 +61,17 @@
 </svelte:head>
 
 <div class="background-animation">
-  <!-- 10 particles -->
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
+  <!-- 10 sports items -->
+  <div class="sports-item football"></div>
+  <div class="sports-item basketball"></div>
+  <div class="sports-item sneakers"></div>
+  <div class="sports-item shorts"></div>
+  <div class="sports-item tshirt"></div>
+  <div class="sports-item football"></div>
+  <div class="sports-item basketball"></div>
+  <div class="sports-item sneakers"></div>
+  <div class="sports-item shorts"></div>
+  <div class="sports-item tshirt"></div>
 </div>
 
 <div class="container">
