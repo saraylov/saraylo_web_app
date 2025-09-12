@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  svelte-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - web-network
+
+networks:
+  web-network:
+    driver: bridge
