@@ -289,10 +289,9 @@ body {
 
 /* Access information */
 .access-info {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: var(--light-gray);
   margin-bottom: 15px;
-  font-style: italic;
 }
 
 /* Telegram required message */

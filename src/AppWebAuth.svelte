@@ -89,7 +89,7 @@
 </script>
 
 <svelte:head>
-  <title>Saraylo Run</title>
+  <title>SARAYLO</title>
   <!-- Telegram Web App script -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </svelte:head>
@@ -110,12 +110,12 @@
 
 <div class="container">
   <div class="glass-panel">
-    <h1 class="main-title">Saraylo Run</h1>
+    <h1 class="main-title">SARAYLO</h1>
     
-    <h2 class="subtitle">Интеллектуальный анализ вашего физиологического состояния в реальном времени для оптимизации тренировок</h2>
+    <h2 class="subtitle">Next-gen система для спорта</h2>
     
     <div class="description">
-      <p>Система на основе нейросетей анализирует данные с датчиков, чтобы оценить ваше текущее состояние, уровень усталости и эффективность тренировки</p>
+      <p>Система, основанная на AI-технологии, которая совместно с пользователем создает революцию в восприятии спорта и фитнеса.</p>
       <p>Получайте персонализированные рекомендации для достижения ваших целей и предотвращения перетренированности</p>
       <p>Ваш личный тренер в режиме реального времени</p>
     </div>
