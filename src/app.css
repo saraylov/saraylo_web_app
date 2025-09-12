@@ -330,6 +330,25 @@ body {
   animation: shimmer 3s ease-in-out infinite;
 }
 
+.production-info {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.production-info-static {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--white);
+}
+
 @keyframes shimmer {
   0% {
     background-position: 0% 50%;
@@ -476,8 +495,13 @@ body {
 /* Auth status */
 .auth-status {
   margin-top: 20px;
-  font-size: 1rem;
-  color: var(--light-gray);
+  font-size: 0.5rem;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
 }
 
 /* Loading spinner */

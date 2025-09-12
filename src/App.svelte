@@ -30,7 +30,7 @@
     isAuthorized = false;
     userData = null;
     currentView = 'login';
-    authStatus = 'Для авторизации через Telegram нажмите кнопку ниже';
+    authStatus = 'Production by V Saraylo';
     // Update URL without page reload
     history.pushState({}, '', '/');
   }
@@ -48,7 +48,7 @@
     if (window.location.pathname === '/dashboard' && userData) {
       currentView = 'dashboard';
     }
-    authStatus = 'Для авторизации через Telegram нажмите кнопку ниже';
+    authStatus = 'Production by V Saraylo';
     
     // Cleanup event listener
     return () => {
@@ -120,7 +120,7 @@
       </div>
       
       <div class="auth-section">
-        <p class="access-info"><strong>Добро пожаловать</strong></p>
+        <p class="production-info-static"><strong>Добро пожаловать</strong></p>
         
         <!-- Telegram Login Button -->
         <button 
@@ -195,7 +195,7 @@
       <div class="auth-section">
         {#if userData}
           <div class="user-info">
-            <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Добро пожаловать, {userData.first_name}!</h3>
+            <h3 class="production-info-static">Добро пожаловать</h3>
             
             <div style="margin: 20px 0; padding: 15px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);">
               <h4 style="color: var(--primary-blue); margin-bottom: 10px;">Ваш профиль</h4>
