@@ -81,7 +81,7 @@
     </div>
     
     <div class="auth-section">
-      <p class="access-info">Доступ к приложению возможен только после авторизации через Telegram</p>
+      <p class="access-info">Добро пожаловать</p>
       
       {#if isTelegramAvailable}
         <button 

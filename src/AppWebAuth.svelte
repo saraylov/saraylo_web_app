@@ -143,36 +143,32 @@
                 {/if}
               </button>
             {:else}
-              <div class="telegram-required">
-                <p>Для авторизации через Telegram откройте приложение внутри Telegram</p>
-                <p>Найдите бота @Saraylo_bot и запустите Web App</p>
-                <button 
-                  class="telegram-auth-button" 
-                  on:click={handleTelegramAuth}
-                  disabled={isLoading}
-                  aria-label="Попробовать авторизоваться через Telegram"
-                  style="margin-top: 15px;"
-                >
-                  {#if isLoading}
-                    <div class="loading-spinner"></div>
-                  {:else}
-                    <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-                    </svg>
-                    <span>Авторизоваться через Telegram</span>
-                  {/if}
-                </button>
-                <button 
-                  class="telegram-auth-button" 
-                  on:click={openTelegramBot}
-                  style="margin-top: 10px; background: rgba(0, 191, 255, 0.2); border-color: var(--primary-blue);"
-                >
+              <!-- Replaced the telegram-required panel with direct authorization buttons -->
+              <button 
+                class="telegram-auth-button" 
+                on:click={handleTelegramAuth}
+                disabled={isLoading}
+                aria-label="Авторизоваться через Telegram"
+              >
+                {#if isLoading}
+                  <div class="loading-spinner"></div>
+                {:else}
                   <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
                   </svg>
-                  <span>Открыть бота в Telegram</span>
-                </button>
-              </div>
+                  <span>Авторизоваться через Telegram</span>
+                {/if}
+              </button>
+              <button 
+                class="telegram-auth-button" 
+                on:click={openTelegramBot}
+                style="margin-top: 10px; background: rgba(0, 191, 255, 0.2); border-color: var(--primary-blue);"
+              >
+                <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                </svg>
+                <span>Открыть бота в Telegram</span>
+              </button>
             {/if}
             
             <div class="divider">
