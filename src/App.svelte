@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte';
-  import { initTelegramWebApp, authenticateUser } from './telegram';
   import './app.css';
   
   /** @type {boolean} */
@@ -11,55 +10,19 @@
   let isLoading = false;
   /** @type {{id?: number, first_name: string, last_name?: string, username?: string} | null} */
   let userData = null;
-  /** @type {boolean} */
-  let isTelegramAvailable = false;
   /** @type {string} */
   let currentView = 'login'; // 'login' or 'dashboard'
   
-  // Initialize Telegram Web App
-  onMount(() => {
-    isTelegramAvailable = initTelegramWebApp();
-    if (!isTelegramAvailable) {
-      authStatus = 'Приложение должно быть запущено внутри Telegram';
-    }
-    
-    // Check if we should show the dashboard
-    if (window.location.pathname === '/dashboard') {
-      currentView = 'dashboard';
-    }
-  });
-  
-  // Handle Telegram authorization
-  async function handleTelegramAuth() {
-    if (!isTelegramAvailable) {
-      authStatus = 'Приложение должно быть запущено внутри Telegram';
-      return;
-    }
-    
-    isLoading = true;
-    authStatus = 'Авторизация через Telegram...';
-    
-    try {
-      const user = await authenticateUser();
-      
-      if (user) {
-        isAuthorized = true;
-        userData = user;
-        authStatus = `Добро пожаловать, ${user.first_name}!`;
-        // Switch to dashboard view
-        currentView = 'dashboard';
-        // Update URL without page reload
-        history.pushState({}, '', '/dashboard');
-      } else {
-        authStatus = 'Не удалось получить данные пользователя из Telegram';
-      }
-      
-      isLoading = false;
-    } catch (error) {
-      authStatus = 'Ошибка авторизации через Telegram';
-      isLoading = false;
-      console.error('Authorization error:', error);
-    }
+  // Handle Telegram authorization callback
+  function onTelegramAuth(user) {
+    console.log('Telegram user authenticated:', user);
+    isAuthorized = true;
+    userData = user;
+    authStatus = `Добро пожаловать, ${user.first_name}!`;
+    // Switch to dashboard view
+    currentView = 'dashboard';
+    // Update URL without page reload
+    history.pushState({}, '', '/dashboard');
   }
   
   // Handle logout
@@ -67,18 +30,56 @@
     isAuthorized = false;
     userData = null;
     currentView = 'login';
-    authStatus = isTelegramAvailable 
-      ? 'Приложение должно быть запущено внутри Telegram' 
-      : 'Приложение должно быть запущено внутри Telegram';
+    authStatus = 'Для авторизации через Telegram нажмите кнопку ниже';
     // Update URL without page reload
     history.pushState({}, '', '/');
+  }
+  
+  // Initialize
+  onMount(() => {
+    // Add event listener for Telegram authentication
+    const handleTelegramAuthEvent = (event) => {
+      onTelegramAuth(event.detail);
+    };
+    
+    window.addEventListener('telegramAuth', handleTelegramAuthEvent);
+    
+    // Check if we should show the dashboard
+    if (window.location.pathname === '/dashboard' && userData) {
+      currentView = 'dashboard';
+    }
+    authStatus = 'Для авторизации через Telegram нажмите кнопку ниже';
+    
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('telegramAuth', handleTelegramAuthEvent);
+    };
+  });
+  
+  // Function to trigger Telegram Login Widget
+  function handleTelegramAuth() {
+    // Create the Telegram Login Widget script dynamically
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://telegram.org/js/telegram-widget.js?22';
+    script.setAttribute('data-telegram-login', 'Saraylo_bot');
+    script.setAttribute('data-size', 'large');
+    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+    script.setAttribute('data-request-access', 'write');
+    
+    // Add the script to the document body
+    document.body.appendChild(script);
   }
 </script>
 
 <svelte:head>
   <title>SARAYLO</title>
-  <!-- Telegram Web App script -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    function onTelegramAuth(user) {
+      // Dispatch event to Svelte component
+      window.dispatchEvent(new CustomEvent('telegramAuth', { detail: user }));
+    }
+  </script>
 </svelte:head>
 
 {#if currentView === 'login'}
@@ -121,40 +122,22 @@
       <div class="auth-section">
         <p class="access-info"><strong>Добро пожаловать</strong></p>
         
-        {#if isTelegramAvailable}
-          <button 
-            class="telegram-auth-button" 
-            on:click={handleTelegramAuth}
-            disabled={isLoading || isAuthorized}
-            aria-label="Войти через Telegram"
-          >
-            {#if isLoading}
-              <div class="loading-spinner"></div>
-            {:else}
-              <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-              </svg>
-              <span>Войти через Telegram</span>
-            {/if}
-          </button>
-        {:else}
-          <!-- Replaced the telegram-required panel with direct authorization buttons -->
-          <button 
-            class="telegram-auth-button" 
-            on:click={handleTelegramAuth}
-            disabled={isLoading}
-            aria-label="Авторизоваться через Telegram"
-          >
-            {#if isLoading}
-              <div class="loading-spinner"></div>
-            {:else}
-              <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-              </svg>
-              <span>Авторизоваться через Telegram</span>
-            {/if}
-          </button>
-        {/if}
+        <!-- Telegram Login Button -->
+        <button 
+          class="telegram-auth-button" 
+          on:click={handleTelegramAuth}
+          disabled={isLoading || isAuthorized}
+          aria-label="Авторизоваться через Telegram"
+        >
+          {#if isLoading}
+            <div class="loading-spinner"></div>
+          {:else}
+            <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+            </svg>
+            <span>Авторизоваться через Telegram</span>
+          {/if}
+        </button>
         
         {#if authStatus}
           <p class="auth-status">{authStatus}</p>
