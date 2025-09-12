@@ -38,6 +38,21 @@
     history.pushState({}, '', '/');
   }
   
+  // Test authorization function
+  function testAuthorization() {
+    // Simulate Telegram user data
+    const testUser = {
+      id: 123456789,
+      first_name: 'Тестовый',
+      last_name: 'Пользователь',
+      username: 'testuser',
+      language_code: 'ru'
+    };
+    
+    // Trigger the same logic as Telegram authorization
+    onTelegramAuth(testUser);
+  }
+  
   // Initialize
   onMount(() => {
     // Add event listener for Telegram authentication
@@ -132,6 +147,16 @@
               <span>Авторизоваться через Telegram</span>
             {/if}
           </button>
+          
+          <!-- Test Authorization Button -->
+          <button 
+            class="telegram-auth-button" 
+            on:click={testAuthorization}
+            style="margin-top: 10px; background: rgba(0, 255, 0, 0.1); border-color: #00FF00;"
+            aria-label="Тестовая авторизация"
+          >
+            <span>Тестовая авторизация</span>
+          </button>
         {:else}
           <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="Saraylo_bot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
         {/if}
@@ -215,7 +240,7 @@
               </ul>
             </div>
             
-            <div class="dashboard-actions" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <div class="dashboard-actions" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px; align-items: center;">
               <button 
                 class="telegram-auth-button" 
                 on:click={handleLogout}
