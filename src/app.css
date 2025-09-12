@@ -41,8 +41,8 @@ body {
 /* Sports items */
 .sports-item {
   position: absolute;
-  /* 50% faster animation */
-  animation: float 10s infinite ease-in-out;
+  /* 2x faster animation */
+  animation: float 5s infinite ease-in-out;
 }
 
 .football {
@@ -85,79 +85,153 @@ body {
   background-repeat: no-repeat;
 }
 
-/* 10 sports items with faster movement and popping effect */
+/* 20 sports items with faster movement and popping effect */
 .sports-item:nth-child(1) {
   top: 10%;
   left: 20%;
-  animation-duration: 14s;
+  animation-duration: 7s;
   animation-delay: 0s;
 }
 
 .sports-item:nth-child(2) {
   top: 20%;
   right: 10%;
-  animation-duration: 17s;
+  animation-duration: 8.5s;
   animation-direction: reverse;
-  animation-delay: 2s;
+  animation-delay: 1s;
 }
 
 .sports-item:nth-child(3) {
   bottom: 30%;
   left: 15%;
-  animation-duration: 21s;
-  animation-delay: 4s;
+  animation-duration: 10.5s;
+  animation-delay: 2s;
 }
 
 .sports-item:nth-child(4) {
   bottom: 20%;
   right: 25%;
-  animation-duration: 15s;
+  animation-duration: 7.5s;
   animation-direction: reverse;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
 }
 
 .sports-item:nth-child(5) {
   top: 40%;
   left: 50%;
-  animation-duration: 25s;
-  animation-delay: 3s;
+  animation-duration: 12.5s;
+  animation-delay: 1.5s;
 }
 
 .sports-item:nth-child(6) {
   top: 15%;
   right: 30%;
-  animation-duration: 19s;
-  animation-delay: 5s;
+  animation-duration: 9.5s;
+  animation-delay: 2.5s;
 }
 
 .sports-item:nth-child(7) {
   bottom: 25%;
   left: 35%;
-  animation-duration: 22s;
+  animation-duration: 11s;
   animation-direction: reverse;
-  animation-delay: 2s;
+  animation-delay: 1s;
 }
 
 .sports-item:nth-child(8) {
   top: 60%;
   right: 15%;
-  animation-duration: 18s;
+  animation-duration: 9s;
   animation-delay: 0s;
 }
 
 .sports-item:nth-child(9) {
   bottom: 40%;
   left: 70%;
-  animation-duration: 16s;
+  animation-duration: 8s;
   animation-direction: reverse;
-  animation-delay: 4s;
+  animation-delay: 2s;
 }
 
 .sports-item:nth-child(10) {
   top: 30%;
   left: 5%;
-  animation-duration: 26s;
+  animation-duration: 13s;
+  animation-delay: 0.5s;
+}
+
+.sports-item:nth-child(11) {
+  top: 25%;
+  left: 40%;
+  animation-duration: 6s;
+  animation-delay: 1.5s;
+}
+
+.sports-item:nth-child(12) {
+  top: 70%;
+  right: 20%;
+  animation-duration: 7.5s;
+  animation-direction: reverse;
+  animation-delay: 3s;
+}
+
+.sports-item:nth-child(13) {
+  bottom: 15%;
+  left: 25%;
+  animation-duration: 5s;
+  animation-delay: 0s;
+}
+
+.sports-item:nth-child(14) {
+  bottom: 35%;
+  right: 35%;
+  animation-duration: 8.5s;
+  animation-direction: reverse;
+  animation-delay: 2.5s;
+}
+
+.sports-item:nth-child(15) {
+  top: 50%;
+  left: 60%;
+  animation-duration: 11.5s;
   animation-delay: 1s;
+}
+
+.sports-item:nth-child(16) {
+  top: 5%;
+  right: 40%;
+  animation-duration: 9.5s;
+  animation-delay: 3.5s;
+}
+
+.sports-item:nth-child(17) {
+  bottom: 45%;
+  left: 10%;
+  animation-duration: 12s;
+  animation-direction: reverse;
+  animation-delay: 1.5s;
+}
+
+.sports-item:nth-child(18) {
+  top: 55%;
+  right: 5%;
+  animation-duration: 8s;
+  animation-delay: 0.5s;
+}
+
+.sports-item:nth-child(19) {
+  bottom: 5%;
+  left: 80%;
+  animation-duration: 10.5s;
+  animation-direction: reverse;
+  animation-delay: 4s;
+}
+
+.sports-item:nth-child(20) {
+  top: 15%;
+  left: 30%;
+  animation-duration: 13.5s;
+  animation-delay: 2s;
 }
 
 @keyframes float {

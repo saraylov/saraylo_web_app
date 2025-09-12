@@ -3,10 +3,15 @@
   import { initTelegramWebApp, authenticateUser } from './telegram';
   import './app.css';
   
+  /** @type {boolean} */
   let isAuthorized = false;
+  /** @type {string} */
   let authStatus = '';
+  /** @type {boolean} */
   let isLoading = false;
+  /** @type {{id?: number, first_name: string, last_name?: string, username?: string} | null} */
   let userData = null;
+  /** @type {boolean} */
   let isTelegramAvailable = false;
   
   // Initialize Telegram Web App
@@ -55,7 +60,17 @@
 </svelte:head>
 
 <div class="background-animation">
-  <!-- 10 sports items -->
+  <!-- 20 sports items -->
+  <div class="sports-item football"></div>
+  <div class="sports-item basketball"></div>
+  <div class="sports-item sneakers"></div>
+  <div class="sports-item shorts"></div>
+  <div class="sports-item tshirt"></div>
+  <div class="sports-item football"></div>
+  <div class="sports-item basketball"></div>
+  <div class="sports-item sneakers"></div>
+  <div class="sports-item shorts"></div>
+  <div class="sports-item tshirt"></div>
   <div class="sports-item football"></div>
   <div class="sports-item basketball"></div>
   <div class="sports-item sneakers"></div>
