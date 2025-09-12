@@ -13,12 +13,19 @@
   let userData = null;
   /** @type {boolean} */
   let isTelegramAvailable = false;
+  /** @type {string} */
+  let currentView = 'login'; // 'login' or 'dashboard'
   
   // Initialize Telegram Web App
   onMount(() => {
     isTelegramAvailable = initTelegramWebApp();
     if (!isTelegramAvailable) {
       authStatus = 'Приложение должно быть запущено внутри Telegram';
+    }
+    
+    // Check if we should show the dashboard
+    if (window.location.pathname === '/dashboard') {
+      currentView = 'dashboard';
     }
   });
   
@@ -39,7 +46,10 @@
         isAuthorized = true;
         userData = user;
         authStatus = `Добро пожаловать, ${user.first_name}!`;
-        // In a real app, you would redirect to the main application
+        // Switch to dashboard view
+        currentView = 'dashboard';
+        // Update URL without page reload
+        history.pushState({}, '', '/dashboard');
       } else {
         authStatus = 'Не удалось получить данные пользователя из Telegram';
       }
@@ -51,6 +61,18 @@
       console.error('Authorization error:', error);
     }
   }
+  
+  // Handle logout
+  function handleLogout() {
+    isAuthorized = false;
+    userData = null;
+    currentView = 'login';
+    authStatus = isTelegramAvailable 
+      ? 'Приложение должно быть запущено внутри Telegram' 
+      : 'Приложение должно быть запущено внутри Telegram';
+    // Update URL without page reload
+    history.pushState({}, '', '/');
+  }
 </script>
 
 <svelte:head>
@@ -59,96 +81,196 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </svelte:head>
 
-<div class="background-animation">
-  <!-- 20 sports items -->
-  <div class="sports-item football"></div>
-  <div class="sports-item basketball"></div>
-  <div class="sports-item sneakers"></div>
-  <div class="sports-item shorts"></div>
-  <div class="sports-item tshirt"></div>
-  <div class="sports-item football"></div>
-  <div class="sports-item basketball"></div>
-  <div class="sports-item sneakers"></div>
-  <div class="sports-item shorts"></div>
-  <div class="sports-item tshirt"></div>
-  <div class="sports-item football"></div>
-  <div class="sports-item basketball"></div>
-  <div class="sports-item sneakers"></div>
-  <div class="sports-item shorts"></div>
-  <div class="sports-item tshirt"></div>
-  <div class="sports-item football"></div>
-  <div class="sports-item basketball"></div>
-  <div class="sports-item sneakers"></div>
-  <div class="sports-item shorts"></div>
-  <div class="sports-item tshirt"></div>
-</div>
+{#if currentView === 'login'}
+  <div class="background-animation">
+    <!-- 20 sports items -->
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+  </div>
 
-<div class="container">
-  <div class="glass-panel">
-    <h1 class="main-title">SARAYLO</h1>
-    
-    <h2 class="subtitle">Next-gen система для спорта</h2>
-    
-    <div class="description">
-      <p>Система, основанная на AI-технологии, которая совместно с пользователем создает революцию в восприятии спорта и фитнеса.</p>
-      <p>Получайте персонализированные рекомендации для достижения ваших целей и предотвращения перетренированности</p>
-      <p>Ваш личный тренер в режиме реального времени</p>
-    </div>
-    
-    <div class="auth-section">
-      <p class="access-info"><strong>Добро пожаловать</strong></p>
+  <div class="container">
+    <div class="glass-panel">
+      <h1 class="main-title">SARAYLO</h1>
       
-      {#if isTelegramAvailable}
-        <button 
-          class="telegram-auth-button" 
-          on:click={handleTelegramAuth}
-          disabled={isLoading || isAuthorized}
-          aria-label="Войти через Telegram"
-        >
-          {#if isLoading}
-            <div class="loading-spinner"></div>
-          {:else}
-            <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-            </svg>
-            <span>Войти через Telegram</span>
-          {/if}
-        </button>
-      {:else}
-        <!-- Replaced the telegram-required panel with direct authorization buttons -->
-        <button 
-          class="telegram-auth-button" 
-          on:click={handleTelegramAuth}
-          disabled={isLoading}
-          aria-label="Авторизоваться через Telegram"
-        >
-          {#if isLoading}
-            <div class="loading-spinner"></div>
-          {:else}
-            <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-            </svg>
-            <span>Авторизоваться через Telegram</span>
-          {/if}
-        </button>
-      {/if}
+      <h2 class="subtitle">Next-gen система для спорта</h2>
       
-      {#if authStatus}
-        <p class="auth-status">{authStatus}</p>
-      {/if}
+      <div class="description">
+        <p>Система, основанная на AI-технологии, которая совместно с пользователем создает революцию в восприятии спорта и фитнеса.</p>
+        <p>Получайте персонализированные рекомендации для достижения ваших целей и предотвращения перетренированности</p>
+        <p>Ваш личный тренер в режиме реального времени</p>
+      </div>
       
-      {#if isAuthorized && userData}
-        <div class="user-info">
-          <p>Вы вошли как: {userData.first_name} {userData.last_name || ''}</p>
-          {#if userData.username}
-            <p>Username: @{userData.username}</p>
-          {/if}
-        </div>
-      {/if}
+      <div class="auth-section">
+        <p class="access-info"><strong>Добро пожаловать</strong></p>
+        
+        {#if isTelegramAvailable}
+          <button 
+            class="telegram-auth-button" 
+            on:click={handleTelegramAuth}
+            disabled={isLoading || isAuthorized}
+            aria-label="Войти через Telegram"
+          >
+            {#if isLoading}
+              <div class="loading-spinner"></div>
+            {:else}
+              <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+              </svg>
+              <span>Войти через Telegram</span>
+            {/if}
+          </button>
+        {:else}
+          <!-- Replaced the telegram-required panel with direct authorization buttons -->
+          <button 
+            class="telegram-auth-button" 
+            on:click={handleTelegramAuth}
+            disabled={isLoading}
+            aria-label="Авторизоваться через Telegram"
+          >
+            {#if isLoading}
+              <div class="loading-spinner"></div>
+            {:else}
+              <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+              </svg>
+              <span>Авторизоваться через Telegram</span>
+            {/if}
+          </button>
+        {/if}
+        
+        {#if authStatus}
+          <p class="auth-status">{authStatus}</p>
+        {/if}
+        
+        {#if isAuthorized && userData}
+          <div class="user-info">
+            <p>Вы вошли как: {userData.first_name} {userData.last_name || ''}</p>
+            {#if userData.username}
+              <p>Username: @{userData.username}</p>
+            {/if}
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
-</div>
+{:else}
+  <!-- Dashboard view -->
+  <div class="background-animation">
+    <!-- 20 sports items -->
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+  </div>
+
+  <div class="container">
+    <div class="glass-panel">
+      <h1 class="main-title">SARAYLO</h1>
+      
+      <h2 class="subtitle">Next-gen система для спорта</h2>
+      
+      <div class="description">
+        <p>Система, основанная на AI-технологии, которая совместно с пользователем создает революцию в восприятии спорта и фитнеса.</p>
+        <p>Получайте персонализированные рекомендации для достижения ваших целей и предотвращения перетренированности</p>
+        <p>Ваш личный тренер в режиме реального времени</p>
+      </div>
+      
+      <div class="auth-section">
+        {#if userData}
+          <div class="user-info">
+            <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Добро пожаловать, {userData.first_name}!</h3>
+            
+            <div style="margin: 20px 0; padding: 15px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);">
+              <h4 style="color: var(--primary-blue); margin-bottom: 10px;">Ваш профиль</h4>
+              <p>Имя: {userData.first_name} {userData.last_name || ''}</p>
+              {#if userData.username}
+                <p>Username: @{userData.username}</p>
+              {/if}
+              {#if userData.id}
+                <p>ID: {userData.id}</p>
+              {/if}
+            </div>
+            
+            <div style="margin: 20px 0; padding: 15px; border-radius: 10px; background: rgba(0, 191, 255, 0.1); border: 1px solid var(--primary-blue);">
+              <h4 style="color: var(--primary-blue); margin-bottom: 10px;">Доступные функции</h4>
+              <ul style="text-align: left; margin: 10px 0 10px 20px;">
+                <li>Анализ тренировок в реальном времени</li>
+                <li>Персональные рекомендации</li>
+                <li>Отслеживание прогресса</li>
+                <li>Предотвращение перетренированности</li>
+              </ul>
+            </div>
+            
+            <div class="dashboard-actions" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+              <button 
+                class="telegram-auth-button" 
+                on:click={handleLogout}
+                style="background: rgba(255, 0, 0, 0.1); border-color: #FF0000;"
+              >
+                Выйти
+              </button>
+            </div>
+          </div>
+        {:else}
+          <div class="loading-section">
+            <p>Загрузка данных пользователя...</p>
+            <div class="loading-spinner"></div>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   /* Component-specific styles can be added here if needed */
+  .dashboard-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .loading-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
 </style>
