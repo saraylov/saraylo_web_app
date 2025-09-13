@@ -337,12 +337,15 @@
           </div>
         </div>
         
-        <!-- Progress bar -->
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress-fill" style="width: 5.8%;"></div>
+        <!-- Expanded panel with progress bar -->
+        <div class="expanded-progress-panel">
+          <!-- Progress bar -->
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 5.8%;"></div>
+            </div>
+            <p class="progress-text">2900 / 50000 шагов</p>
           </div>
-          <p class="progress-text">2,9 / 50 км</p>
         </div>
         
         <!-- Current level -->
@@ -635,6 +638,65 @@
     width: 100%;
     max-width: 400px;
     text-align: center;
+    margin: 0 auto;
+  }
+  
+  .progress-bar {
+    height: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .progress-fill {
+    height: 100%;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  .progress-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Expanded progress panel */
+  .expanded-progress-panel {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  }
+  
+  /* Progress bar */
+  .progress-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 auto;
   }
   
   .progress-bar {
@@ -1020,4 +1082,62 @@
   /* Note: The 'dimmed' class is applied to badge elements that represent unreached achievement levels */
   
   /* Profile view styles - moved to Profile.svelte */
+  
+  /* Expanded progress panel */
+  .expanded-progress-panel {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  }
+  
+  /* Progress bar */
+  .progress-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 auto;
+  }
+  
+  .progress-bar {
+    height: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .progress-fill {
+    height: 100%;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  .progress-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
 </style>
