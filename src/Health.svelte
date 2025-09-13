@@ -7,6 +7,13 @@
   export let handleTrainingClick;
   export let handleDevicesClick;
   export let handleProfileClick;
+  
+  // Данные для колец активности
+  let activityData = {
+    move: { value: 450, goal: 500, color: '#00BFFF' },
+    exercise: { value: 30, goal: 60, color: '#FF1493' },
+    stand: { value: 8, goal: 12, color: '#00FF00' }
+  };
 </script>
 
 <div class="background-animation">
@@ -70,6 +77,124 @@
     
     <!-- Health content -->
     <div class="dashboard-main">
+      <!-- Кольца активности -->
+      <div class="activity-rings-container">
+        <h2 class="rings-title">Активность</h2>
+        <div class="rings-wrapper">
+          <!-- Кольцо "Перемещение" -->
+          <div class="ring-container">
+            <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+              <circle 
+                class="ring-background" 
+                cx="60" 
+                cy="60" 
+                r="50" 
+                fill="none" 
+                stroke="rgba(255, 255, 255, 0.1)" 
+                stroke-width="10"
+              />
+              <circle 
+                class="ring-progress" 
+                cx="60" 
+                cy="60" 
+                r="50" 
+                fill="none" 
+                stroke={activityData.move.color} 
+                stroke-width="10"
+                stroke-dasharray="314.16"
+                stroke-dashoffset={314.16 - (314.16 * Math.min(activityData.move.value / activityData.move.goal, 1))}
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+            <div class="ring-label">
+              <span class="ring-value">{activityData.move.value}</span>
+              <span class="ring-unit">ккал</span>
+            </div>
+          </div>
+          
+          <!-- Кольцо "Упражнения" -->
+          <div class="ring-container">
+            <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+              <circle 
+                class="ring-background" 
+                cx="60" 
+                cy="60" 
+                r="50" 
+                fill="none" 
+                stroke="rgba(255, 255, 255, 0.1)" 
+                stroke-width="10"
+              />
+              <circle 
+                class="ring-progress" 
+                cx="60" 
+                cy="60" 
+                r="50" 
+                fill="none" 
+                stroke={activityData.exercise.color} 
+                stroke-width="10"
+                stroke-dasharray="314.16"
+                stroke-dashoffset={314.16 - (314.16 * Math.min(activityData.exercise.value / activityData.exercise.goal, 1))}
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+            <div class="ring-label">
+              <span class="ring-value">{activityData.exercise.value}</span>
+              <span class="ring-unit">мин</span>
+            </div>
+          </div>
+          
+          <!-- Кольцо "Стояние" -->
+          <div class="ring-container">
+            <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+              <circle 
+                class="ring-background" 
+                cx="60" 
+                cy="60" 
+                r="50" 
+                fill="none" 
+                stroke="rgba(255, 255, 255, 0.1)" 
+                stroke-width="10"
+              />
+              <circle 
+                class="ring-progress" 
+                cx="60" 
+                cy="60" 
+                r="50" 
+                fill="none" 
+                stroke={activityData.stand.color} 
+                stroke-width="10"
+                stroke-dasharray="314.16"
+                stroke-dashoffset={314.16 - (314.16 * Math.min(activityData.stand.value / activityData.stand.goal, 1))}
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+            <div class="ring-label">
+              <span class="ring-value">{activityData.stand.value}</span>
+              <span class="ring-unit">ч</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Легенда колец -->
+        <div class="rings-legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: {activityData.move.color};"></div>
+            <span class="legend-text">Перемещение</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: {activityData.exercise.color};"></div>
+            <span class="legend-text">Упражнения</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: {activityData.stand.color};"></div>
+            <span class="legend-text">Стояние</span>
+          </div>
+        </div>
+      </div>
+      
       <div class="health-grid">
         <!-- Heart Rate Panel -->
         <div class="health-panel">
@@ -149,7 +274,7 @@
               <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z" stroke="currentColor" stroke-width="2"/>
               <path d="M10 20C10 18.9 10.9 18 12 18C13.1 18 14 18.9 14 20C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20Z" stroke="currentColor" stroke-width="2"/>
               <path d="M4 12C4 10.9 4.9 10 6 10C7.1 10 8 10.9 8 12C8 13.1 7.1 14 6 14C4.9 14 4 13.1 4 12Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M16 12C16 10.9 16.9 10 18 10C19.1 10 20 10.9 20 12C20 13.1 19.1 14 18 14C16.9 14 16 13.1 16 12Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 12C16 10.9 16.9 10 18 10C19.1 10 20 10.9 20 12C20 13.1 19.1 22 18 22C16.9 22 16 21.1 16 20Z" stroke="currentColor" stroke-width="2"/>
             </svg>
             <h3>Калории</h3>
           </div>
@@ -338,6 +463,138 @@
 <style>
   /* Import global styles */
   @import './app.css';
+  
+  /* Activity Rings Styles */
+  .activity-rings-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  }
+  
+  .rings-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: var(--white);
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .rings-wrapper {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .ring-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ring {
+    transform: rotate(-90deg);
+  }
+  
+  .ring-progress {
+    transition: stroke-dashoffset 1s ease-in-out;
+  }
+  
+  .ring-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .ring-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+  }
+  
+  .ring-unit {
+    font-size: 0.8rem;
+    color: var(--light-gray);
+  }
+  
+  .rings-legend {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .legend-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+  }
+  
+  .legend-text {
+    font-size: 0.9rem;
+    color: var(--light-gray);
+  }
+  
+  /* Адаптивный дизайн */
+  @media (max-width: 768px) {
+    .rings-wrapper {
+      gap: 15px;
+    }
+    
+    .ring-container {
+      transform: scale(0.9);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .activity-rings-container {
+      padding: 15px;
+    }
+    
+    .rings-title {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+    
+    .rings-wrapper {
+      gap: 10px;
+    }
+    
+    .ring-container {
+      transform: scale(0.8);
+    }
+    
+    .ring-value {
+      font-size: 1rem;
+    }
+    
+    .legend-text {
+      font-size: 0.8rem;
+    }
+  }
   
   /* Animation keyframes - only keep the ones not in app.css */
   @keyframes shimmer {

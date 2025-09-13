@@ -64,13 +64,6 @@
             <div class="octagon-container">
             </div>
           </div>
-          <div class="shield-bottom">
-            <div class="training-info">
-              <button class="start-training-button">
-                Начать тренировку
-              </button>
-            </div>
-          </div>
         </div>
       </div>
       
