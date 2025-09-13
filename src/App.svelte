@@ -519,7 +519,7 @@
     </div>
   </div>
 {:else if currentView === 'profile'}
-  <Profile {userData} {handleBackToDashboard} />
+  <Profile {userData} {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
 {/if}
 
 <style>
