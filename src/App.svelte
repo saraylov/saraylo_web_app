@@ -179,7 +179,14 @@
           </svg>
         </div>
         <h1 class="dashboard-title">Статистика</h1>
-        <div class="header-icon" on:click={handleAddClick}>
+        <div 
+          class="header-icon" 
+          on:click={handleAddClick}
+          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAddClick(); }}
+          role="button"
+          tabindex="0"
+          aria-label="Добавить"
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 5V19" stroke="var(--primary-pink)" stroke-width="2" stroke-linecap="round"/>
             <path d="M5 12H19" stroke="var(--primary-pink)" stroke-width="2" stroke-linecap="round"/>
@@ -278,7 +285,14 @@
             <span>Здоровье</span>
           </div>
           <div class="nav-item nav-item-center">
-            <div class="circle-button" on:click={handleTrainingClick}>
+            <div 
+              class="circle-button" 
+              on:click={handleTrainingClick}
+              on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
+              role="button"
+              tabindex="0"
+              aria-label="Начать тренировку"
+            >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
                 <path d="M19.4 15C19.2667 15.4 18.9 16 18 16.5C17.1 17 16.0667 17.2667 15 17.3C13.9333 17.2667 12.9 17 12 16.5C11.1 16 10.7333 15.4 10.6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -349,7 +363,14 @@
     <div class="glass-panel">
       <!-- Header -->
       <div class="dashboard-header">
-        <div class="header-icon" on:click={handleBackToDashboard}>
+        <div 
+          class="header-icon" 
+          on:click={handleBackToDashboard}
+          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+          role="button"
+          tabindex="0"
+          aria-label="Назад к статистике"
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
             <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
