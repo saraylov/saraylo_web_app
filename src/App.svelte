@@ -3,6 +3,8 @@
   import './app.css';
   import Profile from './Profile.svelte';
   import Training from './Training.svelte';
+  import Devices from './Devices.svelte';
+  import Health from './Health.svelte';
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -356,6 +358,10 @@
   </div>
 {:else if currentView === 'training'}
   <Training {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
+{:else if currentView === 'devices'}
+  <Devices {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
+{:else if currentView === 'health'}
+  <Health {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
 {:else if currentView === 'profile'}
   <Profile {userData} {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
 {/if}

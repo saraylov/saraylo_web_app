@@ -809,6 +809,7 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  margin: 0 auto;
 }
 
 .progress-bar {
@@ -1183,36 +1184,127 @@ body {
   margin: 0;
 }
 
-/* Training view styles */
-.training-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px;
+/* Devices view styles */
+.devices-info {
   text-align: center;
+  margin-bottom: 30px;
 }
 
-.training-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: var(--white);
+.devices-title {
+  font-size: 1.8rem;
+  font-weight: 800;
   background: var(--gradient-border);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+  margin-bottom: 10px;
 }
 
-.training-description {
+.devices-description {
   font-size: 1rem;
   color: var(--light-gray);
   margin-bottom: 25px;
   line-height: 1.5;
 }
 
-.start-training-button {
+devices-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.device-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(5px);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.device-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.device-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.device-info {
+  flex: 1;
+}
+
+.device-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 5px;
+}
+
+.device-type {
+  font-size: 0.9rem;
+  color: var(--light-gray);
+  margin-bottom: 10px;
+}
+
+.battery-info {
+  display: flex;
+  gap: 5px;
+}
+
+.battery-label {
+  font-size: 0.9rem;
+  color: var(--light-gray);
+}
+
+.battery-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.device-actions {
+  flex-shrink: 0;
+}
+
+.disconnect-button {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.4));
+  border: 1px solid var(--primary-pink);
+  border-radius: 10px;
+  padding: 8px 15px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.disconnect-button:hover {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.4), rgba(255, 0, 0, 0.6));
+  transform: translateY(-2px);
+}
+
+.no-devices {
+  text-align: center;
+  padding: 30px;
+  color: var(--light-gray);
+  font-size: 1.1rem;
+}
+
+.scan-button {
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   border: none;
   border-radius: 12px;
@@ -1224,49 +1316,167 @@ body {
   transition: all 0.3s ease;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 250px;
+  max-width: 300px;
+  margin: 0 auto 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.start-training-button:hover {
+.scan-button:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
 }
 
-.start-training-button:active {
+.scan-button:active {
   transform: translateY(1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
-.training-stats {
-  display: flex;
-  justify-content: space-around;
+/* Health view styles */
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   width: 100%;
-  max-width: 500px;
-  gap: 15px;
-  margin-top: 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.stat-card {
+.health-panel {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  flex: 1;
+  padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
 }
 
-.stat-card h4 {
-  font-size: 0.9rem;
-  color: var(--light-gray);
-  margin-bottom: 10px;
-  font-weight: 500;
+.health-panel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(51, 51, 51, 0.4));
 }
 
-.stat-value {
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.panel-header svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--primary-blue);
+}
+
+.panel-header h3 {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--white);
   margin: 0;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+.hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.heart-rate-value span, .bp-value span, .calories-value span, 
+.hydration-value span, .temp-value span, .oxygen-value span {
+  font-size: 1rem;
+  color: var(--light-gray);
+}
+
+.chart-placeholder {
+  height: 60px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-line {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+  opacity: 0.3;
+}
+
+/* Responsive design for health panels */
+@media (max-width: 768px) {
+  .health-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .health-panel {
+    min-height: 120px;
+    padding: 15px;
+  }
+  
+  .panel-header h3 {
+    font-size: 1rem;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .health-grid {
+    gap: 10px;
+  }
+  
+  .health-panel {
+    min-height: 100px;
+    padding: 12px;
+  }
+  
+  .panel-header {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .panel-header svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.3rem;
+  }
+  
+  .heart-rate-value span, .bp-value span, .calories-value span, 
+  .hydration-value span, .temp-value span, .oxygen-value span {
+    font-size: 0.8rem;
+  }
 }
