@@ -12,10 +12,10 @@
 
 Для сборки веб-версии приложения выполните:
 ```bash
-npm run build:web
+npm run build:webauth
 ```
 
-Собранные файлы будут находиться в папке `distWeb`.
+Собранные файлы будут находиться в папке `distWebAuth`.
 
 ## Настройка GitHub Pages
 
@@ -33,7 +33,7 @@ npm run build:web
 3. Настройте GitHub Pages:
    - В разделе "Source" выберите "Deploy from a branch"
    - В выпадающем списке "Branch" выберите ветку (обычно `main`)
-   - В поле "Folder" выберите `/distWeb` (если вы настроили публикацию из этой папки) или `/` если будете копировать содержимое папки `distWeb` в корень репозитория
+   - В поле "Folder" выберите `/distWebAuth` (если вы настроили публикацию из этой папки) или `/` если будете копировать содержимое папки `distWebAuth` в корень репозитория
    - Нажмите "Save"
 
 ## Альтернативный способ: использование GitHub Actions
@@ -65,13 +65,13 @@ npm run build:web
            run: npm ci
            
          - name: Build
-           run: npm run build:web
+           run: npm run build:webauth
            
          - name: Deploy to GitHub Pages
            uses: peaceiris/actions-gh-pages@v3
            with:
              github_token: ${{ secrets.GITHUB_TOKEN }}
-             publish_dir: ./distWeb
+             publish_dir: ./distWebAuth
    ```
 
 2. Закоммитьте и запушьте файл workflow:
@@ -89,10 +89,10 @@ npm run build:web
 
 1. Соберите приложение:
    ```bash
-   npm run build:web
+   npm run build:webauth
    ```
 
-2. Скопируйте содержимое папки `distWeb` в корень вашего репозитория или в ветку `gh-pages`
+2. Скопируйте содержимое папки `distWebAuth` в корень вашего репозитория или в ветку `gh-pages`
 
 3. Закоммитьте и запушьте изменения:
    ```bash
@@ -118,15 +118,15 @@ npm run build:web
 
 ### Ошибки загрузки ресурсов (404)
 
-1. Убедитесь, что папка `distWeb` содержит все необходимые файлы
+1. Убедитесь, что папка `distWebAuth` содержит все необходимые файлы
 2. Проверьте, что GitHub Pages настроен на правильную папку
 3. Убедитесь, что в конфигурации Vite установлен параметр `base: './'`
 
 ### Проблемы с маршрутизацией
 
-Если вы используете клиентскую маршрутизацию (например, SvelteKit), создайте файл `404.html` в папке `distWeb` с содержимым `index.html`:
+Если вы используете клиентскую маршрутизацию (например, SvelteKit), создайте файл `404.html` в папке `distWebAuth` с содержимым `index.html`:
 ```bash
-cp distWeb/index.html distWeb/404.html
+cp distWebAuth/index.html distWebAuth/404.html
 ```
 
 Это необходимо для корректной работы SPA на GitHub Pages.
@@ -138,7 +138,7 @@ cp distWeb/index.html distWeb/404.html
 1. Внесите необходимые изменения в код
 2. Соберите приложение заново:
    ```bash
-   npm run build:web
+   npm run build:webauth
    ```
 3. Закоммитьте и запушьте изменения:
    ```bash

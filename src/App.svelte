@@ -77,6 +77,21 @@
   function handleBackToDashboard() {
     currentView = 'dashboard';
   }
+  
+  // Handle profile navigation
+  function handleProfileClick() {
+    currentView = 'profile';
+  }
+  
+  // Handle devices navigation
+  function handleDevicesClick() {
+    currentView = 'devices';
+  }
+  
+  // Handle health navigation
+  function handleHealthClick() {
+    currentView = 'health';
+  }
 </script>
 
 <svelte:head>
@@ -201,35 +216,11 @@
           <div class="shield-content">
             <div class="shield-top">
               <div class="octagon-container">
-                <div class="outer-octagon"></div>
-                <div class="inner-octagon"></div>
-                <span class="octagon-text">БЕГ</span>
               </div>
             </div>
             <div class="shield-bottom">
               <!-- Achievement levels inside shield -->
               <div class="achievement-section">
-                <h3 class="achievement-title">Все беговые уровни</h3>
-                <div class="achievement-badges">
-                  <div class="badge" style="background-color: #4CAF50;">
-                    <span class="badge-text">0</span>
-                  </div>
-                  <div class="badge" style="background-color: #8BC34A;">
-                    <span class="badge-text">50</span>
-                  </div>
-                  <div class="badge" style="background-color: #CDDC39;">
-                    <span class="badge-text">250</span>
-                  </div>
-                  <div class="badge" style="background-color: #FFEB3B;">
-                    <span class="badge-text">1K</span>
-                  </div>
-                  <div class="badge dimmed" style="background-color: #FF9800;">
-                    <span class="badge-text">2,5K</span>
-                  </div>
-                  <div class="badge dimmed" style="background-color: #F44336;">
-                    <span class="badge-text">5K</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -268,16 +259,41 @@
           <button class="details-button" on:click={handleDetailsClick}>Детали</button>
         </div>
         
+        <!-- Logout button -->
+        <div class="dashboard-actions">
+          <button 
+            class="telegram-auth-button" 
+            on:click={handleLogout}
+            style="background: rgba(255, 0, 0, 0.1);"
+          >
+            Выйти
+          </button>
+        </div>
+        
         <!-- Bottom navigation panel -->
         <div class="bottom-panel">
-          <div class="nav-item">
+          <div 
+            class="nav-item"
+            on:click={handleBackToDashboard}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Статистика"
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>Статистика</span>
           </div>
-          <div class="nav-item">
+          <div 
+            class="nav-item"
+            on:click={handleHealthClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Здоровье"
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
               <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -302,7 +318,14 @@
               </svg>
             </div>
           </div>
-          <div class="nav-item">
+          <div 
+            class="nav-item"
+            on:click={handleDevicesClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Устройства"
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
@@ -311,24 +334,20 @@
             </svg>
             <span>Устройства</span>
           </div>
-          <div class="nav-item">
+          <div 
+            class="nav-item"
+            on:click={handleProfileClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Профиль"
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
             </svg>
             <span>Профиль</span>
           </div>
-        </div>
-        
-        <!-- Logout button -->
-        <div class="dashboard-actions">
-          <button 
-            class="telegram-auth-button" 
-            on:click={handleLogout}
-            style="background: rgba(255, 0, 0, 0.1);"
-          >
-            Выйти
-          </button>
         </div>
       </div>
     </div>
@@ -388,15 +407,10 @@
           <div class="shield-content">
             <div class="shield-top">
               <div class="octagon-container">
-                <div class="outer-octagon"></div>
-                <div class="inner-octagon"></div>
-                <span class="octagon-text">БЕГ</span>
               </div>
             </div>
             <div class="shield-bottom">
               <div class="training-info">
-                <h3 class="training-title">Начать тренировку</h3>
-                <p class="training-description">Готовы к новой тренировке? Нажмите кнопку ниже, чтобы начать.</p>
                 <button class="start-training-button">
                   Начать тренировку
                 </button>
@@ -418,6 +432,275 @@
           <div class="stat-card">
             <h4>Темп</h4>
             <p class="stat-value">0:00 / км</p>
+          </div>
+        </div>
+        
+        <!-- Bottom navigation panel -->
+        <div class="bottom-panel">
+          <div 
+            class="nav-item"
+            on:click={handleBackToDashboard}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Статистика"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Статистика</span>
+          </div>
+          <div 
+            class="nav-item"
+            on:click={handleHealthClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Здоровье"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Здоровье</span>
+          </div>
+          <div class="nav-item nav-item-center">
+            <div 
+              class="circle-button" 
+              on:click={handleTrainingClick}
+              on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
+              role="button"
+              tabindex="0"
+              aria-label="Начать тренировку"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M19.4 15C19.2667 15.4 18.9 16 18 16.5C17.1 17 16.0667 17.2667 15 17.3C13.9333 17.2667 12.9 17 12 16.5C11.1 16 10.7333 15.4 10.6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 9C12.9 8.5 13.9333 8.23333 15 8.2C16.0667 8.23333 17.1 8.5 18 9C18.9 9.5 19.2667 10.1 19.4 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4.6 15C4.73333 14.6 5.1 14 6 13.5C6.9 13 7.93333 12.7333 9 12.7C10.0667 12.7333 11.1 13 12 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 15C11.1 15.5 10.0667 15.7667 9 15.8C7.93333 15.7667 6.9 15.5 6 15C5.1 14.5 4.73333 13.9 4.6 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div 
+            class="nav-item"
+            on:click={handleDevicesClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Устройства"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M23 20.9999V18.9999C22.9993 18.1136 22.7044 17.2527 22.1614 16.5522C21.6184 15.8517 20.8581 15.3515 20 15.1299" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 3.12988C16.8604 3.35143 17.623 3.85051 18.1693 4.54956C18.7156 5.24861 19.0147 6.10829 19.02 7.00488" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Устройства</span>
+          </div>
+          <div 
+            class="nav-item"
+            on:click={handleProfileClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Профиль"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Профиль</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{:else if currentView === 'profile'}
+  <!-- Profile view -->
+  <div class="background-animation">
+    <!-- 20 sports items -->
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+  </div>
+
+  <div class="container">
+    <div class="glass-panel">
+      <!-- Header -->
+      <div class="dashboard-header">
+        <div 
+          class="header-icon" 
+          on:click={handleBackToDashboard}
+          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+          role="button"
+          tabindex="0"
+          aria-label="Назад к статистике"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="dashboard-title">Профиль</h1>
+        <div class="header-icon">
+          <!-- Empty icon placeholder -->
+        </div>
+      </div>
+      
+      <!-- Profile content -->
+      <div class="dashboard-main">
+        <!-- User info card -->
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="8" r="4" stroke="var(--primary-blue)" stroke-width="2"/>
+                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h2 class="profile-name">{userData?.first_name} {userData?.last_name || ''}</h2>
+            <p class="profile-username">@{userData?.username || 'username'}</p>
+          </div>
+          
+          <div class="profile-stats">
+            <div class="stat-item">
+              <h3 class="stat-value">2,9</h3>
+              <p class="stat-label">км пробежано</p>
+            </div>
+            <div class="stat-item">
+              <h3 class="stat-value">5</h3>
+              <p class="stat-label">тренировок</p>
+            </div>
+            <div class="stat-item">
+              <h3 class="stat-value">12</h3>
+              <p class="stat-label">дней подряд</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Profile details -->
+        <div class="profile-details">
+          <div class="detail-item">
+            <h4>Личная информация</h4>
+            <p>Возраст: 28 лет</p>
+            <p>Рост: 175 см</p>
+            <p>Вес: 70 кг</p>
+          </div>
+          
+          <div class="detail-item">
+            <h4>Цели</h4>
+            <p>Еженедельная цель: 15 км</p>
+            <p>Прогресс: 2,9 / 15 км</p>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 19.3%;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <h4>Достижения</h4>
+            <p>Последнее достижение: Зеленый уровень</p>
+            <p>Следующее: Желтый уровень (50 км)</p>
+          </div>
+        </div>
+        
+        <!-- Bottom navigation panel -->
+        <div class="bottom-panel">
+          <div 
+            class="nav-item"
+            on:click={handleBackToDashboard}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Статистика"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Статистика</span>
+          </div>
+          <div 
+            class="nav-item"
+            on:click={handleHealthClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Здоровье"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Здоровье</span>
+          </div>
+          <div class="nav-item nav-item-center">
+            <div 
+              class="circle-button" 
+              on:click={handleTrainingClick}
+              on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
+              role="button"
+              tabindex="0"
+              aria-label="Начать тренировку"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M19.4 15C19.2667 15.4 18.9 16 18 16.5C17.1 17 16.0667 17.2667 15 17.3C13.9333 17.2667 12.9 17 12 16.5C11.1 16 10.7333 15.4 10.6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 9C12.9 8.5 13.9333 8.23333 15 8.2C16.0667 8.23333 17.1 8.5 18 9C18.9 9.5 19.2667 10.1 19.4 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4.6 15C4.73333 14.6 5.1 14 6 13.5C6.9 13 7.93333 12.7333 9 12.7C10.0667 12.7333 11.1 13 12 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 15C11.1 15.5 10.0667 15.7667 9 15.8C7.93333 15.7667 6.9 15.5 6 15C5.1 14.5 4.73333 13.9 4.6 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div 
+            class="nav-item"
+            on:click={handleDevicesClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Устройства"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M23 20.9999V18.9999C22.9993 18.1136 22.7044 17.2527 22.1614 16.5522C21.6184 15.8517 20.8581 15.3515 20 15.1299" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 3.12988C16.8604 3.35143 17.623 3.85051 18.1693 4.54956C18.7156 5.24861 19.0147 6.10829 19.02 7.00488" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Устройства</span>
+          </div>
+          <div 
+            class="nav-item"
+            on:click={handleProfileClick}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
+            role="button"
+            tabindex="0"
+            aria-label="Профиль"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Профиль</span>
           </div>
         </div>
       </div>
@@ -651,71 +934,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .outer-octagon {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #000000;
-    border: 3px solid #000000;
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    box-sizing: border-box;
-  }
-  
-  .inner-octagon {
-    position: absolute;
-    width: 95%; /* Increased from 85% */
-    height: 95%; /* Increased from 85% */
-    /* Create Italian plaster texture effect */
-    background: 
-      /* Base color */
-      linear-gradient(135deg, #4CAF50, #388E3C),
-      /* Texture overlay */
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 1px, transparent 2px),
-      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.05) 1px, transparent 2px),
-      linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
-      linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
-    background-size: 
-      100% 100%,
-      20px 20px,
-      30px 30px,
-      50px 50px,
-      50px 50px;
-    background-position: 
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      25px 25px;
-    border: 2px solid #000000;
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    box-sizing: border-box;
-    z-index: 1;
-    overflow: hidden;
-    animation: medalShimmer 4s infinite;
-  }
-  
-  .octagon-text {
-    position: relative;
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #000000;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 0;
-    z-index: 2;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    animation: pulse 2s infinite;
-  }
-  
-  /* Remove the old pentagon-text styles */
-  .pentagon-text {
-    display: none;
-  }
-  
-  .pentagon-text::before {
-    display: none;
   }
   
   /* Achievement section inside shield */
@@ -1098,16 +1316,6 @@
       font-size: 2rem;
     }
     
-    .achievement-badges {
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
-    .badge {
-      width: 40px;
-      height: 40px;
-    }
-    
     .nav-item span {
       font-size: 0.8rem;
     }
@@ -1152,19 +1360,6 @@
   }
   
   /* Dimmed effect for unreached levels */
-  .badge.dimmed {
-    opacity: 0.6;
-    filter: grayscale(100%) brightness(0.8);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7), 
-                inset 0 0 10px rgba(0, 0, 0, 0.5);
-    transform: scale(0.9);
-    border-color: #333333;
-  }
-  
-  .badge.dimmed .badge-text {
-    color: #999999;
-    text-shadow: none;
-  }
   
   /* Note: The 'dimmed' class is applied to badge elements that represent unreached achievement levels */
   
@@ -1254,5 +1449,113 @@
     font-weight: 700;
     color: var(--white);
     margin: 0;
+  }
+  
+  /* Profile view styles */
+  .profile-card {
+    width: 100%;
+    max-width: 500px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  }
+  
+  .profile-header {
+    margin-bottom: 25px;
+  }
+  
+  .profile-avatar {
+    margin: 0 auto 15px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+  }
+  
+  .profile-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 10px 0 5px;
+    color: var(--white);
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .profile-username {
+    font-size: 1.1rem;
+    color: var(--light-gray);
+    margin: 0 0 15px;
+  }
+  
+  .profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 0 10px;
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+  
+  .stat-item .stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    color: var(--white);
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .stat-item .stat-label {
+    font-size: 0.9rem;
+    color: var(--light-gray);
+    margin: 0;
+  }
+  
+  .profile-details {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .detail-item {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .detail-item h4 {
+    font-size: 1.2rem;
+    color: var(--white);
+    margin-bottom: 15px;
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .detail-item p {
+    font-size: 1rem;
+    color: var(--light-gray);
+    margin: 8px 0;
   }
 </style>

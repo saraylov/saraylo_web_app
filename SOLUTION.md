@@ -4,7 +4,7 @@
 
 Вы столкнулись с белым экраном и ошибкой 404 в консоли. Это может быть вызвано несколькими причинами:
 
-1. **Неправильная конфигурация путей к ресурсам** - пути начинаются с [/](file://e:\DevBuild\AI\AI%20Running\saraylo_web_app\distWeb\assets\index-Cy9v_t8s.js) вместо [./](file://e:\DevBuild\AI\AI%20Running\saraylo_web_app\TELEGRAM_INTEGRATION.md)
+1. **Неправильная конфигурация путей к ресурсам** - пути начинаются с [/](file://e:\DevBuild\AI\AI%20Running\saraylo_web_app\distWebAuth\assets\index-Cy9v_t8s.js) вместо [./](file://e:\DevBuild\AI\AI%20Running\saraylo_web_app\TELEGRAM_INTEGRATION.md)
 2. **Приложение предназначено для работы внутри Telegram Web App** - вне этой среды оно не отображает контент
 3. **Неправильная настройка GitHub Pages** - приложение развернуто не в той папке
 
@@ -16,10 +16,10 @@
 
 1. Соберите улучшенную версию:
    ```bash
-   npm run build:improved
+   npm run build:webauth
    ```
 
-2. Используйте содержимое папки `distImproved` для развертывания на GitHub Pages.
+2. Используйте содержимое папки `distWebAuth` для развертывания на GitHub Pages.
 
 ### Шаг 2: Проверьте конфигурацию Vite
 
@@ -34,7 +34,7 @@ export default defineConfig({
 
 ### Шаг 3: Проверьте содержимое index.html
 
-В собранном файле `distImproved/index.html` пути к ресурсам должны начинаться с [./](file://e:\DevBuild\AI\AI%20Running\saraylo_web_app\TELEGRAM_INTEGRATION.md):
+В собранном файле `distWebAuth/index.html` пути к ресурсам должны начинаться с [./](file://e:\DevBuild\AI\AI%20Running\saraylo_web_app\TELEGRAM_INTEGRATION.md):
 
 ```html
 <script type="module" crossorigin src="./assets/index-Cy9v_t8s.js"></script>
@@ -43,17 +43,17 @@ export default defineConfig({
 
 ### Шаг 4: Настройте GitHub Pages правильно
 
-1. Закоммитьте содержимое папки `distImproved` в ваш репозиторий
+1. Закоммитьте содержимое папки `distWebAuth` в ваш репозиторий
 2. Перейдите в настройки репозитория на GitHub → Settings → Pages
 3. В разделе "Source" выберите:
    - Branch: `main` (или вашу основную ветку)
-   - Folder: `/distImproved` или `/` (если вы скопируете содержимое папки в корень)
+   - Folder: `/distWebAuth` или `/` (если вы скопируете содержимое папки в корень)
 
 ### Шаг 5: Создайте 404.html для корректной маршрутизации
 
 Скопируйте `index.html` в `404.html`:
 ```bash
-cp distImproved/index.html distImproved/404.html
+cp distWebAuth/index.html distWebAuth/404.html
 ```
 
 ## Дополнительная диагностика
@@ -69,7 +69,7 @@ cp distImproved/index.html distImproved/404.html
 Вы можете проверить, как будет выглядеть приложение на GitHub Pages, локально:
 
 ```bash
-npm run preview:improved
+npm run preview:webauth
 ```
 
 Затем откройте в браузере: http://localhost:4173

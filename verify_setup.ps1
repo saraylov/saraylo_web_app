@@ -21,8 +21,7 @@ $requiredFiles = @(
     "docker-compose.yml",
     "nginx.conf",
     "run_dev.ps1",
-    "run_docker.ps1",
-    "test_build.ps1"
+    "run_docker.ps1"
 )
 
 $missingFiles = @()

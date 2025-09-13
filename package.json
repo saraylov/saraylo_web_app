@@ -9,19 +9,10 @@
   },
   "scripts": {
     "dev": "vite",
-    "dev:test": "vite --config viteTest.config.ts",
-    "dev:web": "vite --config viteWeb.config.ts",
-    "dev:improved": "vite --config viteImproved.config.ts",
     "dev:webauth": "vite --config viteWebAuth.config.ts",
     "build": "vite build",
-    "build:test": "vite build --config viteTest.config.ts",
-    "build:web": "vite build --config viteWeb.config.ts",
-    "build:improved": "vite build --config viteImproved.config.ts",
     "build:webauth": "vite build --config viteWebAuth.config.ts",
     "preview": "vite preview",
-    "preview:test": "vite preview --config viteTest.config.ts",
-    "preview:web": "vite preview --config viteWeb.config.ts",
-    "preview:improved": "vite preview --config viteImproved.config.ts",
     "preview:webauth": "vite preview --config viteWebAuth.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -35,6 +26,8 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "@types/node": "^20.14.11"
+    "@types/node": "^20.14.11",
+    "mapbox-gl": "^3.15.0",
+    "svelte-mapbox": "^0.6.0"
   }
 }
