@@ -41,245 +41,66 @@ body {
 /* Sports items */
 .sports-item {
   position: absolute;
-  /* 2x faster animation */
-  animation: float 5s infinite ease-in-out;
+  width: 50px;
+  height: 50px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  animation: float 20s infinite linear;
 }
 
 .football {
-  width: 30px;
-  height: 30px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300BFFF'/%3E%3Cpath d='M30,30 Q40,25 50,30 T70,30 Q75,40 70,50 T70,70 Q60,75 50,70 T30,70 Q25,60 30,50 T30,30 Z' fill='none' stroke='white' stroke-width='3'/%3E%3Ccircle cx='50' cy='50' r='15' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300BFFF'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cline x1='12' y1='2' x2='12' y2='5' stroke='%2300BFFF' stroke-width='1'/%3E%3Cline x1='12' y1='19' x2='12' y2='22' stroke='%2300BFFF' stroke-width='1'/%3E%3Cline x1='2' y1='12' x2='5' y2='12' stroke='%2300BFFF' stroke-width='1'/%3E%3Cline x1='19' y1='12' x2='22' y2='12' stroke='%2300BFFF' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 .basketball {
-  width: 30px;
-  height: 30px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FF8C00'/%3E%3Cpath d='M50,5 L50,95 M5,50 L95,50 M20,20 L80,80 M20,80 L80,20' stroke='black' stroke-width='3'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF1493' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20'/%3E%3C/svg%3E");
 }
 
 .sneakers {
-  width: 40px;
-  height: 20px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3Cpath d='M10,30 Q20,35 30,30 Q40,25 50,25 Q60,25 70,20 Q80,15 90,20 L85,30 Q75,35 65,35 Q55,35 45,40 Q35,45 25,40 Q15,35 10,30 Z' fill='%23FF1493'/%3E%3Cpath d='M20,25 L25,30 M40,25 L45,30 M60,20 L65,25' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300BFFF' stroke-width='2'%3E%3Cpath d='M10 10l2-2 2 2m-2 2v4m-8 4h16a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z'/%3E%3C/svg%3E");
 }
 
 .shorts {
-  width: 30px;
-  height: 20px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'%3E%3Cpath d='M10,10 L90,10 L80,30 L70,50 L30,50 L20,30 Z' fill='%2332CD32'/%3E%3Cpath d='M30,50 L25,60 M70,50 L75,60' stroke='%2332CD32' stroke-width='5'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF1493' stroke-width='2'%3E%3Cpath d='M4 6h16l-2 8H6l-2-8z'/%3E%3C/svg%3E");
 }
 
 .tshirt {
-  width: 30px;
-  height: 30px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,30 L20,80 L80,80 L80,30 Q70,20 50,25 Q30,20 20,30 Z' fill='%239370DB'/%3E%3Cpath d='M30,30 L25,10 L40,15 M70,30 L75,10 L60,15' stroke='%239370DB' stroke-width='5'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-/* 20 sports items with faster movement and popping effect */
-.sports-item:nth-child(1) {
-  top: 10%;
-  left: 20%;
-  animation-duration: 7s;
-  animation-delay: 0s;
-}
-
-.sports-item:nth-child(2) {
-  top: 20%;
-  right: 10%;
-  animation-duration: 8.5s;
-  animation-direction: reverse;
-  animation-delay: 1s;
-}
-
-.sports-item:nth-child(3) {
-  bottom: 30%;
-  left: 15%;
-  animation-duration: 10.5s;
-  animation-delay: 2s;
-}
-
-.sports-item:nth-child(4) {
-  bottom: 20%;
-  right: 25%;
-  animation-duration: 7.5s;
-  animation-direction: reverse;
-  animation-delay: 0.5s;
-}
-
-.sports-item:nth-child(5) {
-  top: 40%;
-  left: 50%;
-  animation-duration: 12.5s;
-  animation-delay: 1.5s;
-}
-
-.sports-item:nth-child(6) {
-  top: 15%;
-  right: 30%;
-  animation-duration: 9.5s;
-  animation-delay: 2.5s;
-}
-
-.sports-item:nth-child(7) {
-  bottom: 25%;
-  left: 35%;
-  animation-duration: 11s;
-  animation-direction: reverse;
-  animation-delay: 1s;
-}
-
-.sports-item:nth-child(8) {
-  top: 60%;
-  right: 15%;
-  animation-duration: 9s;
-  animation-delay: 0s;
-}
-
-.sports-item:nth-child(9) {
-  bottom: 40%;
-  left: 70%;
-  animation-duration: 8s;
-  animation-direction: reverse;
-  animation-delay: 2s;
-}
-
-.sports-item:nth-child(10) {
-  top: 30%;
-  left: 5%;
-  animation-duration: 13s;
-  animation-delay: 0.5s;
-}
-
-.sports-item:nth-child(11) {
-  top: 25%;
-  left: 40%;
-  animation-duration: 6s;
-  animation-delay: 1.5s;
-}
-
-.sports-item:nth-child(12) {
-  top: 70%;
-  right: 20%;
-  animation-duration: 7.5s;
-  animation-direction: reverse;
-  animation-delay: 3s;
-}
-
-.sports-item:nth-child(13) {
-  bottom: 15%;
-  left: 25%;
-  animation-duration: 5s;
-  animation-delay: 0s;
-}
-
-.sports-item:nth-child(14) {
-  bottom: 35%;
-  right: 35%;
-  animation-duration: 8.5s;
-  animation-direction: reverse;
-  animation-delay: 2.5s;
-}
-
-.sports-item:nth-child(15) {
-  top: 50%;
-  left: 60%;
-  animation-duration: 11.5s;
-  animation-delay: 1s;
-}
-
-.sports-item:nth-child(16) {
-  top: 5%;
-  right: 40%;
-  animation-duration: 9.5s;
-  animation-delay: 3.5s;
-}
-
-.sports-item:nth-child(17) {
-  bottom: 45%;
-  left: 10%;
-  animation-duration: 12s;
-  animation-direction: reverse;
-  animation-delay: 1.5s;
-}
-
-.sports-item:nth-child(18) {
-  top: 55%;
-  right: 5%;
-  animation-duration: 8s;
-  animation-delay: 0.5s;
-}
-
-.sports-item:nth-child(19) {
-  bottom: 5%;
-  left: 80%;
-  animation-duration: 10.5s;
-  animation-direction: reverse;
-  animation-delay: 4s;
-}
-
-.sports-item:nth-child(20) {
-  top: 15%;
-  left: 30%;
-  animation-duration: 13.5s;
-  animation-delay: 2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300BFFF' stroke-width='2'%3E%3Cpath d='M20 20v-4h-4v-4h4V8h-4V4h-4v4h-4V4H4v4H0v4h4v4H0v4h4v4h16v-4h-4v-4h4z'/%3E%3C/svg%3E");
 }
 
 @keyframes float {
   0% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 0.3;
-  }
-  10% {
-    transform: translate(10px, 10px) rotate(45deg) scale(1.1);
-    opacity: 0.5;
-  }
-  20% {
-    transform: translate(20px, 20px) rotate(90deg) scale(1);
-    opacity: 0.3;
-  }
-  30% {
-    transform: translate(10px, 30px) rotate(135deg) scale(0.9);
-    opacity: 0.4;
-  }
-  40% {
-    transform: translate(0, 40px) rotate(180deg) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translate(-10px, 30px) rotate(225deg) scale(1.1);
-    opacity: 0.5;
-  }
-  60% {
-    transform: translate(-20px, 20px) rotate(270deg) scale(1);
-    opacity: 0.3;
-  }
-  70% {
-    transform: translate(-10px, 10px) rotate(315deg) scale(0.9);
-    opacity: 0.4;
-  }
-  80% {
-    transform: translate(0, 0) rotate(360deg) scale(1);
-    opacity: 0.3;
-  }
-  90% {
-    transform: translate(0, 0) rotate(360deg) scale(0.1);
-    opacity: 0;
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0.1;
   }
   100% {
-    transform: translate(0, 0) rotate(360deg) scale(1);
-    opacity: 0.3;
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0.1;
   }
 }
+
+/* 20 sports items positioning */
+.sports-item:nth-child(1) { top: 10%; left: 20%; }
+.sports-item:nth-child(2) { top: 20%; right: 10%; }
+.sports-item:nth-child(3) { bottom: 30%; left: 15%; }
+.sports-item:nth-child(4) { bottom: 20%; right: 25%; }
+.sports-item:nth-child(5) { top: 40%; left: 50%; }
+.sports-item:nth-child(6) { top: 15%; right: 30%; }
+.sports-item:nth-child(7) { bottom: 25%; left: 35%; }
+.sports-item:nth-child(8) { top: 60%; right: 15%; }
+.sports-item:nth-child(9) { bottom: 40%; left: 70%; }
+.sports-item:nth-child(10) { top: 30%; left: 5%; }
+.sports-item:nth-child(11) { top: 25%; left: 40%; }
+.sports-item:nth-child(12) { top: 70%; right: 20%; }
+.sports-item:nth-child(13) { bottom: 15%; left: 25%; }
+.sports-item:nth-child(14) { bottom: 35%; right: 35%; }
+.sports-item:nth-child(15) { top: 50%; left: 60%; }
+.sports-item:nth-child(16) { top: 5%; right: 40%; }
+.sports-item:nth-child(17) { bottom: 45%; left: 10%; }
+.sports-item:nth-child(18) { top: 55%; right: 5%; }
+.sports-item:nth-child(19) { bottom: 5%; left: 80%; }
+.sports-item:nth-child(20) { top: 15%; left: 30%; }
 
 /* Main container */
 .container {
@@ -304,6 +125,25 @@ body {
   max-width: 600px;
   text-align: center;
   animation: fadeIn 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(0, 191, 255, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  z-index: -1;
 }
 
 @keyframes fadeIn {
@@ -516,6 +356,206 @@ body {
   }
 }
 
+/* Dashboard styles */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 25px;
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+  border-radius: 15px;
+  padding: 15px 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+}
+
+.header-icon {
+  cursor: pointer;
+  padding: 10px;
+  /* Ensure perfect circle shape */
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+  /* Make sure the element is perfectly square */
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon:hover {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  transform: scale(1.1);
+}
+
+/* Main content styles */
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px 0;
+}
+
+/* Profile view styles */
+.profile-card {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+}
+
+.profile-header {
+  margin-bottom: 25px;
+}
+
+.profile-avatar {
+  margin: 0 auto 15px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+}
+
+.profile-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 10px 0 5px;
+  color: var(--white);
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.profile-username {
+  font-size: 1.1rem;
+  color: var(--light-gray);
+  margin: 0 0 15px;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-item .stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+  color: var(--white);
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-item .stat-label {
+  font-size: 0.9rem;
+  color: var(--light-gray);
+  margin: 0;
+}
+
+.profile-details {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-item {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item h4 {
+  font-size: 1.2rem;
+  color: var(--white);
+  margin-bottom: 15px;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.detail-item p {
+  font-size: 1rem;
+  color: var(--light-gray);
+  margin: 8px 0;
+}
+
+/* Progress bar */
+.progress-container {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.progress-bar {
+  height: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .glass-panel {
@@ -552,6 +592,23 @@ body {
     height: 45px;
     font-size: 1rem;
     padding: 12px 25px;
+  }
+  
+  .dashboard-header {
+    padding: 10px 0;
+  }
+  
+  .dashboard-title {
+    font-size: 1.3rem;
+  }
+  
+  .profile-name {
+    font-size: 1.5rem;
+  }
+  
+  .profile-stats {
+    flex-direction: column;
+    gap: 15px;
   }
 }
 
@@ -595,5 +652,30 @@ body {
   .telegram-icon {
     width: 20px;
     height: 20px;
+  }
+  
+  .dashboard-header {
+    padding: 8px 0;
+  }
+  
+  .dashboard-title {
+    font-size: 1.1rem;
+  }
+  
+  .profile-name {
+    font-size: 1.3rem;
+  }
+  
+  .profile-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .stat-item .stat-value {
+    font-size: 1.3rem;
+  }
+  
+  .stat-item .stat-label {
+    font-size: 0.8rem;
   }
 }
