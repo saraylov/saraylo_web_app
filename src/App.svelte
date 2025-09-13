@@ -3,80 +3,79 @@
   import './app.css';
   
   /** @type {boolean} */
-  let isAuthorized = false;
+  let isAuthorized = true; // Временно установим в true для обхода авторизации
   /** @type {string} */
   let authStatus = '';
   /** @type {boolean} */
   let isLoading = false;
   /** @type {{id?: number, first_name: string, last_name?: string, username?: string} | null} */
-  let userData = null;
+  let userData = {
+    id: 123456789,
+    first_name: 'Тестовый',
+    last_name: 'Пользователь',
+    username: 'testuser'
+  };
   /** @type {string} */
-  let currentView = 'login'; // 'login' or 'dashboard'
+  let currentView = 'dashboard'; // Всегда показываем dashboard
   /** @type {boolean} */
   let showTelegramWidget = false;
   
-  // Handle Telegram authorization callback
-  function onTelegramAuth(user) {
-    console.log('Telegram user authenticated:', user);
-    isAuthorized = true;
-    userData = user;
-    authStatus = `Добро пожаловать, ${user.first_name}!`;
-    // Switch to dashboard view
-    currentView = 'dashboard';
-    // Update URL without page reload
-    history.pushState({}, '', '/dashboard');
-  }
-  
   // Handle logout
   function handleLogout() {
-    isAuthorized = false;
-    userData = null;
-    currentView = 'login';
-    authStatus = 'Production by V Saraylo';
-    showTelegramWidget = false;
-    // Update URL without page reload
-    history.pushState({}, '', '/');
+    // Временно отключим logout
+    console.log('Logout temporarily disabled');
   }
   
-  // Test authorization function
-  function testAuthorization() {
-    // Simulate Telegram user data
-    const testUser = {
-      id: 123456789,
-      first_name: 'Тестовый',
-      last_name: 'Пользователь',
-      username: 'testuser',
-      language_code: 'ru'
-    };
-    
-    // Trigger the same logic as Telegram authorization
-    onTelegramAuth(testUser);
+  // Handle add button click
+  function handleAddClick() {
+    console.log('Add button clicked');
+    // TODO: Implement add functionality
+  }
+  
+  // Handle details button click
+  function handleDetailsClick() {
+    console.log('Details button clicked');
+    // TODO: Implement details functionality
+  }
+  
+  // Handle popstate events for browser navigation
+  function handlePopState() {
+    currentView = 'dashboard';
   }
   
   // Initialize
   onMount(() => {
-    // Add event listener for Telegram authentication
-    const handleTelegramAuthEvent = (event) => {
-      onTelegramAuth(event.detail);
-    };
+    // Add event listener for browser navigation (back/forward buttons)
+    window.addEventListener('popstate', handlePopState);
     
-    window.addEventListener('telegramAuth', handleTelegramAuthEvent);
-    
-    // Check if we should show the dashboard
-    if (window.location.pathname === '/dashboard' && userData) {
-      currentView = 'dashboard';
-    }
+    // Always show dashboard
+    currentView = 'dashboard';
     authStatus = 'Production by V Saraylo';
     
-    // Cleanup event listener
+    // Cleanup event listeners
     return () => {
-      window.removeEventListener('telegramAuth', handleTelegramAuthEvent);
+      window.removeEventListener('popstate', handlePopState);
     };
   });
+  
+  // Watch for changes in showTelegramWidget
+  $: if (showTelegramWidget) {
+    // Temporarily disabled since loadTelegramWidget function is not defined
+  }
   
   // Function to trigger Telegram Login Widget
   function handleTelegramAuth() {
     showTelegramWidget = true;
+  }
+  
+  // Handle training button click
+  function handleTrainingClick() {
+    currentView = 'training';
+  }
+  
+  // Handle back to dashboard from training
+  function handleBackToDashboard() {
+    currentView = 'dashboard';
   }
 </script>
 
@@ -130,53 +129,20 @@
       <div class="auth-section">
         <p class="production-info-static"><strong>Добро пожаловать</strong></p>
         
-        <!-- Telegram Login Button -->
-        {#if !showTelegramWidget}
-          <button 
-            class="telegram-auth-button" 
-            on:click={handleTelegramAuth}
-            disabled={isLoading || isAuthorized}
-            aria-label="Авторизоваться через Telegram"
-          >
-            {#if isLoading}
-              <div class="loading-spinner"></div>
-            {:else}
-              <svg class="telegram-icon" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-              </svg>
-              <span>Авторизоваться через Telegram</span>
-            {/if}
-          </button>
-          
-          <!-- Test Authorization Button -->
-          <button 
-            class="telegram-auth-button" 
-            on:click={testAuthorization}
-            style="margin-top: 10px; background: rgba(0, 255, 0, 0.1); border-color: #00FF00;"
-            aria-label="Тестовая авторизация"
-          >
-            <span>Тестовая авторизация</span>
-          </button>
-        {:else}
-          <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="Saraylo_bot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-        {/if}
+        <!-- Простая кнопка для перехода к dashboard -->
+        <button 
+          class="telegram-auth-button" 
+          on:click={() => currentView = 'dashboard'}
+          aria-label="Перейти к статистике"
+        >
+          <span>Перейти к статистике</span>
+        </button>
         
-        {#if authStatus}
-          <p class="auth-status">{authStatus}</p>
-        {/if}
-        
-        {#if isAuthorized && userData}
-          <div class="user-info">
-            <p>Вы вошли как: {userData.first_name} {userData.last_name || ''}</p>
-            {#if userData.username}
-              <p>Username: @{userData.username}</p>
-            {/if}
-          </div>
-        {/if}
+        <p class="auth-status">Production by V Saraylo</p>
       </div>
     </div>
   </div>
-{:else}
+{:else if currentView === 'dashboard'}
   <!-- Dashboard view -->
   <div class="background-animation">
     <!-- 20 sports items -->
@@ -223,10 +189,42 @@
       
       <!-- Main content -->
       <div class="dashboard-main">
-        <!-- Central shield with "БЕГ" -->
+        <!-- Central shield with "БЕГ" and achievement badges replaced with image -->
         <div class="central-shield">
           <div class="shield-content">
-            <h2>БЕГ</h2>
+            <div class="shield-top">
+              <div class="octagon-container">
+                <div class="outer-octagon"></div>
+                <div class="inner-octagon"></div>
+                <span class="octagon-text">БЕГ</span>
+              </div>
+            </div>
+            <div class="shield-bottom">
+              <!-- Achievement levels inside shield -->
+              <div class="achievement-section">
+                <h3 class="achievement-title">Все беговые уровни</h3>
+                <div class="achievement-badges">
+                  <div class="badge" style="background-color: #4CAF50;">
+                    <span class="badge-text">0</span>
+                  </div>
+                  <div class="badge" style="background-color: #8BC34A;">
+                    <span class="badge-text">50</span>
+                  </div>
+                  <div class="badge" style="background-color: #CDDC39;">
+                    <span class="badge-text">250</span>
+                  </div>
+                  <div class="badge" style="background-color: #FFEB3B;">
+                    <span class="badge-text">1K</span>
+                  </div>
+                  <div class="badge dimmed" style="background-color: #FF9800;">
+                    <span class="badge-text">2,5K</span>
+                  </div>
+                  <div class="badge dimmed" style="background-color: #F44336;">
+                    <span class="badge-text">5K</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -242,31 +240,6 @@
         <div class="current-level">
           <p class="level-text">Текущий уровень</p>
           <h3 class="level-name">ЗЕЛЕНЫЙ</h3>
-        </div>
-        
-        <!-- Achievement levels -->
-        <div class="achievement-section">
-          <h3 class="achievement-title">Все беговые уровни</h3>
-          <div class="achievement-badges">
-            <div class="badge" style="background-color: #4CAF50;">
-              <span class="badge-text">0</span>
-            </div>
-            <div class="badge" style="background-color: #8BC34A;">
-              <span class="badge-text">50</span>
-            </div>
-            <div class="badge" style="background-color: #CDDC39;">
-              <span class="badge-text">250</span>
-            </div>
-            <div class="badge" style="background-color: #FFEB3B;">
-              <span class="badge-text">1K</span>
-            </div>
-            <div class="badge" style="background-color: #FF9800;">
-              <span class="badge-text">2,5K</span>
-            </div>
-            <div class="badge" style="background-color: #F44336;">
-              <span class="badge-text">5K</span>
-            </div>
-          </div>
         </div>
         
         <!-- Coffee button -->
@@ -305,7 +278,7 @@
             <span>Здоровье</span>
           </div>
           <div class="nav-item nav-item-center">
-            <div class="circle-button">
+            <div class="circle-button" on:click={handleTrainingClick}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
                 <path d="M19.4 15C19.2667 15.4 18.9 16 18 16.5C17.1 17 16.0667 17.2667 15 17.3C13.9333 17.2667 12.9 17 12 16.5C11.1 16 10.7333 15.4 10.6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -338,7 +311,7 @@
           <button 
             class="telegram-auth-button" 
             on:click={handleLogout}
-            style="background: rgba(255, 0, 0, 0.1); border-color: #FF0000;"
+            style="background: rgba(255, 0, 0, 0.1);"
           >
             Выйти
           </button>
@@ -346,36 +319,237 @@
       </div>
     </div>
   </div>
+{:else if currentView === 'training'}
+  <!-- Training view -->
+  <div class="background-animation">
+    <!-- 20 sports items -->
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+    <div class="sports-item football"></div>
+    <div class="sports-item basketball"></div>
+    <div class="sports-item sneakers"></div>
+    <div class="sports-item shorts"></div>
+    <div class="sports-item tshirt"></div>
+  </div>
+
+  <div class="container">
+    <div class="glass-panel">
+      <!-- Header -->
+      <div class="dashboard-header">
+        <div class="header-icon" on:click={handleBackToDashboard}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="dashboard-title">Тренировка</h1>
+        <div class="header-icon">
+          <!-- Empty icon placeholder -->
+        </div>
+      </div>
+      
+      <!-- Training content -->
+      <div class="dashboard-main">
+        <div class="central-shield">
+          <div class="shield-content">
+            <div class="shield-top">
+              <div class="octagon-container">
+                <div class="outer-octagon"></div>
+                <div class="inner-octagon"></div>
+                <span class="octagon-text">БЕГ</span>
+              </div>
+            </div>
+            <div class="shield-bottom">
+              <div class="training-info">
+                <h3 class="training-title">Начать тренировку</h3>
+                <p class="training-description">Готовы к новой тренировке? Нажмите кнопку ниже, чтобы начать.</p>
+                <button class="start-training-button">
+                  Начать тренировку
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Training stats -->
+        <div class="training-stats">
+          <div class="stat-card">
+            <h4>Время</h4>
+            <p class="stat-value">00:00:00</p>
+          </div>
+          <div class="stat-card">
+            <h4>Дистанция</h4>
+            <p class="stat-value">0.0 км</p>
+          </div>
+          <div class="stat-card">
+            <h4>Темп</h4>
+            <p class="stat-value">0:00 / км</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {/if}
 
 <style>
+  /* Main title */
+  .main-title {
+    font-size: 4rem;
+    font-weight: 800;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% 200%;
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+    color: var(--light-gray);
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 500;
+  }
+  
+  /* Description */
+  .description {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--light-gray);
+  }
+  
+  .description p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+  
+  /* Auth section */
+  .auth-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .production-info-static {
+    font-size: 1.2rem;
+    color: var(--light-gray);
+    margin-bottom: 10px;
+  }
+  
+  .telegram-auth-button {
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .telegram-auth-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+  }
+  
+  .telegram-auth-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .auth-status {
+    font-size: 1rem;
+    color: var(--light-gray);
+    text-align: center;
+  }
+  
   /* Dashboard styles */
   .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
-    margin-bottom: 20px;
+    padding: 20px 0;
+    margin-bottom: 25px;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+    border-radius: 15px;
+    padding: 15px 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .dashboard-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.8rem;
+    font-weight: 800;
     background: var(--gradient-border);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
   }
   
   .header-icon {
     cursor: pointer;
-    padding: 8px;
+    padding: 10px;
+    /* Ensure perfect circle shape */
     border-radius: 50%;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+    /* Make sure the element is perfectly square */
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-icon:hover {
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    transform: scale(1.1);
   }
   
-  .header-icon:hover {
-    background: rgba(255, 255, 255, 0.1);
+  /* Circle button styles */
+  .circle-button {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .circle-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 191, 255, 0.6);
   }
   
   /* Main content styles */
@@ -389,39 +563,276 @@
   
   /* Central shield */
   .central-shield {
-    width: 200px;
-    height: 200px;
-    background: conic-gradient(
-      from 0deg,
-      var(--primary-blue),
-      var(--primary-pink),
-      var(--primary-blue)
-    );
-    border-radius: 50%;
+    width: 100%;
+    max-width: 500px;
+    height: 400px;
+    border-radius: 15px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+    padding: 15px;
+    box-sizing: border-box;
+    margin-bottom: 50px;
+    /* Create a border effect using Miami Hit colors */
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    border: none;
+    padding: 3px;
   }
   
   .shield-content {
-    width: 170px;
-    height: 170px;
-    background: var(--deep-black);
-    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    background: linear-gradient(135deg, #000000, #333333);
+  }
+  
+  .shield-top {
+    height: 66.66%; /* 2/3 of the space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-blue), #0080FF);
+    border-radius: 9px 9px 0 0;
+  }
+  
+  .shield-bottom {
+    height: 33.33%; /* 1/3 of the space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(34, 34, 34, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 0 0 9px 9px;
+  }
+  
+  .shield-content h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+  }
+  
+  /* Octagon container and elements */
+  .octagon-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   
-  .shield-content h2 {
+  .outer-octagon {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    border: 3px solid #000000;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    box-sizing: border-box;
+  }
+  
+  .inner-octagon {
+    position: absolute;
+    width: 95%; /* Increased from 85% */
+    height: 95%; /* Increased from 85% */
+    /* Create Italian plaster texture effect */
+    background: 
+      /* Base color */
+      linear-gradient(135deg, #4CAF50, #388E3C),
+      /* Texture overlay */
+      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 1px, transparent 2px),
+      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.05) 1px, transparent 2px),
+      linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+      linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+    background-size: 
+      100% 100%,
+      20px 20px,
+      30px 30px,
+      50px 50px,
+      50px 50px;
+    background-position: 
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      25px 25px;
+    border: 2px solid #000000;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    box-sizing: border-box;
+    z-index: 1;
+    overflow: hidden;
+    animation: medalShimmer 4s infinite;
+  }
+  
+  .octagon-text {
+    position: relative;
     font-size: 2.5rem;
+    font-weight: 800;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    z-index: 2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: pulse 2s infinite;
+  }
+  
+  /* Remove the old pentagon-text styles */
+  .pentagon-text {
+    display: none;
+  }
+  
+  .pentagon-text::before {
+    display: none;
+  }
+  
+  /* Achievement section inside shield */
+  .achievement-section {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .achievement-title {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: var(--light-gray);
+    font-weight: 600;
+  }
+  
+  .achievement-badges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 10px 0;
+  }
+  
+  .badge {
+    width: 40px;
+    height: 40px;
+    /* Change from circle to octagon */
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 700;
-    background: var(--gradient-border);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+    border: 2px solid #000000; /* Changed from white to black */
+    /* Create octagon shape using clip-path */
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  }
+  
+  /* Style each badge with appropriate colors */
+  .badge:nth-child(1) { background: #4CAF50; } /* 0 - Green */
+  .badge:nth-child(2) { background: #8BC34A; } /* 50 - Light Green */
+  .badge:nth-child(3) { background: #CDDC39; } /* 250 - Lime */
+  .badge:nth-child(4) { background: #FFEB3B; } /* 1K - Yellow */
+  .badge:nth-child(5) { background: #FF9800; } /* 2.5K - Orange */
+  .badge:nth-child(6) { background: var(--primary-pink); } /* 5K - Pink */
+  
+  .badge:hover {
+    transform: scale(1.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .badge-text {
+    font-size: 0.7rem;
+    color: #000000;
+    font-weight: 800;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Animation keyframes */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+  
+  @keyframes medalShimmer {
+    0% { 
+      background-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    10% {
+      background-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    20% {
+      background-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    25% {
+      background-color: #4CAF50;
+      box-shadow: -10px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    30% {
+      background-color: #4CAF50;
+      box-shadow: -5px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    40% {
+      background-color: #4CAF50;
+      box-shadow: 5px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    50% {
+      background-color: #4CAF50;
+      box-shadow: 10px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    60% {
+      background-color: #4CAF50;
+      box-shadow: 5px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    70% {
+      background-color: #4CAF50;
+      box-shadow: -5px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    75% {
+      background-color: #4CAF50;
+      box-shadow: -10px 0 15px rgba(255, 255, 255, 0.6);
+    }
+    80% {
+      background-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    90% {
+      background-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    100% { 
+      background-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
   }
   
   /* Progress bar */
@@ -432,95 +843,102 @@
   }
   
   .progress-bar {
-    height: 20px;
+    height: 25px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     margin-bottom: 10px;
-    border: 1px solid var(--glass-border);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
   .progress-fill {
     height: 100%;
-    background: var(--gradient-border);
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
     border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
   }
   
   .progress-text {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   }
   
   /* Current level */
   .current-level {
     text-align: center;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    padding: 15px 30px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   }
   
   .level-text {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--light-gray);
     margin-bottom: 5px;
+    font-weight: 500;
   }
   
   .level-name {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-blue);
-  }
-  
-  /* Achievement section */
-  .achievement-section {
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-  }
-  
-  .achievement-title {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    color: var(--light-gray);
-  }
-  
-  .achievement-badges {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  
-  .badge {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .badge-text {
-    font-size: 0.8rem;
+    font-size: 2rem;
+    font-weight: 800;
+    /* Use Miami Hit pink color for the level name */
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+    letter-spacing: 1px;
   }
   
   /* Coffee button */
   .coffee-button {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: rgba(139, 69, 19, 0.2);
-    border: 2px solid #D2691E;
-    border-radius: 12px;
-    padding: 12px 24px;
-    color: #D2691E;
-    font-weight: 600;
+    gap: 12px;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, var(--deep-black), #333333);
+    border: 2px solid var(--primary-pink);
+    border-radius: 15px;
+    padding: 15px 30px;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   }
   
   .coffee-button:hover {
-    background: rgba(139, 69, 19, 0.3);
-    transform: scale(1.05);
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, #333333, var(--deep-black));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    border-color: var(--primary-blue);
+  }
+  
+  .coffee-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
   /* Training date */
@@ -528,27 +946,42 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.1));
+    padding: 15px 25px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .training-date p {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--light-gray);
+    font-weight: 500;
   }
   
   .details-button {
-    background: transparent;
-    border: 2px solid var(--primary-blue);
-    border-radius: 8px;
-    padding: 8px 16px;
-    color: var(--primary-blue);
-    font-weight: 600;
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
   .details-button:hover {
-    background: rgba(0, 191, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(90deg, var(--primary-pink), var(--primary-blue));
+  }
+  
+  .details-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   
   /* Bottom panel */
@@ -556,42 +989,50 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 15px 10px;
-    background: rgba(255, 255, 255, 0.1);
+    padding: 20px 15px;
+    /* Updated to use Miami Hit color scheme */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    width: 100%;
-    margin-top: 20px;
+    border-radius: 25px;
   }
   
   .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     cursor: pointer;
     color: var(--light-gray);
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 10px;
   }
   
   .nav-item:hover {
     color: var(--white);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
   }
   
   .nav-item-center {
-    margin-top: -30px;
+    margin-top: -40px;
   }
   
   .circle-button {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    background: var(--gradient-border);
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
+    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .circle-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 20, 147, 0.6);
   }
   
   /* Component-specific styles */
@@ -687,36 +1128,110 @@
     .shield-content h2 {
       font-size: 1.5rem;
     }
-    
-    .progress-container {
-      max-width: 300px;
-    }
-    
-    .achievement-badges {
-      gap: 5px;
-    }
-    
-    .badge {
-      width: 35px;
-      height: 35px;
-    }
-    
-    .badge-text {
-      font-size: 0.7rem;
-    }
-    
-    .coffee-button {
-      padding: 10px 20px;
-      font-size: 0.9rem;
-    }
-    
-    .nav-item span {
-      font-size: 0.7rem;
-    }
-    
-    .circle-button {
-      width: 45px;
-      height: 45px;
-    }
+  }
+  
+  /* Dimmed effect for unreached levels */
+  .badge.dimmed {
+    opacity: 0.6;
+    filter: grayscale(100%) brightness(0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7), 
+                inset 0 0 10px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    border-color: #333333;
+  }
+  
+  .badge.dimmed .badge-text {
+    color: #999999;
+    text-shadow: none;
+  }
+  
+  /* Note: The 'dimmed' class is applied to badge elements that represent unreached achievement levels */
+  
+  /* Training view styles */
+  .training-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .training-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--white);
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .training-description {
+    font-size: 1rem;
+    color: var(--light-gray);
+    margin-bottom: 25px;
+    line-height: 1.5;
+  }
+  
+  .start-training-button {
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  .start-training-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+  }
+  
+  .start-training-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .training-stats {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 500px;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .stat-card {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    flex: 1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .stat-card h4 {
+    font-size: 0.9rem;
+    color: var(--light-gray);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
   }
 </style>

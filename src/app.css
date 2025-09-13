@@ -407,7 +407,6 @@ body {
   padding: 20px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px dashed var(--glass-border);
   max-width: 300px;
 }
 
@@ -428,7 +427,6 @@ body {
   padding: 15px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
   width: 100%;
 }
 
@@ -441,7 +439,6 @@ body {
 /* Buttons */
 .telegram-auth-button {
   background: transparent;
-  border: 2px solid transparent;
   border-radius: 12px;
   padding: 15px 30px;
   font-size: 1.1rem;
@@ -508,9 +505,8 @@ body {
 .loading-spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: var(--white);
+  background: conic-gradient(transparent, var(--white));
   animation: spin 1s linear infinite;
 }
 
