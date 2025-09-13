@@ -324,21 +324,18 @@
           <div class="rings-legend">
             <div class="legend-item">
               <div class="legend-color" style="background-color: {activityData.move.color};"></div>
-              <span class="legend-text">Перемещение</span>
+              <span class="legend-text">Затрата</span>
             </div>
             <div class="legend-item">
               <div class="legend-color" style="background-color: {activityData.exercise.color};"></div>
-              <span class="legend-text">Упражнения</span>
+              <span class="legend-text">Нагрузка</span>
             </div>
             <div class="legend-item">
               <div class="legend-color" style="background-color: {activityData.stand.color};"></div>
-              <span class="legend-text">Стояние</span>
+              <span class="legend-text">Сон</span>
             </div>
           </div>
-        </div>
-        
-        <!-- Expanded panel with progress bar -->
-        <div class="expanded-progress-panel">
+          
           <!-- Progress bar -->
           <div class="progress-container">
             <div class="progress-bar">
@@ -346,12 +343,8 @@
             </div>
             <p class="progress-text">2900 / 50000 шагов</p>
           </div>
-        </div>
-        
-        <!-- Current level -->
-        <div class="current-level">
-          <p class="level-text">Текущий уровень</p>
-          <h3 class="level-name">ЗЕЛЕНЫЙ</h3>
+          
+
         </div>
         
         <!-- Coffee button -->
@@ -416,7 +409,7 @@
           </div>
           <div class="nav-item nav-item-center">
             <div 
-              class="circle-button" 
+              class="circle-button {currentView === 'training' ? 'training-mode' : ''}" 
               on:click={handleTrainingClick}
               on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
               role="button"
@@ -940,7 +933,7 @@
     justify-content: space-around;
     flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
   }
   
   .ring-container {
@@ -983,15 +976,18 @@
   
   .rings-legend {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 80px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    margin-left: -15px;
   }
   
   .legend-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 13px;
   }
   
   .legend-color {

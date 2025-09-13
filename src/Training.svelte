@@ -60,10 +60,6 @@
     <div class="dashboard-main">
       <div class="central-shield">
         <div class="shield-content">
-          <div class="shield-top">
-            <div class="octagon-container">
-            </div>
-          </div>
         </div>
       </div>
       
@@ -115,7 +111,7 @@
         </div>
         <div class="nav-item nav-item-center">
           <div 
-            class="circle-button" 
+            class="circle-button training-mode" 
             on:click={handleTrainingClick}
             on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
             role="button"
