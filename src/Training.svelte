@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // Handle back to dashboard
   export let handleBackToDashboard;
   
@@ -7,6 +7,116 @@
   export let handleTrainingClick;
   export let handleDevicesClick;
   export let handleProfileClick;
+  
+  // Mapbox integration
+  import mapboxgl from 'mapbox-gl';
+  import { onMount } from 'svelte';
+  
+  let mapContainer;
+  let map;
+  let marker;
+  
+  // Sample coordinates for real-time tracking (initial position)
+  let currentPosition = [30.3158, 59.9343]; // St. Petersburg coordinates as example
+  
+  // Path coordinates (simulating a running route)
+  let pathCoordinates = [
+    [30.3158, 59.9343],
+    [30.3168, 59.9345],
+    [30.3178, 59.9347],
+    [30.3188, 59.9349],
+    [30.3198, 59.9351]
+  ];
+  
+  onMount(() => {
+    try {
+      // Initialize Mapbox map
+      mapboxgl.accessToken = 'pk.eyJ1Ijoia29tbXVuMTV0IiwiYSI6ImNtZmk1ZzlsNTBoejAybHF3ejR6bjEwZ3oifQ.GHO6tJYDnc03P7fxUshk8A';
+      
+      if (!mapContainer) {
+        console.error('Map container not found');
+        return;
+      }
+      
+      map = new mapboxgl.Map({
+        container: mapContainer,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: currentPosition,
+        zoom: 14
+      });
+      
+      // Add navigation controls
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      
+      // Add geolocate control
+      map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true,
+          showUserHeading: true
+        })
+      );
+      
+      // Add the path line to the map
+      map.on('load', () => {
+        map.addSource('route', {
+          'type': 'geojson',
+          'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+              'type': 'LineString',
+              'coordinates': pathCoordinates
+            }
+          }
+        });
+        
+        map.addLayer({
+          'id': 'route',
+          'type': 'line',
+          'source': 'route',
+          'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          'paint': {
+            'line-color': '#00BFFF',
+            'line-width': 4
+          }
+        });
+        
+        // Add a marker for the current position
+        marker = new mapboxgl.Marker({ color: '#FF1493' })
+          .setLngLat(currentPosition)
+          .addTo(map);
+      });
+      
+      // Simulate real-time tracking updates
+      const updatePosition = () => {
+        // In a real app, this would come from GPS/location services
+        // For demo purposes, we'll just move the marker along the path
+        const nextIndex = (pathCoordinates.findIndex(coord => 
+          coord[0] === currentPosition[0] && coord[1] === currentPosition[1]) + 1) % pathCoordinates.length;
+        
+        currentPosition = pathCoordinates[nextIndex];
+        
+        if (marker) {
+          marker.setLngLat(currentPosition);
+        }
+        
+        if (map) {
+          map.setCenter(currentPosition);
+        }
+      };
+      
+      // Update position every 3 seconds (simulating real-time tracking)
+      setInterval(updatePosition, 3000);
+    } catch (error) {
+      console.error('Error initializing Mapbox map:', error);
+    }
+  });
 </script>
 
 <div class="background-animation">
@@ -59,7 +169,7 @@
     <!-- Training content -->
     <div class="dashboard-main">
       <div class="central-shield">
-        <div class="shield-content">
+        <div class="shield-content" bind:this={mapContainer}>
         </div>
       </div>
       
@@ -163,5 +273,54 @@
 </div>
 
 <style>
-  /* All styles are now in app.css */
+  /* Map container styles */
+  .shield-content {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    background: linear-gradient(135deg, #000000, #333333);
+    /* Ensure the map fills the container */
+    min-height: 300px;
+  }
+  
+  /* Ensure the map container fills the shield content area */
+  .shield-content > div {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Make sure the map fills the entire shield content area */
+  .shield-content :global(.mapboxgl-map) {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+  }
+  
+  /* Style for the geolocate control */
+  .shield-content :global(.mapboxgl-ctrl-group) {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .shield-content :global(.mapboxgl-ctrl-group button) {
+    background: transparent;
+    color: white;
+  }
+  
+  .shield-content :global(.mapboxgl-ctrl-group button:hover) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Style for navigation controls */
+  .shield-content :global(.mapboxgl-ctrl-group:not(:empty)) {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* All other styles are now in app.css */
 </style>
