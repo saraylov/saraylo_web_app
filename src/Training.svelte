@@ -214,7 +214,7 @@
   </div>
   
   <!-- Bottom navigation panel -->
-  <div class="bottom-panel">
+  <div class="bottom-panel s-XsEmFtvddWTw">
     <div 
       class="nav-item"
       on:click={handleBackToDashboard}
@@ -286,14 +286,14 @@
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 12px;
+    border-radius: clamp(8px, 2vw, 15px);
     display: flex;
     flex-direction: column;
     padding: 0;
     position: relative;
     background: linear-gradient(135deg, #000000, #333333);
     /* Ensure the map fills the container */
-    min-height: 300px;
+    min-height: clamp(250px, 50vh, 500px);
   }
   
   /* Training stats overlay */
@@ -304,34 +304,45 @@
     transform: translate(-50%, -50%);
     z-index: 10;
     width: 100%;
-    max-width: 500px;
-    padding: 0 20px;
+    max-width: min(100%, clamp(280px, 90vw, 600px));
+    padding: 0 clamp(10px, 2vw, 25px);
+    box-sizing: border-box;
   }
   
   .training-stats {
     display: flex;
-    justify-content: space-around;
-    gap: 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: clamp(8px, 2vw, 15px);
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+    border-radius: clamp(10px, 2vw, 20px);
+    padding: clamp(12px, 2vw, 20px);
+    border: clamp(1px, 0.2vw, 2px) solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 clamp(5px, 1vw, 10px) clamp(15px, 2vw, 35px) rgba(0, 191, 255, 0.2);
+    box-sizing: border-box;
+    width: 100%;
   }
   
   .stat-card {
     text-align: center;
+    padding: clamp(8px, 2vw, 15px);
+    min-height: clamp(60px, 10vh, 100px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
   }
   
   .stat-card h4 {
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
     color: var(--light-gray);
-    margin-bottom: 5px;
+    margin-bottom: clamp(3px, 1vw, 8px);
   }
   
   .stat-value {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.5rem);
     font-weight: 700;
     color: var(--white);
     background: var(--gradient-border);
@@ -350,14 +361,14 @@
   .shield-content :global(.mapboxgl-map) {
     width: 100%;
     height: 100%;
-    border-radius: 12px;
+    border-radius: clamp(8px, 2vw, 15px);
   }
   
   /* Style for the geolocate control */
   .shield-content :global(.mapboxgl-ctrl-group) {
     background: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: clamp(5px, 1vw, 10px);
+    border: clamp(1px, 0.1vw, 2px) solid rgba(255, 255, 255, 0.2);
   }
   
   .shield-content :global(.mapboxgl-ctrl-group button) {
@@ -371,8 +382,106 @@
   
   /* Style for navigation controls */
   .shield-content :global(.mapboxgl-ctrl-group:not(:empty)) {
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 clamp(1px, 0.1vw, 3px) rgba(0, 0, 0, 0.1);
   }
   
-  /* All other styles are now in app.css */
+  /* Responsive design for Training component */
+  @media (max-width: 768px) {
+    .shield-content {
+      min-height: clamp(200px, 45vh, 400px);
+      border-radius: clamp(6px, 2.5vw, 12px);
+    }
+    
+    .training-stats-overlay {
+      max-width: min(100%, clamp(250px, 95vw, 500px));
+      padding: 0 clamp(8px, 3vw, 20px);
+    }
+    
+    .training-stats {
+      grid-template-columns: 1fr;
+      gap: clamp(6px, 2.5vw, 12px);
+      padding: clamp(10px, 2.5vw, 15px);
+      border-radius: clamp(8px, 2.5vw, 15px);
+    }
+    
+    .stat-card {
+      min-height: clamp(50px, 8vh, 80px);
+      padding: clamp(6px, 2vw, 12px);
+    }
+    
+    .stat-card h4 {
+      font-size: clamp(0.7rem, 2.2vw, 0.9rem);
+      margin-bottom: clamp(2px, 1vw, 5px);
+    }
+    
+    .stat-value {
+      font-size: clamp(0.9rem, 3.2vw, 1.3rem);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .shield-content {
+      min-height: clamp(180px, 40vh, 350px);
+      border-radius: clamp(5px, 3vw, 10px);
+    }
+    
+    .training-stats-overlay {
+      max-width: min(100%, clamp(220px, 98vw, 400px));
+      padding: 0 clamp(5px, 3.5vw, 15px);
+    }
+    
+    .training-stats {
+      grid-template-columns: 1fr;
+      gap: clamp(5px, 3vw, 10px);
+      padding: clamp(8px, 3vw, 12px);
+      border-radius: clamp(6px, 3vw, 12px);
+    }
+    
+    .stat-card {
+      min-height: clamp(45px, 10vh, 70px);
+      padding: clamp(5px, 2.5vw, 10px);
+    }
+    
+    .stat-card h4 {
+      font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+      margin-bottom: clamp(1px, 1vw, 3px);
+    }
+    
+    .stat-value {
+      font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+    }
+  }
+  
+  /* Large screens */
+  @media (min-width: 1200px) {
+    .shield-content {
+      min-height: clamp(300px, 55vh, 600px);
+      border-radius: clamp(10px, 1.5vw, 20px);
+    }
+    
+    .training-stats-overlay {
+      max-width: min(100%, clamp(400px, 70vw, 800px));
+    }
+    
+    .training-stats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(15px, 1vw, 25px);
+      padding: clamp(20px, 1.5vw, 30px);
+      border-radius: clamp(15px, 1.5vw, 25px);
+    }
+    
+    .stat-card {
+      min-height: clamp(80px, 12vh, 120px);
+      padding: clamp(15px, 1vw, 25px);
+    }
+    
+    .stat-card h4 {
+      font-size: clamp(1rem, 1.2vw, 1.3rem);
+      margin-bottom: clamp(5px, 0.5vw, 10px);
+    }
+    
+    .stat-value {
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+    }
+  }
 </style>

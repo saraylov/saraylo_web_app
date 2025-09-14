@@ -1,7 +1,7 @@
 /* Import Mapbox CSS */
 @import 'mapbox-gl/dist/mapbox-gl.css';
 
-/* Global variables for Miami Hit color scheme */
+/* Global variables for Miami Hit color scheme - Updated with responsive units */
 :root {
   --primary-blue: #00BFFF;
   --primary-pink: #FF1493;
@@ -14,18 +14,23 @@
   --gradient-bg: linear-gradient(135deg, #000033, #33001a);
   --gradient-border: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
   
+  /* Responsive sizing variables using viewport units */
+  --base-font-size: clamp(14px, 2.5vw, 18px);
+  --container-padding: clamp(10px, 3vw, 40px);
+  --container-margin: clamp(5px, 2vw, 30px);
+  --border-radius: clamp(10px, 2.5vw, 25px);
+  --element-spacing: clamp(10px, 2vw, 30px);
+  --touch-target-min: clamp(44px, 8vw, 56px);
+  --header-height: clamp(50px, 10vw, 80px);
+  
   /* Safe area variables for mobile devices */
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-right: env(safe-area-inset-right);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
-  
-  /* Touch target sizes for better mobile experience */
-  --touch-target-min: 48px;
-  --touch-target-comfortable: 56px;
 }
 
-/* Reset and base styles */
+/* Reset and base styles - Improved responsive typography */
 * {
   margin: 0;
   padding: 0;
@@ -42,6 +47,401 @@ body {
   padding-right: var(--safe-area-inset-right);
   padding-bottom: var(--safe-area-inset-bottom);
   padding-left: var(--safe-area-inset-left);
+  font-size: var(--base-font-size);
+  line-height: 1.5;
+}
+
+/* App container - improved responsive container with proportional sizing */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  padding: var(--container-padding);
+  padding-top: max(var(--container-padding), var(--safe-area-inset-top));
+  padding-bottom: calc(max(var(--container-padding), var(--safe-area-inset-bottom)) + var(--header-height));
+  margin: 0 auto;
+  
+  /* Improve scrolling on mobile devices */
+  -webkit-overflow-scrolling: touch;
+  
+  /* Ensure content doesn't overflow on small screens */
+  box-sizing: border-box;
+  
+  /* Improved responsive behavior */
+  flex: 1;
+  height: auto;
+}
+
+/* Glass panel - responsive with proportional sizing */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: clamp(20px, 4vw, 40px);
+  width: min(100%, clamp(300px, 90vw, 800px));
+  text-align: center;
+  animation: fadeIn 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  
+  /* Ensure proper sizing on all devices */
+  box-sizing: border-box;
+  min-height: calc(100vh - (var(--container-padding) * 2) - var(--header-height));
+  
+  /* Improve performance on mobile devices */
+  will-change: transform;
+}
+
+/* Dashboard main - improved responsive behavior with CSS Grid */
+.dashboard-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--element-spacing);
+  padding: var(--element-spacing) 0;
+  width: 100%;
+  flex: 1;
+  
+  /* Ensure content doesn't overflow */
+  box-sizing: border-box;
+}
+
+/* Activity Rings Container - responsive with proportional sizing */
+.activity-rings-container {
+  width: 100%;
+  max-width: min(100%, clamp(300px, 85vw, 600px));
+  margin: 0 auto var(--element-spacing);
+  padding: clamp(15px, 3vw, 30px);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(5px);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.rings-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(80px, 20vw, 120px), 1fr));
+  gap: clamp(10px, 2vw, 20px);
+  margin-bottom: clamp(5px, 1vw, 15px);
+  justify-items: center;
+}
+
+.ring-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(80px, 20vw, 120px);
+  height: clamp(80px, 20vw, 120px);
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(270deg);
+}
+
+.ring-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-value {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 700;
+  color: var(--white);
+}
+
+.ring-unit {
+  font-size: clamp(0.7rem, 2vw, 0.9rem);
+  color: var(--light-gray);
+}
+
+.rings-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(20px, 5vw, 60px);
+  margin-top: clamp(5px, 1vw, 10px);
+  margin-bottom: clamp(10px, 2vw, 20px);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 0 clamp(5px, 1vw, 15px);
+}
+
+.legend-color {
+  width: clamp(10px, 2vw, 15px);
+  height: clamp(10px, 2vw, 15px);
+  border-radius: 50%;
+  margin-right: clamp(3px, 1vw, 8px);
+}
+
+.legend-text {
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  color: var(--light-gray);
+}
+
+/* Progress bar - responsive sizing */
+.progress-container {
+  width: 100%;
+  max-width: min(100%, clamp(250px, 80vw, 500px));
+  text-align: center;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  height: clamp(20px, 4vw, 30px);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: calc(clamp(8px, 2vw, 15px) / 2);
+  overflow: hidden;
+  margin-bottom: clamp(5px, 1vw, 15px);
+  border: clamp(1px, 0.2vw, 3px) solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 clamp(2px, 0.5vw, 6px) clamp(4px, 1vw, 10px) rgba(0, 0, 0, 0.2);
+}
+
+.progress-text {
+  font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Bottom panel - responsive with proportional sizing */
+.bottom-panel {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  padding: clamp(10px, 2vw, 25px) clamp(8px, 2vw, 20px);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - (var(--container-padding) * 2));
+  max-width: min(100%, clamp(300px, 95vw, 800px));
+  margin: 0 auto;
+  z-index: 1000;
+  padding-bottom: max(clamp(10px, 2vw, 25px), calc(clamp(10px, 2vw, 25px) + var(--safe-area-inset-bottom)));
+  margin-bottom: var(--safe-area-inset-bottom);
+  
+  /* Improve touch accessibility */
+  min-height: var(--touch-target-min);
+  box-sizing: border-box;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 1vw, 10px);
+  cursor: pointer;
+  color: var(--light-gray);
+  transition: all 0.3s ease;
+  padding: clamp(8px, 2vw, 16px);
+  border-radius: clamp(5px, 1vw, 12px);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  justify-content: center;
+  text-align: center;
+}
+
+.nav-item-center {
+  margin-top: calc(clamp(-25px, -4vw, -50px));
+  grid-column: 3;
+}
+
+.circle-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 20px) rgba(0, 191, 255, 0.4);
+  transition: all 0.3s ease;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  margin: 0 auto;
+}
+
+/* Responsive design - Enhanced with viewport units */
+@media (max-width: 768px) {
+  :root {
+    --base-font-size: clamp(12px, 2.8vw, 16px);
+    --container-padding: clamp(8px, 3.5vw, 25px);
+    --border-radius: clamp(8px, 2.8vw, 20px);
+    --element-spacing: clamp(8px, 2.5vw, 20px);
+  }
+  
+  .app-container {
+    padding: var(--container-padding);
+    padding-top: max(var(--container-padding), var(--safe-area-inset-top));
+    padding-bottom: calc(max(var(--container-padding), var(--safe-area-inset-bottom)) + clamp(40px, 8vw, 70px));
+  }
+  
+  .glass-panel {
+    width: min(100%, clamp(280px, 95vw, 600px));
+    padding: clamp(15px, 4vw, 30px);
+    min-height: calc(100vh - (var(--container-padding) * 2) - clamp(40px, 8vw, 70px));
+  }
+  
+  .dashboard-main {
+    gap: var(--element-spacing);
+  }
+  
+  .rings-wrapper {
+    gap: clamp(8px, 2.5vw, 15px);
+  }
+  
+  .rings-legend {
+    gap: clamp(15px, 4vw, 40px);
+  }
+  
+  .bottom-panel {
+    padding: clamp(8px, 2.5vw, 20px) clamp(5px, 2vw, 15px);
+    border-radius: var(--border-radius);
+    width: calc(100% - (var(--container-padding) * 2));
+    padding-bottom: max(clamp(8px, 2.5vw, 20px), calc(clamp(8px, 2.5vw, 20px) + var(--safe-area-inset-bottom)));
+  }
+  
+  .nav-item {
+    padding: clamp(6px, 2vw, 12px);
+    gap: clamp(2px, 1vw, 5px);
+  }
+  
+  .nav-item span {
+    font-size: clamp(0.6rem, 2vw, 0.9rem);
+  }
+  
+  .circle-button {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --base-font-size: clamp(11px, 3vw, 15px);
+    --container-padding: clamp(6px, 4vw, 20px);
+    --element-spacing: clamp(6px, 3vw, 15px);
+  }
+  
+  .app-container {
+    padding: var(--container-padding);
+    padding-top: max(var(--container-padding), var(--safe-area-inset-top));
+    padding-bottom: calc(max(var(--container-padding), var(--safe-area-inset-bottom)) + clamp(35px, 9vw, 60px));
+  }
+  
+  .glass-panel {
+    width: min(100%, clamp(250px, 98vw, 500px));
+    padding: clamp(12px, 5vw, 25px);
+    min-height: calc(100vh - (var(--container-padding) * 2) - clamp(35px, 9vw, 60px));
+  }
+  
+  .activity-rings-container {
+    padding: clamp(12px, 4vw, 25px);
+  }
+  
+  .rings-wrapper {
+    gap: clamp(5px, 3vw, 10px);
+  }
+  
+  .ring-container {
+    width: clamp(70px, 18vw, 100px);
+    height: clamp(70px, 18vw, 100px);
+  }
+  
+  .bottom-panel {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    padding: clamp(6px, 3vw, 15px) clamp(4px, 2.5vw, 10px);
+    width: calc(100% - (var(--container-padding) * 2));
+    padding-bottom: max(clamp(6px, 3vw, 15px), calc(clamp(6px, 3vw, 15px) + var(--safe-area-inset-bottom)));
+  }
+  
+  .nav-item {
+    padding: clamp(5px, 2.5vw, 10px);
+  }
+  
+  .nav-item span {
+    font-size: clamp(0.5rem, 2.2vw, 0.8rem);
+  }
+  
+  .circle-button {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+  }
+  
+  .nav-item-center {
+    margin-top: calc(clamp(-20px, -5vw, -40px));
+  }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  :root {
+    --base-font-size: clamp(16px, 1.2vw, 20px);
+    --container-padding: clamp(30px, 2vw, 50px);
+    --element-spacing: clamp(20px, 1.5vw, 40px);
+  }
+  
+  .glass-panel {
+    width: min(100%, clamp(500px, 70vw, 1000px));
+    padding: clamp(35px, 2vw, 50px);
+  }
+  
+  .activity-rings-container {
+    max-width: min(100%, clamp(400px, 60vw, 800px));
+    padding: clamp(25px, 2vw, 40px);
+  }
+  
+  .rings-wrapper {
+    gap: clamp(15px, 1vw, 30px);
+  }
+  
+  .ring-container {
+    width: clamp(100px, 10vw, 150px);
+    height: clamp(100px, 10vw, 150px);
+  }
+  
+  .bottom-panel {
+    width: calc(100% - (var(--container-padding) * 2));
+    max-width: min(100%, clamp(600px, 80vw, 1200px));
+    padding: clamp(20px, 1.5vw, 35px) clamp(15px, 1.2vw, 30px);
+  }
+  
+  .nav-item {
+    padding: clamp(15px, 1.2vw, 25px);
+  }
+  
+  .circle-button {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 /* Background animation */
@@ -126,58 +526,7 @@ body {
 .sports-item:nth-child(19) { bottom: 5%; left: 80%; }
 .sports-item:nth-child(20) { top: 15%; left: 30%; }
 
-/* App container - improved responsive container */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 100%;
-  padding: 20px;
-  padding-top: max(20px, var(--safe-area-inset-top));
-  padding-bottom: calc(max(20px, var(--safe-area-inset-bottom)) + 80px); /* Space for bottom navigation */
-  margin: 0 auto;
-  
-  /* Improve scrolling on mobile devices */
-  -webkit-overflow-scrolling: touch;
-  
-  /* Ensure content doesn't overflow on small screens */
-  box-sizing: border-box;
-  
-  /* Improved responsive behavior */
-  flex: 1;
-  height: auto;
-}
-
 /* Glass panel */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  padding: 40px;
-  width: 100%;
-  max-width: 600px;
-  text-align: center;
-  animation: fadeIn 0.8s ease-out;
-  position: relative;
-  overflow: hidden;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  
-  /* Ensure proper sizing on all devices */
-  box-sizing: border-box;
-  min-height: calc(100vh - 160px);
-  
-  /* Improve performance on mobile devices */
-  will-change: transform;
-}
-
 .glass-panel::before {
   content: "";
   position: absolute;
@@ -452,20 +801,6 @@ body {
 .header-icon:hover {
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   transform: scale(1.1);
-}
-
-/* Dashboard main - improved responsive behavior */
-.dashboard-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  padding: 20px 0;
-  width: 100%;
-  flex: 1;
-  
-  /* Ensure content doesn't overflow */
-  box-sizing: border-box;
 }
 
 /* Profile view styles */
@@ -875,8 +1210,8 @@ body {
 }
 
 .circle-button {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   display: flex;
@@ -1277,8 +1612,8 @@ body {
   }
   
   .circle-button {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
   }
   
   .rings-wrapper {
@@ -1637,8 +1972,8 @@ body {
   }
   
   .circle-button {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
   }
   
   .health-grid {

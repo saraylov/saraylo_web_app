@@ -137,6 +137,7 @@
 
 <svelte:head>
   <title>SARAYLO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script>
     function onTelegramAuth(user) {
       // Dispatch event to Svelte component
@@ -262,7 +263,7 @@
           <div class="rings-wrapper">
             <!-- Move Ring -->
             <div class="ring-container">
-              <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+              <svg class="ring" width="100%" height="100%" viewBox="0 0 120 120">
                 <circle 
                   class="ring-background" 
                   cx="60" 
@@ -293,7 +294,7 @@
             
             <!-- Exercise Ring -->
             <div class="ring-container">
-              <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+              <svg class="ring" width="100%" height="100%" viewBox="0 0 120 120">
                 <circle 
                   class="ring-background" 
                   cx="60" 
@@ -324,7 +325,7 @@
             
             <!-- Stand Ring -->
             <div class="ring-container">
-              <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+              <svg class="ring" width="100%" height="100%" viewBox="0 0 120 120">
                 <circle 
                   class="ring-background" 
                   cx="60" 
@@ -412,7 +413,7 @@
     </div>
     
     <!-- Bottom navigation panel - moved outside glass-panel for consistent fixed positioning -->
-    <div class="bottom-panel">
+    <div class="bottom-panel s-XsEmFtvddWTw">
       <div 
         class="nav-item"
         on:click={handleBackToDashboard}
@@ -499,7 +500,7 @@
 <style>
   /* Main title */
   .main-title {
-    font-size: 4rem;
+    font-size: clamp(2rem, 8vw, 4rem);
     font-weight: 800;
     /* Updated to use Miami Hit color scheme */
     background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
@@ -507,30 +508,31 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-align: center;
-    margin-bottom: 20px;
-    text-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+    margin-bottom: clamp(15px, 3vw, 30px);
+    text-shadow: 0 0 clamp(10px, 2vw, 25px) rgba(0, 191, 255, 0.3);
     animation: shimmer 3s ease-in-out infinite;
     background-size: 200% 200%;
   }
   
   .subtitle {
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.8rem);
     color: var(--light-gray);
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: clamp(20px, 3vw, 40px);
     font-weight: 500;
   }
   
   /* Description */
   .description {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: clamp(20px, 3vw, 40px);
     color: var(--light-gray);
   }
   
   .description p {
-    margin-bottom: 15px;
+    margin-bottom: clamp(10px, 1.5vw, 20px);
     line-height: 1.6;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   }
   
   /* Auth section */
@@ -538,43 +540,43 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: clamp(15px, 2.5vw, 30px);
   }
   
   .production-info-static {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2.8vw, 1.3rem);
     color: var(--light-gray);
-    margin-bottom: 10px;
+    margin-bottom: clamp(8px, 1.5vw, 15px);
   }
   
   .telegram-auth-button {
     background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
     border: none;
-    border-radius: 12px;
-    padding: 15px 30px;
+    border-radius: clamp(8px, 2vw, 15px);
+    padding: clamp(12px, 2.5vw, 20px) clamp(25px, 4vw, 40px);
     color: white;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 16px) rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 300px;
+    max-width: clamp(250px, 50vw, 350px);
   }
   
   .telegram-auth-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 20px) rgba(0, 0, 0, 0.4);
     background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
   }
   
   .telegram-auth-button:active {
     transform: translateY(1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 clamp(3px, 0.8vw, 6px) clamp(6px, 1.5vw, 12px) rgba(0, 0, 0, 0.3);
   }
   
   .auth-status {
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
     color: var(--light-gray);
     text-align: center;
   }
@@ -584,40 +586,42 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
-    margin-bottom: 25px;
+    padding: clamp(12px, 2vw, 20px) 0;
+    margin-bottom: clamp(15px, 2vw, 30px);
     /* Updated to use Miami Hit color scheme */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
-    border-radius: 15px;
-    padding: 15px 20px;
+    border-radius: clamp(10px, 2vw, 20px);
+    padding: clamp(10px, 1.5vw, 15px) clamp(15px, 2vw, 25px);
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .dashboard-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.3rem, 4vw, 2rem);
     font-weight: 800;
     background: var(--gradient-border);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+    text-shadow: 0 0 clamp(5px, 1vw, 12px) rgba(0, 191, 255, 0.3);
   }
   
   .header-icon {
     cursor: pointer;
-    padding: 10px;
+    padding: clamp(8px, 2vw, 16px);
     /* Ensure perfect circle shape */
     border-radius: 50%;
     transition: all 0.3s ease;
     /* Updated to use Miami Hit color scheme */
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
     /* Make sure the element is perfectly square */
-    width: 44px;
-    height: 44px;
+    width: clamp(36px, 6vw, 50px);
+    height: clamp(36px, 6vw, 50px);
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
   }
 
   .header-icon:hover {
@@ -627,106 +631,57 @@
   
   /* Circle button styles */
   .circle-button {
-    width: 70px;
-    height: 70px;
+    width: clamp(50px, 10vw, 80px);
+    height: clamp(50px, 10vw, 80px);
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
+    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(10px, 2vw, 20px) rgba(0, 191, 255, 0.4);
     transition: all 0.3s ease;
     cursor: pointer;
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
   }
   
   .circle-button:hover {
     transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(255, 20, 147, 0.6);
-  }
-  
-  /* Main content styles */
-  .dashboard-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    padding: 20px 0;
-  }
-  
-  /* Progress bar */
-  .progress-container {
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    margin: 0 auto;
-  }
-  
-  .progress-bar {
-    height: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .progress-fill {
-    height: 100%;
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .progress-fill::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: shimmer 2s infinite;
-  }
-  
-  .progress-text {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--white);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(15px, 3vw, 25px) rgba(255, 20, 147, 0.6);
   }
   
   /* Coffee button */
   .coffee-button {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: clamp(8px, 2vw, 15px);
     /* Updated to use Miami Hit color scheme */
     background: linear-gradient(135deg, var(--deep-black), #333333);
-    border: 2px solid var(--primary-pink);
-    border-radius: 15px;
-    padding: 15px 30px;
+    border: clamp(1.5px, 0.2vw, 3px) solid var(--primary-pink);
+    border-radius: clamp(10px, 2vw, 20px);
+    padding: clamp(12px, 2.5vw, 20px) clamp(20px, 4vw, 40px);
     color: #FFFFFF;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 16px) rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: clamp(250px, 50vw, 400px);
+    margin: 0 auto;
   }
   
   .coffee-button:hover {
     /* Updated to use Miami Hit color scheme */
     background: linear-gradient(135deg, #333333, var(--deep-black));
     transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 20px) rgba(0, 0, 0, 0.4);
     border-color: var(--primary-blue);
   }
   
   .coffee-button:active {
     transform: translateY(1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 8px) rgba(0, 0, 0, 0.3);
   }
   
   /* Training date */
@@ -734,17 +689,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: clamp(8px, 1.5vw, 15px);
     /* Updated to use Miami Hit color scheme */
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.1));
-    padding: 15px 25px;
-    border-radius: 15px;
+    padding: clamp(12px, 2vw, 20px) clamp(20px, 3vw, 30px);
+    border-radius: clamp(10px, 2vw, 20px);
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: clamp(280px, 60vw, 500px);
+    margin: 0 auto;
   }
   
   .training-date p {
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     color: var(--light-gray);
     font-weight: 500;
   }
@@ -752,99 +710,44 @@
   .details-button {
     background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
     border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
+    border-radius: clamp(8px, 1.5vw, 15px);
+    padding: clamp(8px, 1.5vw, 15px) clamp(15px, 2.5vw, 25px);
     color: white;
     font-weight: 700;
+    font-size: clamp(0.8rem, 2vw, 1rem);
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 clamp(3px, 0.8vw, 6px) clamp(6px, 1.5vw, 10px) rgba(0, 0, 0, 0.2);
   }
   
   .details-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 15px) rgba(0, 0, 0, 0.3);
     background: linear-gradient(90deg, var(--primary-pink), var(--primary-blue));
   }
   
   .details-button:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Bottom panel */
-  .bottom-panel {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 20px 15px;
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
-    backdrop-filter: blur(10px);
-    border-radius: 25px;
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 40px);
-    max-width: 600px;
-    margin: 0 auto;
-    z-index: 1000;
-    padding-bottom: max(20px, calc(20px + var(--safe-area-inset-bottom)));
-    margin-bottom: var(--safe-area-inset-bottom);
-  }
-  
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: var(--light-gray);
-    transition: all 0.3s ease;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .nav-item:hover {
-    color: var(--white);
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-3px);
-  }
-  
-  .nav-item-center {
-    margin-top: -40px;
+    box-shadow: 0 clamp(1.5px, 0.4vw, 3px) clamp(3px, 0.8vw, 6px) rgba(0, 0, 0, 0.2);
   }
   
   /* Component-specific styles */
   .dashboard-actions {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: clamp(10px, 2vw, 20px);
     width: 100%;
-    max-width: 300px;
+    max-width: clamp(250px, 50vw, 350px);
     margin: 0 auto;
     align-items: center;
   }
   
-  /* Activity Rings Styles */
-  .activity-rings-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto 30px;
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
-    backdrop-filter: blur(5px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
-  }
-  
+  /* Rings title */
   .rings-title {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 700;
-    margin-bottom: 25px;
+    margin-bottom: clamp(15px, 2vw, 30px);
     color: var(--white);
     background: var(--gradient-border);
     -webkit-background-clip: text;
@@ -852,165 +755,78 @@
     background-clip: text;
   }
   
-  .rings-wrapper {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .ring-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .ring {
-    transform: rotate(270deg);
-  }
-  
-  .ring-progress {
-    transition: stroke-dashoffset 1s ease-in-out;
-  }
-  
-  .ring-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .ring-value {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--white);
-  }
-  
-  .ring-unit {
-    font-size: 0.8rem;
-    color: var(--light-gray);
-  }
-  
-  .rings-legend {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 80px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    margin-left: -15px;
-  }
-  
-  .legend-item {
-    display: flex;
-    align-items: center;
-    margin: 0 10px;
-  }
-  
-  .legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 5px;
-  }
-  
-  .legend-text {
-    font-size: 0.9rem;
-    color: var(--light-gray);
-  }
-  
   /* Адаптивный дизайн */
   @media (max-width: 768px) {
     .dashboard-header {
-      padding: 10px 0;
+      padding: clamp(8px, 2vw, 15px) 0;
     }
     
     .dashboard-title {
-      font-size: 1.3rem;
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
     }
     
     .nav-item span {
-      font-size: 0.8rem;
+      font-size: clamp(0.6rem, 2vw, 0.9rem);
     }
     
     .circle-button {
-      width: 50px;
-      height: 50px;
+      width: clamp(45px, 12vw, 65px);
+      height: clamp(45px, 12vw, 65px);
     }
     
     .rings-wrapper {
-      gap: 15px;
+      gap: clamp(10px, 2vw, 20px);
     }
     
     .ring-container {
-      transform: scale(0.9);
+      width: clamp(70px, 18vw, 100px);
+      height: clamp(70px, 18vw, 100px);
     }
   }
   
   @media (max-width: 480px) {
     .app-container {
-      padding: 10px;
-      padding-bottom: 100px; /* Add extra padding for fixed bottom panel */
+      padding: clamp(8px, 3vw, 15px);
+      padding-bottom: clamp(70px, 12vw, 120px); /* Add extra padding for fixed bottom panel */
     }
     
     .glass-panel {
-      width: 95%;
-      padding: 25px 15px;
+      width: min(100%, clamp(280px, 95vw, 500px));
+      padding: clamp(20px, 5vw, 30px) clamp(12px, 3vw, 20px);
     }
     
     .dashboard-header {
-      padding: 8px 0;
+      padding: clamp(6px, 1.5vw, 12px) 0;
     }
     
     .dashboard-title {
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 4vw, 1.3rem);
     }
     
     .activity-rings-container {
-      padding: 15px;
+      padding: clamp(12px, 3vw, 20px);
     }
     
     .rings-title {
-      font-size: 1.3rem;
-      margin-bottom: 20px;
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      margin-bottom: clamp(12px, 1.5vw, 20px);
     }
     
     .rings-wrapper {
-      gap: 10px;
+      gap: clamp(8px, 2vw, 15px);
     }
     
     .ring-container {
-      transform: scale(0.8);
+      width: clamp(60px, 16vw, 85px);
+      height: clamp(60px, 16vw, 85px);
     }
     
     .ring-value {
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 3vw, 1.3rem);
     }
     
     .legend-text {
-      font-size: 0.8rem;
-    }
-    
-    .bottom-panel {
-      width: calc(100% - 20px);
-      padding: 15px 10px;
-    }
-  }
-  
-  /* Animation for shimmer effect */
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
     }
   }
 </style>
