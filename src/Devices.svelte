@@ -23,14 +23,14 @@
   );
   
   // Function to disconnect a device
-  function disconnectDevice(deviceId: number) {
+  function disconnectDevice(deviceId) {
     devices = devices.map(device => 
       device.id === deviceId ? {...device, connected: false} : device
     );
   }
   
   // Function to connect a device
-  function connectDevice(deviceId: number) {
+  function connectDevice(deviceId) {
     devices = devices.map(device => 
       device.id === deviceId ? {...device, connected: true} : device
     );

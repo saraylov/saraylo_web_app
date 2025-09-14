@@ -675,17 +675,6 @@
   }
   
   /* Expanded progress panel */
-  .expanded-progress-panel {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
-    backdrop-filter: blur(5px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
-  }
   
   /* Progress bar */
   .progress-container {
@@ -733,35 +722,10 @@
   }
   
   /* Current level */
-  .current-level {
-    text-align: center;
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
-    padding: 15px 30px;
-    border-radius: 15px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  }
   
-  .level-text {
-    font-size: 1.1rem;
-    color: var(--light-gray);
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
+
   
-  .level-name {
-    font-size: 2rem;
-    font-weight: 800;
-    /* Use Miami Hit pink color for the level name */
-    background: var(--gradient-border);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
-    letter-spacing: 1px;
-  }
+
   
   /* Coffee button */
   .coffee-button {
@@ -899,12 +863,7 @@
     align-items: center;
   }
   
-  .loading-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-  }
+
   
   /* Activity Rings Styles */
   .activity-rings-container {
