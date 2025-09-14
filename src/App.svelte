@@ -1084,17 +1084,6 @@
   /* Profile view styles - moved to Profile.svelte */
   
   /* Expanded progress panel */
-  .expanded-progress-panel {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
-    backdrop-filter: blur(5px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
-  }
   
   /* Progress bar */
   .progress-container {

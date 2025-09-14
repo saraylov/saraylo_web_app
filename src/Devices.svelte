@@ -1,12 +1,12 @@
-<script lang="ts">
+<script>
   // Handle back to dashboard
-  export let handleBackToDashboard: () => void;
+  export let handleBackToDashboard;
   
   // Navigation handlers
-  export let handleHealthClick: () => void;
-  export let handleTrainingClick: () => void;
-  export let handleDevicesClick: () => void;
-  export let handleProfileClick: () => void;
+  export let handleHealthClick;
+  export let handleTrainingClick;
+  export let handleDevicesClick;
+  export let handleProfileClick;
   
   // Device data
   let devices = [
