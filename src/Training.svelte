@@ -7,20 +7,22 @@
   export let handleTrainingClick;
   export let handleDevicesClick;
   export let handleProfileClick;
+  export let handleSettingsClick; // Add this new handler
   
   // Mapbox integration
   import mapboxgl from 'mapbox-gl';
   import { onMount } from 'svelte';
+  import Button from './Button.svelte'; // Импортируем универсальный компонент Button
   
-  let mapContainer;
-  let map;
-  let marker;
+  let mapContainer: HTMLDivElement | undefined;
+  let map: mapboxgl.Map | undefined;
+  let marker: mapboxgl.Marker | undefined;
   
   // Sample coordinates for real-time tracking (initial position)
-  let currentPosition = [30.3158, 59.9343]; // St. Petersburg coordinates as example
+  let currentPosition: [number, number] = [30.3158, 59.9343]; // St. Petersburg coordinates as example
   
   // Path coordinates (simulating a running route)
-  let pathCoordinates = [
+  let pathCoordinates: [number, number][] = [
     [30.3158, 59.9343],
     [30.3168, 59.9345],
     [30.3178, 59.9347],
@@ -41,57 +43,67 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: currentPosition,
+        center: currentPosition as mapboxgl.LngLatLike,
         zoom: 14
       });
       
       // Add navigation controls
-      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      if (map) {
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      }
       
       // Add geolocate control
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true,
-          showUserHeading: true
-        })
-      );
+      if (map) {
+        map.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserHeading: true
+          })
+        );
+      }
       
       // Add the path line to the map
-      map.on('load', () => {
-        map.addSource('route', {
-          'type': 'geojson',
-          'data': {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-              'type': 'LineString',
-              'coordinates': pathCoordinates
+      if (map) {
+        map.on('load', () => {
+          if (!map) return;
+          
+          map.addSource('route', {
+            'type': 'geojson',
+            'data': {
+              'type': 'Feature',
+              'properties': {},
+              'geometry': {
+                'type': 'LineString',
+                'coordinates': pathCoordinates
+              }
             }
+          });
+          
+          map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            'paint': {
+              'line-color': '#00BFFF',
+              'line-width': 4
+            }
+          });
+          
+          // Add a marker for the current position
+          if (map) {
+            marker = new mapboxgl.Marker({ color: '#FF1493' })
+              .setLngLat(currentPosition as mapboxgl.LngLatLike)
+              .addTo(map);
           }
         });
-        
-        map.addLayer({
-          'id': 'route',
-          'type': 'line',
-          'source': 'route',
-          'layout': {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          'paint': {
-            'line-color': '#00BFFF',
-            'line-width': 4
-          }
-        });
-        
-        // Add a marker for the current position
-        marker = new mapboxgl.Marker({ color: '#FF1493' })
-          .setLngLat(currentPosition)
-          .addTo(map);
-      });
+      }
       
       // Simulate real-time tracking updates
       const updatePosition = () => {
@@ -102,12 +114,9 @@
         
         currentPosition = pathCoordinates[nextIndex];
         
-        if (marker) {
-          marker.setLngLat(currentPosition);
-        }
-        
-        if (map) {
-          map.setCenter(currentPosition);
+        if (marker && map) {
+          marker.setLngLat(currentPosition as mapboxgl.LngLatLike);
+          map.setCenter(currentPosition as mapboxgl.LngLatLike);
         }
       };
       
@@ -161,8 +170,15 @@
         </svg>
       </div>
       <h1 class="dashboard-title">Тренировка</h1>
-      <div class="header-icon">
-        <!-- Empty icon placeholder -->
+      <div 
+        class="header-icon"
+        on:click={handleSettingsClick}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSettingsClick(); }}
+        role="button"
+        tabindex="0"
+        aria-label="Настройки"
+      >
+        <img src="/images/111.png" alt="Настройки" width="24" height="24" />
       </div>
     </div>
     
@@ -170,24 +186,27 @@
     <div class="dashboard-main">
       <div class="central-shield">
         <div class="shield-content" bind:this={mapContainer}>
+          <!-- Training stats overlay -->
+          <div class="training-stats-overlay">
+            <div class="training-stats">
+              <div class="stat-card">
+                <h4>Время</h4>
+                <p class="stat-value">00:00:00</p>
+              </div>
+              <div class="stat-card">
+                <h4>Дистанция</h4>
+                <p class="stat-value">0.0 км</p>
+              </div>
+              <div class="stat-card">
+                <h4>Темп</h4>
+                <p class="stat-value">0:00 / км</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
-      <!-- Training stats -->
-      <div class="training-stats">
-        <div class="stat-card">
-          <h4>Время</h4>
-          <p class="stat-value">00:00:00</p>
-        </div>
-        <div class="stat-card">
-          <h4>Дистанция</h4>
-          <p class="stat-value">0.0 км</p>
-        </div>
-        <div class="stat-card">
-          <h4>Темп</h4>
-          <p class="stat-value">0:00 / км</p>
-        </div>
-      </div>
+
       
       <!-- Bottom navigation panel -->
       <div class="bottom-panel">
@@ -199,12 +218,7 @@
           tabindex="0"
           aria-label="Статистика"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 3V19H21V3H3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 15V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15 15V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M19 15H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <img src="/images/Graf.png" alt="Статистика" width="24" height="24" />
           <span>Статистика</span>
         </div>
         <div 
@@ -216,8 +230,7 @@
           aria-label="Здоровье"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
           </svg>
           <span>Здоровье</span>
         </div>
@@ -248,10 +261,11 @@
           aria-label="Устройства"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M23 20.9999V18.9999C22.9993 18.1136 22.7044 17.2527 22.1614 16.5522C21.6184 15.8517 20.8581 15.3515 20 15.1299" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M16 3.12988C16.8604 3.35143 17.623 3.85051 18.1693 4.54956C18.7156 5.24861 19.0147 6.10829 19.02 7.00488" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 2C12 2 7 3 7 6C7 9 12 11 12 11C12 11 17 9 17 6C17 3 12 2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 13.5V16C19 18.2091 17.2091 20 15 20H9C6.79086 20 5 18.2091 5 16V13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 11V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 16H8.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 16H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <span>Устройства</span>
         </div>
@@ -288,6 +302,50 @@
     background: linear-gradient(135deg, #000000, #333333);
     /* Ensure the map fills the container */
     min-height: 300px;
+  }
+  
+  /* Training stats overlay */
+  .training-stats-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 10;
+    width: 100%;
+    max-width: 500px;
+    padding: 0 20px;
+  }
+  
+  .training-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  }
+  
+  .stat-card {
+    text-align: center;
+  }
+  
+  .stat-card h4 {
+    font-size: 1rem;
+    color: var(--light-gray);
+    margin-bottom: 5px;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   /* Ensure the map container fills the shield content area */
