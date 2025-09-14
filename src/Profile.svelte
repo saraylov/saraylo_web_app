@@ -94,7 +94,7 @@
         tabindex="0"
         aria-label="Настройки"
       >
-        <img src="/images/111.png" alt="Настройки" width="24" height="24" />
+        <img src="images/111.png" alt="Настройки" width="24" height="24" />
       </div>
     </div>
     
@@ -183,7 +183,7 @@
         tabindex="0"
         aria-label="Статистика"
       >
-        <img src="/images/Graf.png" alt="Статистика" width="24" height="24" />
+        <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
         <span>Статистика</span>
       </div>
       <div 
@@ -208,7 +208,7 @@
           tabindex="0"
           aria-label="Начать тренировку"
         >
-          <img src="/images/Run3.png" alt="Начать тренировку" width="40" height="40" />
+          <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
         </div>
       </div>
       <div 
@@ -219,7 +219,7 @@
         tabindex="0"
         aria-label="Устройства"
       >
-        <img src="/images/Smart.png" alt="Устройства" width="24" height="24" />
+        <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
         <span>Устройства</span>
       </div>
       <div 
