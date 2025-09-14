@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   // Handle back to dashboard
   export let handleBackToDashboard;
   
@@ -14,15 +14,15 @@
   import { onMount } from 'svelte';
   import Button from './Button.svelte'; // Импортируем универсальный компонент Button
   
-  let mapContainer: HTMLDivElement | undefined;
-  let map: mapboxgl.Map | undefined;
-  let marker: mapboxgl.Marker | undefined;
+  let mapContainer;
+  let map;
+  let marker;
   
   // Sample coordinates for real-time tracking (initial position)
-  let currentPosition: [number, number] = [30.3158, 59.9343]; // St. Petersburg coordinates as example
+  let currentPosition = [30.3158, 59.9343]; // St. Petersburg coordinates as example
   
   // Path coordinates (simulating a running route)
-  let pathCoordinates: [number, number][] = [
+  let pathCoordinates = [
     [30.3158, 59.9343],
     [30.3168, 59.9345],
     [30.3178, 59.9347],
@@ -43,7 +43,7 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: currentPosition as mapboxgl.LngLatLike,
+        center: [currentPosition[0], currentPosition[1]],
         zoom: 14
       });
       
@@ -99,7 +99,7 @@
           // Add a marker for the current position
           if (map) {
             marker = new mapboxgl.Marker({ color: '#FF1493' })
-              .setLngLat(currentPosition as mapboxgl.LngLatLike)
+              .setLngLat([currentPosition[0], currentPosition[1]])
               .addTo(map);
           }
         });
@@ -115,8 +115,8 @@
         currentPosition = pathCoordinates[nextIndex];
         
         if (marker && map) {
-          marker.setLngLat(currentPosition as mapboxgl.LngLatLike);
-          map.setCenter(currentPosition as mapboxgl.LngLatLike);
+          marker.setLngLat([currentPosition[0], currentPosition[1]]);
+          map.setCenter([currentPosition[0], currentPosition[1]]);
         }
       };
       
