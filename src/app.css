@@ -19,6 +19,10 @@
   --safe-area-inset-right: env(safe-area-inset-right);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
+  
+  /* Touch target sizes for better mobile experience */
+  --touch-target-min: 48px;
+  --touch-target-comfortable: 56px;
 }
 
 /* Reset and base styles */
@@ -60,6 +64,13 @@ body {
   background-repeat: no-repeat;
   opacity: 0.1;
   animation: float 20s infinite linear;
+  
+  /* Improve rendering on high-density screens */
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .football {
@@ -125,6 +136,9 @@ body {
   width: 100%;
   padding-top: max(20px, var(--safe-area-inset-top));
   padding-bottom: max(20px, var(--safe-area-inset-bottom));
+  
+  /* Improve scrolling on mobile devices */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Glass panel */
@@ -142,6 +156,9 @@ body {
   animation: fadeIn 0.8s ease-out;
   position: relative;
   overflow: hidden;
+  
+  /* Improve performance on mobile devices */
+  will-change: transform;
 }
 
 .glass-panel::before {
@@ -399,20 +416,20 @@ body {
 
 .header-icon {
   cursor: pointer;
-  padding: 12px; /* Increased for better touch targets */
+  padding: 16px; /* Increased for better touch targets */
   /* Ensure perfect circle shape */
   border-radius: 50%;
   transition: all 0.3s ease;
   /* Updated to use Miami Hit color scheme */
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
   /* Make sure the element is perfectly square */
-  width: 48px; /* Increased for better touch targets */
-  height: 48px; /* Increased for better touch targets */
+  width: var(--touch-target-min); /* Increased for better touch targets */
+  height: var(--touch-target-min); /* Increased for better touch targets */
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 48px; /* Minimum touch target size */
-  min-height: 48px; /* Minimum touch target size */
+  min-width: var(--touch-target-min); /* Minimum touch target size */
+  min-height: var(--touch-target-min); /* Minimum touch target size */
 }
 
 .header-icon:hover {
@@ -1015,6 +1032,46 @@ body {
   }
 }
 
+/* Landscape orientation on mobile devices */
+@media (max-width: 768px) and (orientation: landscape) {
+  .container {
+    padding: 10px;
+  }
+  
+  .glass-panel {
+    padding: 20px;
+  }
+  
+  .bottom-panel {
+    padding: 10px 5px;
+  }
+  
+  .nav-item {
+    padding: 10px;
+  }
+  
+  .header-icon {
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* High-resolution displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .glass-panel {
+    border-width: 0.5px;
+  }
+  
+  .nav-item {
+    border-radius: 12px;
+  }
+  
+  .header-icon {
+    border-radius: 52px;
+  }
+}
+
 /* Large mobile devices and small tablets */
 @media (min-width: 481px) and (max-width: 768px) {
   .container {
@@ -1036,6 +1093,95 @@ body {
   
   .stat-item .stat-value {
     font-size: 1.4rem;
+  }
+  
+  /* Improve training stats for medium screens */
+  .training-stats {
+    gap: 20px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card h4 {
+    font-size: 1rem;
+  }
+  
+  .stat-value {
+    font-size: 1.4rem;
+  }
+}
+
+/* Tablets and desktops */
+@media (min-width: 769px) {
+  .glass-panel {
+    width: 70%;
+    max-width: 800px;
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+  }
+  
+  .profile-name {
+    font-size: 2rem;
+  }
+  
+  /* Adjust touch targets for larger screens */
+  .nav-item {
+    padding: 14px;
+  }
+  
+  .header-icon {
+    padding: 14px;
+  }
+}
+
+/* Large desktops */
+@media (min-width: 1200px) {
+  .profile-stats {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  
+  .profile-name {
+    font-size: 2.2rem;
+  }
+  
+  .stat-item .stat-value {
+    font-size: 1.8rem;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 180px;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 2rem;
+  }
+  
+  /* Improve training stats for large screens */
+  .training-stats {
+    max-width: 600px;
+    gap: 25px;
+  }
+  
+  .stat-card {
+    padding: 25px;
+  }
+  
+  .stat-card h4 {
+    font-size: 1.2rem;
+  }
+  
+  .stat-value {
+    font-size: 1.6rem;
   }
 }
 
@@ -1075,6 +1221,34 @@ body {
   .stat-item .stat-value {
     font-size: 1.2rem;
   }
+  
+  /* Increase touch targets on very small screens */
+  .nav-item {
+    padding: 18px;
+  }
+  
+  .header-icon {
+    padding: 18px;
+    width: 52px;
+    height: 52px;
+  }
+  
+  /* Improve training stats for very small screens */
+  .training-stats {
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 10px;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.8rem;
+  }
+  
+  .stat-value {
+    font-size: 1rem;
+  }
 }
 
 /* Bottom panel */
@@ -1089,6 +1263,9 @@ body {
   border-radius: 25px;
   padding-bottom: max(20px, calc(20px + var(--safe-area-inset-bottom)));
   margin-bottom: var(--safe-area-inset-bottom);
+  
+  /* Improve touch accessibility */
+  min-height: calc(var(--touch-target-comfortable) + 20px);
 }
 
 .nav-item {
@@ -1099,10 +1276,10 @@ body {
   cursor: pointer;
   color: var(--light-gray);
   transition: all 0.3s ease;
-  padding: 12px; /* Increased for better touch targets */
+  padding: 16px; /* Increased for better touch targets */
   border-radius: 10px;
-  min-width: 50px; /* Minimum touch target size */
-  min-height: 50px; /* Minimum touch target size */
+  min-width: var(--touch-target-min); /* Minimum touch target size */
+  min-height: var(--touch-target-min); /* Minimum touch target size */
 }
 
 .nav-item:hover {
@@ -1125,8 +1302,8 @@ body {
   justify-content: center;
   box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
   transition: all 0.3s ease;
-  min-width: 70px; /* Minimum touch target size */
-  min-height: 70px; /* Minimum touch target size */
+  min-width: var(--touch-target-comfortable); /* Minimum touch target size */
+  min-height: var(--touch-target-comfortable); /* Minimum touch target size */
 }
 
 .circle-button.training-mode {
@@ -1204,6 +1381,9 @@ body {
   max-width: 500px;
   gap: 15px;
   margin-top: 20px;
+  
+  /* Improve touch targets for training stats */
+  min-height: var(--touch-target-comfortable);
 }
 
 .stat-card {
@@ -1214,6 +1394,9 @@ body {
   text-align: center;
   flex: 1;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Ensure minimum touch target size */
+  min-height: var(--touch-target-min);
 }
 
 .stat-card h4 {
@@ -1276,25 +1459,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.training-stats {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  max-width: 500px;
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.stat-card {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
-  backdrop-filter: blur(5px);
-  border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  flex: 1;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .stat-card h4 {
   font-size: 0.9rem;
   color: var(--light-gray);
@@ -1351,6 +1515,7 @@ devices-list {
   gap: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  min-height: var(--touch-target-comfortable); /* Ensure minimum touch target size */
 }
 
 .device-card:hover {
@@ -1410,11 +1575,13 @@ devices-list {
   background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.4));
   border: 1px solid var(--primary-pink);
   border-radius: 10px;
-  padding: 8px 15px;
+  padding: 12px 20px; /* Increased for better touch targets */
   color: white;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: var(--touch-target-min); /* Minimum touch target size */
+  min-width: var(--touch-target-min); /* Minimum touch target size */
 }
 
 .disconnect-button:hover {
@@ -1433,7 +1600,7 @@ devices-list {
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   border: none;
   border-radius: 12px;
-  padding: 15px 30px;
+  padding: 18px 35px; /* Increased for better touch targets */
   color: white;
   font-weight: 700;
   font-size: 1.1rem;
@@ -1447,6 +1614,7 @@ devices-list {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  min-height: var(--touch-target-comfortable); /* Minimum touch target size */
 }
 
 .scan-button:hover {
@@ -1603,5 +1771,31 @@ devices-list {
   .heart-rate-value span, .bp-value span, .calories-value span, 
   .hydration-value span, .temp-value span, .oxygen-value span {
     font-size: 0.8rem;
+  }
+  
+  /* Improve training stats for small screens */
+  .training-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .health-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 180px;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 2rem;
   }
 }
