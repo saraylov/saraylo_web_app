@@ -1,28 +1,33 @@
-<script>
+<script lang="ts">
   // Handle back to dashboard
-  export let handleBackToDashboard;
+  export let handleBackToDashboard: () => void;
   
   // Navigation handlers
-  export let handleHealthClick;
-  export let handleTrainingClick;
-  export let handleDevicesClick;
-  export let handleProfileClick;
-  export let handleSettingsClick; // Add this new handler
+  export let handleHealthClick: () => void;
+  export let handleTrainingClick: () => void;
+  export let handleDevicesClick: () => void;
+  export let handleProfileClick: () => void;
+  export let handleSettingsClick: () => void; // Add this new handler
+  
+  // Helper function to check if in training mode
+  function isInTrainingMode() {
+    return true;
+  }
   
   // Mapbox integration
   import mapboxgl from 'mapbox-gl';
   import { onMount } from 'svelte';
   import Button from './Button.svelte'; // Импортируем универсальный компонент Button
   
-  let mapContainer;
-  let map;
-  let marker;
+  let mapContainer: HTMLElement | undefined;
+  let map: mapboxgl.Map | undefined;
+  let marker: mapboxgl.Marker | undefined;
   
   // Sample coordinates for real-time tracking (initial position)
-  let currentPosition = [30.3158, 59.9343]; // St. Petersburg coordinates as example
+  let currentPosition: [number, number] = [30.3158, 59.9343]; // St. Petersburg coordinates as example
   
   // Path coordinates (simulating a running route)
-  let pathCoordinates = [
+  let pathCoordinates: [number, number][] = [
     [30.3158, 59.9343],
     [30.3168, 59.9345],
     [30.3178, 59.9347],
@@ -152,7 +157,7 @@
   <div class="sports-item tshirt"></div>
 </div>
 
-<div class="container">
+<div class="app-container">
   <div class="glass-panel">
     <!-- Header -->
     <div class="dashboard-header">
@@ -205,73 +210,72 @@
           </div>
         </div>
       </div>
-      
-
-      
-      <!-- Bottom navigation panel -->
-      <div class="bottom-panel">
-        <div 
-          class="nav-item"
-          on:click={handleBackToDashboard}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Статистика"
-        >
-          <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
-          <span>Статистика</span>
-        </div>
-        <div 
-          class="nav-item"
-          on:click={handleHealthClick}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Здоровье"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-          </svg>
-          <span>Здоровье</span>
-        </div>
-        <div class="nav-item nav-item-center">
-          <div 
-            class="circle-button training-mode" 
-            on:click={handleTrainingClick}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
-            role="button"
-            tabindex="0"
-            aria-label="Начать тренировку"
-          >
-            <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
-          </div>
-        </div>
-        <div 
-          class="nav-item"
-          on:click={handleDevicesClick}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Устройства"
-        >
-          <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
-          <span>Устройства</span>
-        </div>
-        <div 
-          class="nav-item"
-          on:click={handleProfileClick}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Профиль"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          <span>Профиль</span>
-        </div>
+    </div>
+  </div>
+  
+  <!-- Bottom navigation panel -->
+  <div class="bottom-panel">
+    <div 
+      class="nav-item"
+      on:click={handleBackToDashboard}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+      role="button"
+      tabindex="0"
+      aria-label="Статистика"
+    >
+      <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
+      <span>Статистика</span>
+    </div>
+    <div 
+      class="nav-item"
+      on:click={handleHealthClick}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
+      role="button"
+      tabindex="0"
+      aria-label="Здоровье"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+      </svg>
+      <span>Здоровье</span>
+    </div>
+    <div class="nav-item nav-item-center">
+      <div 
+        class="circle-button"
+        class:training-mode={true}
+        on:click={handleTrainingClick}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
+        role="button"
+        tabindex="0"
+        aria-label="Начать тренировку"
+      >
+        <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
       </div>
+    </div>
+    <div 
+      class="nav-item"
+      on:click={handleDevicesClick}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
+      role="button"
+      tabindex="0"
+      aria-label="Устройства"
+    >
+      <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
+      <span>Устройства</span>
+    </div>
+    <div 
+      class="nav-item"
+      on:click={handleProfileClick}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
+      role="button"
+      tabindex="0"
+      aria-label="Профиль"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <span>Профиль</span>
     </div>
   </div>
 </div>

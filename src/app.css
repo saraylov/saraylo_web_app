@@ -90,7 +90,7 @@ body {
 }
 
 .tshirt {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300BFFF' stroke-width='2'%3E%3Cpath d='M20 20v-4h-4v-4h4V8h-4V4h-4v4h4V4H4v4H0v4h4v4h16v-4h-4v-4h4z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300BFFF' stroke-width='2'%3E%3Cpath d='M20 20v-4h-4v-4h4V8h-4V4h-4v4h4V4H4v4H0v4h16v-4h-4v-4h4z'/%3E%3C/svg%3E");
 }
 
 @keyframes float {
@@ -126,19 +126,29 @@ body {
 .sports-item:nth-child(19) { bottom: 5%; left: 80%; }
 .sports-item:nth-child(20) { top: 15%; left: 30%; }
 
-/* Main container */
-.container {
+/* App container - improved responsive container */
+.app-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 20px;
   width: 100%;
+  max-width: 100%;
+  padding: 20px;
   padding-top: max(20px, var(--safe-area-inset-top));
-  padding-bottom: max(20px, var(--safe-area-inset-bottom));
+  padding-bottom: calc(max(20px, var(--safe-area-inset-bottom)) + 80px); /* Space for bottom navigation */
+  margin: 0 auto;
   
   /* Improve scrolling on mobile devices */
   -webkit-overflow-scrolling: touch;
+  
+  /* Ensure content doesn't overflow on small screens */
+  box-sizing: border-box;
+  
+  /* Improved responsive behavior */
+  flex: 1;
+  height: auto;
 }
 
 /* Glass panel */
@@ -150,12 +160,19 @@ body {
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   padding: 40px;
-  width: 80%;
+  width: 100%;
   max-width: 600px;
   text-align: center;
   animation: fadeIn 0.8s ease-out;
   position: relative;
   overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  
+  /* Ensure proper sizing on all devices */
+  box-sizing: border-box;
+  min-height: calc(100vh - 160px);
   
   /* Improve performance on mobile devices */
   will-change: transform;
@@ -437,13 +454,18 @@ body {
   transform: scale(1.1);
 }
 
-/* Main content styles */
+/* Dashboard main - improved responsive behavior */
 .dashboard-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 30px;
   padding: 20px 0;
+  width: 100%;
+  flex: 1;
+  
+  /* Ensure content doesn't overflow */
+  box-sizing: border-box;
 }
 
 /* Profile view styles */
@@ -554,19 +576,9 @@ body {
   margin: 8px 0;
 }
 
-/* Main content styles */
-.dashboard-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  padding: 20px 0;
-}
-
-/* Central shield */
+/* Central shield - improved responsive behavior */
 .central-shield {
   width: 100%;
-  max-width: 500px;
   height: 400px;
   border-radius: 15px;
   display: flex;
@@ -576,10 +588,14 @@ body {
   padding: 15px;
   box-sizing: border-box;
   margin-bottom: 50px;
-  /* Create a border effect using Miami Hit colors */
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   border: none;
   padding: 3px;
+  
+  /* Improved responsive sizing */
+  flex: 1;
+  min-height: 300px;
+  max-height: 500px;
 }
 
 .shield-content {
@@ -592,6 +608,10 @@ body {
   padding: 0;
   position: relative;
   background: linear-gradient(135deg, #000000, #333333);
+  
+  /* Ensure proper sizing */
+  flex: 1;
+  box-sizing: border-box;
 }
 
 .shield-top {
@@ -712,11 +732,6 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
 @keyframes medalShimmer {
   0% { 
     background-color: #4CAF50;
@@ -772,73 +787,6 @@ body {
   }
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .dashboard-header {
-    padding: 10px 0;
-  }
-  
-  .dashboard-title {
-    font-size: 1.3rem;
-  }
-  
-  .central-shield {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .shield-content {
-    width: 130px;
-    height: 130px;
-  }
-  
-  .shield-content h2 {
-    font-size: 2rem;
-  }
-  
-  .nav-item span {
-    font-size: 0.8rem;
-  }
-  
-  .circle-button {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 10px;
-  }
-  
-  .glass-panel {
-    width: 95%;
-    padding: 25px 15px;
-  }
-  
-  .dashboard-header {
-    padding: 8px 0;
-  }
-  
-  .dashboard-title {
-    font-size: 1.1rem;
-  }
-  
-  .central-shield {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .shield-content {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .shield-content h2 {
-    font-size: 1.5rem;
-  }
-}
-
 /* Progress bar */
 .progress-container {
   width: 100%;
@@ -877,380 +825,6 @@ body {
   animation: shimmer 2s infinite;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .glass-panel {
-    width: 90%;
-    padding: 30px 20px;
-  }
-  
-  .main-title {
-    font-size: 2rem;
-  }
-  
-  .subtitle {
-    font-size: 1.1rem;
-  }
-  
-  .description p {
-    font-size: 0.9rem;
-  }
-  
-  .access-info {
-    font-size: 1rem;
-  }
-  
-  .telegram-required p {
-    font-size: 0.9rem;
-  }
-  
-  .user-info p {
-    font-size: 0.9rem;
-  }
-  
-  .telegram-auth-button {
-    width: 180px;
-    height: 45px;
-    font-size: 1rem;
-    padding: 12px 25px;
-  }
-  
-  .dashboard-header {
-    padding: 10px 0;
-  }
-  
-  .dashboard-title {
-    font-size: 1.3rem;
-  }
-  
-  .profile-name {
-    font-size: 1.5rem;
-  }
-  
-  .profile-stats {
-    flex-direction: column;
-    gap: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .glass-panel {
-    width: 95%;
-    padding: 25px 15px;
-  }
-  
-  .main-title {
-    font-size: 1.8rem;
-  }
-  
-  .subtitle {
-    font-size: 1rem;
-  }
-  
-  .description p {
-    font-size: 0.85rem;
-  }
-  
-  .access-info {
-    font-size: 0.9rem;
-  }
-  
-  .telegram-required p {
-    font-size: 0.85rem;
-  }
-  
-  .user-info p {
-    font-size: 0.85rem;
-  }
-  
-  .telegram-auth-button {
-    width: 160px;
-    height: 40px;
-    font-size: 0.9rem;
-    padding: 10px 20px;
-  }
-  
-  .telegram-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .dashboard-header {
-    padding: 8px 0;
-  }
-  
-  .dashboard-title {
-    font-size: 1.1rem;
-  }
-  
-  .profile-name {
-    font-size: 1.3rem;
-  }
-  
-  .profile-stats {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .stat-item .stat-value {
-    font-size: 1.3rem;
-  }
-  
-  .stat-item .stat-label {
-    font-size: 0.8rem;
-  }
-}
-
-/* iPhone X and newer devices with notch */
-@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3),
-       screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2),
-       screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3),
-       screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
-       screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
-  .container {
-    padding-top: max(20px, env(safe-area-inset-top));
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: max(20px, env(safe-area-inset-bottom));
-    padding-left: env(safe-area-inset-left);
-  }
-  
-  .dashboard-header {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-  
-  .bottom-panel {
-    padding-bottom: max(20px, calc(20px + env(safe-area-inset-bottom)));
-    margin-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-  
-  .glass-panel {
-    margin-left: env(safe-area-inset-left);
-    margin-right: env(safe-area-inset-right);
-  }
-}
-
-/* Landscape orientation on mobile devices */
-@media (max-width: 768px) and (orientation: landscape) {
-  .container {
-    padding: 10px;
-  }
-  
-  .glass-panel {
-    padding: 20px;
-  }
-  
-  .bottom-panel {
-    padding: 10px 5px;
-  }
-  
-  .nav-item {
-    padding: 10px;
-  }
-  
-  .header-icon {
-    padding: 10px;
-    width: 40px;
-    height: 40px;
-  }
-}
-
-/* High-resolution displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .glass-panel {
-    border-width: 0.5px;
-  }
-  
-  .nav-item {
-    border-radius: 12px;
-  }
-  
-  .header-icon {
-    border-radius: 52px;
-  }
-}
-
-/* Large mobile devices and small tablets */
-@media (min-width: 481px) and (max-width: 768px) {
-  .container {
-    padding: 15px;
-  }
-  
-  .glass-panel {
-    width: 90%;
-    padding: 30px;
-  }
-  
-  .dashboard-title {
-    font-size: 1.5rem;
-  }
-  
-  .profile-name {
-    font-size: 1.6rem;
-  }
-  
-  .stat-item .stat-value {
-    font-size: 1.4rem;
-  }
-  
-  /* Improve training stats for medium screens */
-  .training-stats {
-    gap: 20px;
-  }
-  
-  .stat-card {
-    padding: 20px;
-  }
-  
-  .stat-card h4 {
-    font-size: 1rem;
-  }
-  
-  .stat-value {
-    font-size: 1.4rem;
-  }
-}
-
-/* Tablets and desktops */
-@media (min-width: 769px) {
-  .glass-panel {
-    width: 70%;
-    max-width: 800px;
-  }
-  
-  .dashboard-title {
-    font-size: 2rem;
-  }
-  
-  .profile-name {
-    font-size: 2rem;
-  }
-  
-  /* Adjust touch targets for larger screens */
-  .nav-item {
-    padding: 14px;
-  }
-  
-  .header-icon {
-    padding: 14px;
-  }
-}
-
-/* Large desktops */
-@media (min-width: 1200px) {
-  .profile-stats {
-    flex-direction: row;
-    justify-content: space-around;
-  }
-  
-  .profile-name {
-    font-size: 2.2rem;
-  }
-  
-  .stat-item .stat-value {
-    font-size: 1.8rem;
-  }
-  
-  .health-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .health-panel {
-    min-height: 180px;
-  }
-  
-  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
-  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
-    font-size: 2rem;
-  }
-  
-  /* Improve training stats for large screens */
-  .training-stats {
-    max-width: 600px;
-    gap: 25px;
-  }
-  
-  .stat-card {
-    padding: 25px;
-  }
-  
-  .stat-card h4 {
-    font-size: 1.2rem;
-  }
-  
-  .stat-value {
-    font-size: 1.6rem;
-  }
-}
-
-/* Very small mobile devices */
-@media (max-width: 320px) {
-  .glass-panel {
-    padding: 20px 10px;
-  }
-  
-  .main-title {
-    font-size: 1.5rem;
-  }
-  
-  .subtitle {
-    font-size: 0.9rem;
-  }
-  
-  .description p {
-    font-size: 0.8rem;
-  }
-  
-  .telegram-auth-button {
-    width: 140px;
-    height: 35px;
-    font-size: 0.8rem;
-    padding: 8px 15px;
-  }
-  
-  .dashboard-title {
-    font-size: 1rem;
-  }
-  
-  .profile-name {
-    font-size: 1.2rem;
-  }
-  
-  .stat-item .stat-value {
-    font-size: 1.2rem;
-  }
-  
-  /* Increase touch targets on very small screens */
-  .nav-item {
-    padding: 18px;
-  }
-  
-  .header-icon {
-    padding: 18px;
-    width: 52px;
-    height: 52px;
-  }
-  
-  /* Improve training stats for very small screens */
-  .training-stats {
-    gap: 8px;
-  }
-  
-  .stat-card {
-    padding: 10px;
-  }
-  
-  .stat-card h4 {
-    font-size: 0.8rem;
-  }
-  
-  .stat-value {
-    font-size: 1rem;
-  }
-}
-
 /* Bottom panel */
 .bottom-panel {
   display: flex;
@@ -1261,6 +835,14 @@ body {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
   backdrop-filter: blur(10px);
   border-radius: 25px;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 600px;
+  margin: 0 auto;
+  z-index: 1000;
   padding-bottom: max(20px, calc(20px + var(--safe-area-inset-bottom)));
   margin-bottom: var(--safe-area-inset-bottom);
   
@@ -1405,66 +987,6 @@ body {
   margin-bottom: 10px;
   font-weight: 500;
 }
-.training-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px;
-  text-align: center;
-}
-
-.training-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: var(--white);
-  background: var(--gradient-border);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.training-description {
-  font-size: 1rem;
-  color: var(--light-gray);
-  margin-bottom: 25px;
-  line-height: 1.5;
-}
-
-.start-training-button {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
-  border: none;
-  border-radius: 12px;
-  padding: 15px 30px;
-  color: white;
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  max-width: 250px;
-}
-
-.start-training-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
-}
-
-.start-training-button:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.stat-card h4 {
-  font-size: 0.9rem;
-  color: var(--light-gray);
-  margin-bottom: 10px;
-  font-weight: 500;
-}
 
 .stat-value {
   font-size: 1.2rem;
@@ -1497,7 +1019,7 @@ body {
   line-height: 1.5;
 }
 
-devices-list {
+.devices-list {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -1627,6 +1149,7 @@ devices-list {
   transform: translateY(1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+
 /* Health view styles */
 .health-grid {
   display: grid;
@@ -1721,8 +1244,51 @@ devices-list {
   opacity: 0.3;
 }
 
-/* Responsive design for health panels */
+/* Responsive design */
 @media (max-width: 768px) {
+  .app-container {
+    padding: 15px;
+    padding-top: max(15px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(15px, var(--safe-area-inset-bottom)) + 70px);
+  }
+  
+  .glass-panel {
+    width: 100%;
+    padding: 30px 20px;
+    min-height: calc(100vh - 140px);
+  }
+  
+  .central-shield {
+    height: 300px;
+    min-height: 250px;
+    max-height: 400px;
+  }
+  
+  .dashboard-header {
+    padding: 10px 0;
+  }
+  
+  .dashboard-title {
+    font-size: 1.3rem;
+  }
+  
+  .nav-item span {
+    font-size: 0.8rem;
+  }
+  
+  .circle-button {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .rings-wrapper {
+    gap: 15px;
+  }
+  
+  .ring-container {
+    transform: scale(0.9);
+  }
+  
   .health-grid {
     grid-template-columns: 1fr;
     gap: 15px;
@@ -1744,6 +1310,87 @@ devices-list {
 }
 
 @media (max-width: 480px) {
+  .app-container {
+    padding: 10px;
+    padding-top: max(10px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(10px, var(--safe-area-inset-bottom)) + 60px);
+  }
+  
+  .glass-panel {
+    width: 100%;
+    padding: 25px 15px;
+    min-height: calc(100vh - 120px);
+  }
+  
+  .central-shield {
+    height: 250px;
+    min-height: 200px;
+    max-height: 350px;
+  }
+  
+  .container {
+    padding: 15px;
+  }
+  
+  .app-container {
+    padding: 15px;
+    padding-top: max(15px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(15px, var(--safe-area-inset-bottom)) + 70px);
+  }
+  
+  .glass-panel {
+    width: 90%;
+    padding: 30px 20px;
+  }
+  
+  .main-title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .description p {
+    font-size: 0.9rem;
+  }
+  
+  .access-info {
+    font-size: 1rem;
+  }
+  
+  .telegram-required p {
+    font-size: 0.9rem;
+  }
+  
+  .user-info p {
+    font-size: 0.9rem;
+  }
+  
+  .telegram-auth-button {
+    width: 180px;
+    height: 45px;
+    font-size: 1rem;
+    padding: 12px 25px;
+  }
+  
+  .dashboard-header {
+    padding: 10px 0;
+  }
+  
+  .dashboard-title {
+    font-size: 1.3rem;
+  }
+  
+  .profile-name {
+    font-size: 1.5rem;
+  }
+  
+  .profile-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
   .health-grid {
     gap: 10px;
   }
@@ -1784,7 +1431,499 @@ devices-list {
   }
 }
 
-/* Large screens */
+@media (max-width: 360px) {
+  .app-container {
+    padding: 5px;
+    padding-top: max(5px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(5px, var(--safe-area-inset-bottom)) + 55px);
+  }
+  
+  .glass-panel {
+    padding: 20px 10px;
+    width: 100%;
+    min-height: calc(100vh - 100px);
+  }
+  
+  .central-shield {
+    height: 200px;
+    min-height: 180px;
+    max-height: 300px;
+  }
+  
+  .glass-panel {
+    padding: 20px 10px;
+    width: 95%;
+  }
+  
+  .container {
+    padding: 10px;
+  }
+  
+  .glass-panel {
+    padding: 25px 15px;
+    width: 95%;
+  }
+  
+  .main-title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .description p {
+    font-size: 0.85rem;
+  }
+  
+  .access-info {
+    font-size: 0.9rem;
+  }
+  
+  .telegram-required p {
+    font-size: 0.85rem;
+  }
+  
+  .user-info p {
+    font-size: 0.85rem;
+  }
+  
+  .telegram-auth-button {
+    width: 160px;
+    height: 40px;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+  
+  .telegram-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .dashboard-header {
+    padding: 8px 0;
+  }
+  
+  .dashboard-title {
+    font-size: 1.1rem;
+  }
+  
+  .profile-name {
+    font-size: 1.3rem;
+  }
+  
+  .profile-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .stat-item .stat-value {
+    font-size: 1.3rem;
+  }
+  
+  .stat-item .stat-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* Additional responsive breakpoints for better mobile experience */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app-container {
+    padding: 25px;
+    padding-top: max(25px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(25px, var(--safe-area-inset-bottom)) + 85px);
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 160px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .app-container {
+    padding: 30px;
+    padding-top: max(30px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(30px, var(--safe-area-inset-bottom)) + 90px);
+    max-width: 900px;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 170px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .app-container {
+    padding: 40px;
+    padding-top: max(40px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(40px, var(--safe-area-inset-bottom)) + 100px);
+    max-width: 1000px;
+  }
+  
+  .glass-panel {
+    max-width: 700px;
+  }
+  
+  .profile-stats {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  
+  .profile-name {
+    font-size: 2.2rem;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 180px;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 2rem;
+  }
+}
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .app-container {
+    padding: 12px;
+    padding-top: max(12px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(12px, var(--safe-area-inset-bottom)) + 65px);
+  }
+  
+  .glass-panel {
+    padding: 20px 12px;
+    min-height: calc(100vh - 110px);
+  }
+  
+  .dashboard-header {
+    padding: 8px 0;
+  }
+  
+  .dashboard-title {
+    font-size: 1.2rem;
+  }
+  
+  .header-icon {
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+  }
+  
+  .bottom-panel {
+    padding: 15px 10px;
+    border-radius: 20px;
+  }
+  
+  .nav-item {
+    padding: 8px;
+    gap: 5px;
+  }
+  
+  .nav-item span {
+    font-size: 0.7rem;
+  }
+  
+  .circle-button {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .health-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .health-panel {
+    min-height: 110px;
+    padding: 15px;
+  }
+  
+  .panel-header h3 {
+    font-size: 1rem;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.4rem;
+  }
+  
+  .heart-rate-value span, .bp-value span, .calories-value span, 
+  .hydration-value span, .temp-value span, .oxygen-value span {
+    font-size: 0.8rem;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .app-container {
+    padding: 15px;
+    padding-top: max(15px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(15px, var(--safe-area-inset-bottom)) + 70px);
+  }
+  
+  .glass-panel {
+    padding: 25px 15px;
+    min-height: calc(100vh - 120px);
+  }
+  
+  .dashboard-title {
+    font-size: 1.4rem;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .health-panel {
+    min-height: 130px;
+    padding: 18px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .app-container {
+    padding: 20px;
+    padding-top: max(20px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(20px, var(--safe-area-inset-bottom)) + 80px);
+  }
+  
+  .glass-panel {
+    padding: 30px 20px;
+    min-height: calc(100vh - 140px);
+  }
+  
+  .dashboard-title {
+    font-size: 1.6rem;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .health-panel {
+    min-height: 150px;
+    padding: 20px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .app-container {
+    padding: 30px;
+    padding-top: max(30px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(30px, var(--safe-area-inset-bottom)) + 90px);
+    max-width: 950px;
+  }
+  
+  .glass-panel {
+    max-width: 750px;
+    padding: 35px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.8rem;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 170px;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .app-container {
+    padding: 40px;
+    padding-top: max(40px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(40px, var(--safe-area-inset-bottom)) + 100px);
+    max-width: 1000px;
+  }
+  
+  .glass-panel {
+    max-width: 800px;
+    padding: 40px;
+  }
+  
+  .profile-stats {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  
+  .profile-name {
+    font-size: 2.2rem;
+  }
+  
+  .health-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .health-panel {
+    min-height: 180px;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 2rem;
+  }
+}
+
+/* iPhone X and newer devices with notch */
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3),
+       screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2),
+       screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3),
+       screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
+       screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
+  .container {
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .dashboard-header {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .bottom-panel {
+    padding-bottom: max(20px, calc(20px + env(safe-area-inset-bottom)));
+    margin-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .glass-panel {
+    margin-left: env(safe-area-inset-left);
+    margin-right: env(safe-area-inset-right);
+  }
+}
+
+/* Landscape orientation on mobile devices */
+@media (max-width: 768px) and (orientation: landscape) {
+  .container {
+    padding: 10px;
+  }
+  
+  .glass-panel {
+    padding: 20px;
+  }
+  
+  .bottom-panel {
+    padding: 10px 5px;
+  }
+  
+  .nav-item {
+    padding: 10px;
+  }
+  
+  .header-icon {
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* High-resolution displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .glass-panel {
+    border-width: 0.5px;
+  }
+  
+  .nav-item {
+    border-radius: 12px;
+  }
+  
+  .header-icon {
+    border-radius: 52px;
+  }
+}
+
+/* Large mobile devices and small tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .glass-panel {
+    width: 90%;
+    padding: 30px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+  
+  .profile-name {
+    font-size: 1.6rem;
+  }
+  
+  .stat-item .stat-value {
+    font-size: 1.4rem;
+  }
+  
+  /* Improve training stats for medium screens */
+  .training-stats {
+    gap: 20px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card h4 {
+    font-size: 1rem;
+  }
+  
+  .stat-value {
+    font-size: 1.4rem;
+  }
+}
+
+/* Tablets and desktops */
+@media (min-width: 769px) {
+  .glass-panel {
+    width: 70%;
+    max-width: 800px;
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+  }
+  
+  .profile-name {
+    font-size: 2rem;
+  }
+  
+  /* Adjust touch targets for larger screens */
+  .nav-item {
+    padding: 14px;
+  }
+  
+  .header-icon {
+    padding: 14px;
+  }
+}
+
+/* Large desktops */
 @media (min-width: 1200px) {
   .health-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1799,3 +1938,101 @@ devices-list {
     font-size: 2rem;
   }
 }
+
+/* Very small mobile devices (320px and below) */
+@media (max-width: 320px) {
+  .app-container {
+    padding: 8px;
+    padding-top: max(8px, var(--safe-area-inset-top));
+    padding-bottom: calc(max(8px, var(--safe-area-inset-bottom)) + 55px);
+  }
+  
+  .glass-panel {
+    padding: 15px 8px;
+    min-height: calc(100vh - 90px);
+  }
+  
+  .main-title {
+    font-size: 1.4rem;
+  }
+  
+  .subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .description p {
+    font-size: 0.75rem;
+  }
+  
+  .telegram-auth-button {
+    width: 130px;
+    height: 32px;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+  
+  .dashboard-title {
+    font-size: 0.9rem;
+  }
+  
+  .profile-name {
+    font-size: 1.1rem;
+  }
+  
+  .stat-item .stat-value {
+    font-size: 1.1rem;
+  }
+  
+  /* Increase touch targets on very small screens */
+  .nav-item {
+    padding: 15px;
+  }
+  
+  .header-icon {
+    padding: 15px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  /* Improve training stats for very small screens */
+  .training-stats {
+    gap: 6px;
+  }
+  
+  .stat-card {
+    padding: 8px;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.75rem;
+  }
+  
+  .stat-value {
+    font-size: 0.9rem;
+  }
+  
+  .health-grid {
+    gap: 10px;
+  }
+  
+  .health-panel {
+    min-height: 100px;
+    padding: 12px;
+  }
+  
+  .panel-header h3 {
+    font-size: 0.9rem;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.2rem;
+  }
+  
+  .heart-rate-value span, .bp-value span, .calories-value span, 
+  .hydration-value span, .temp-value span, .oxygen-value span {
+    font-size: 0.7rem;
+  }
+}
+
+/* End of file */

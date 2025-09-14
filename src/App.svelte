@@ -114,6 +114,25 @@
   function handleSettingsClick() {
     currentView = 'settings';
   }
+  
+  // Helper function to ensure userData has all required properties for Settings component
+  function getSettingsUserData() {
+    if (!userData) {
+      return {
+        id: 0,
+        first_name: '',
+        last_name: '',
+        username: ''
+      };
+    }
+    
+    return {
+      id: userData.id || 0,
+      first_name: userData.first_name,
+      last_name: userData.last_name || '',
+      username: userData.username || ''
+    };
+  }
 </script>
 
 <svelte:head>
@@ -151,7 +170,7 @@
     <div class="sports-item tshirt"></div>
   </div>
 
-  <div class="container">
+  <div class="app-container">
     <div class="glass-panel">
       <h1 class="main-title">SARAYLO</h1>
       
@@ -205,7 +224,7 @@
     <div class="sports-item tshirt"></div>
   </div>
 
-  <div class="container">
+  <div class="app-container">
     <div class="glass-panel">
       <!-- Header -->
       <div class="dashboard-header">
@@ -358,8 +377,6 @@
             </div>
             <p class="progress-text">2900 / 50000 шагов</p>
           </div>
-          
-
         </div>
         
         <!-- Coffee button -->
@@ -391,72 +408,72 @@
             Выйти
           </button>
         </div>
-        
-        <!-- Bottom navigation panel -->
-        <div class="bottom-panel">
-          <div 
-            class="nav-item"
-            on:click={handleBackToDashboard}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-            role="button"
-            tabindex="0"
-            aria-label="Статистика"
-          >
-            <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
-            <span>Статистика</span>
-          </div>
-          <div 
-            class="nav-item"
-            on:click={handleHealthClick}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
-            role="button"
-            tabindex="0"
-            aria-label="Здоровье"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-            </svg>
-            <span>Здоровье</span>
-          </div>
-          <div class="nav-item nav-item-center">
-            <div 
-              class="circle-button"
-              class:training-mode={isInTrainingMode()}
-              on:click={handleTrainingClick}
-              on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
-              role="button"
-              tabindex="0"
-              aria-label="Начать тренировку"
-            >
-              <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
-            </div>
-          </div>
-          <div 
-            class="nav-item"
-            on:click={handleDevicesClick}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
-            role="button"
-            tabindex="0"
-            aria-label="Устройства"
-          >
-            <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
-            <span>Устройства</span>
-          </div>
-          <div 
-            class="nav-item"
-            on:click={handleProfileClick}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
-            role="button"
-            tabindex="0"
-            aria-label="Профиль"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <span>Профиль</span>
-          </div>
+      </div>
+    </div>
+    
+    <!-- Bottom navigation panel - moved outside glass-panel for consistent fixed positioning -->
+    <div class="bottom-panel">
+      <div 
+        class="nav-item"
+        on:click={handleBackToDashboard}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+        role="button"
+        tabindex="0"
+        aria-label="Статистика"
+      >
+        <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
+        <span>Статистика</span>
+      </div>
+      <div 
+        class="nav-item"
+        on:click={handleHealthClick}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
+        role="button"
+        tabindex="0"
+        aria-label="Здоровье"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+        </svg>
+        <span>Здоровье</span>
+      </div>
+      <div class="nav-item nav-item-center">
+        <div 
+          class="circle-button"
+          class:training-mode={isInTrainingMode()}
+          on:click={handleTrainingClick}
+          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
+          role="button"
+          tabindex="0"
+          aria-label="Начать тренировку"
+        >
+          <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
         </div>
+      </div>
+      <div 
+        class="nav-item"
+        on:click={handleDevicesClick}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
+        role="button"
+        tabindex="0"
+        aria-label="Устройства"
+      >
+        <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
+        <span>Устройства</span>
+      </div>
+      <div 
+        class="nav-item"
+        on:click={handleProfileClick}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
+        role="button"
+        tabindex="0"
+        aria-label="Профиль"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span>Профиль</span>
       </div>
     </div>
   </div>
@@ -469,7 +486,14 @@
 {:else if currentView === 'profile'}
   <Profile {userData} {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} {handleSettingsClick} />
 {:else if currentView === 'settings'}
-  <Settings {userData} {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
+  <Settings 
+    userData={getSettingsUserData()} 
+    handleBackToDashboard={handleBackToDashboard} 
+    handleHealthClick={handleHealthClick} 
+    handleTrainingClick={handleTrainingClick} 
+    handleDevicesClick={handleDevicesClick} 
+    handleProfileClick={handleProfileClick} 
+  />
 {/if}
 
 <style>
@@ -674,59 +698,6 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   }
   
-  /* Expanded progress panel */
-  
-  /* Progress bar */
-  .progress-container {
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    margin: 0 auto;
-  }
-  
-  .progress-bar {
-    height: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .progress-fill {
-    height: 100%;
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .progress-fill::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: shimmer 2s infinite;
-  }
-  
-  .progress-text {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--white);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Current level */
-  
-
-  
-
-  
   /* Coffee button */
   .coffee-button {
     display: flex;
@@ -811,6 +782,16 @@
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
     backdrop-filter: blur(10px);
     border-radius: 25px;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 600px;
+    margin: 0 auto;
+    z-index: 1000;
+    padding-bottom: max(20px, calc(20px + var(--safe-area-inset-bottom)));
+    margin-bottom: var(--safe-area-inset-bottom);
   }
   
   .nav-item {
@@ -835,23 +816,6 @@
     margin-top: -40px;
   }
   
-  .circle-button {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
-    transition: all 0.3s ease;
-  }
-  
-  .circle-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(255, 20, 147, 0.6);
-  }
-  
   /* Component-specific styles */
   .dashboard-actions {
     display: flex;
@@ -862,8 +826,6 @@
     margin: 0 auto;
     align-items: center;
   }
-  
-
   
   /* Activity Rings Styles */
   .activity-rings-container {
@@ -993,8 +955,9 @@
   }
   
   @media (max-width: 480px) {
-    .container {
+    .app-container {
       padding: 10px;
+      padding-bottom: 100px; /* Add extra padding for fixed bottom panel */
     }
     
     .glass-panel {
@@ -1034,59 +997,11 @@
     .legend-text {
       font-size: 0.8rem;
     }
-  }
-  
-  /* Dimmed effect for unreached levels */
-  
-  /* Note: The 'dimmed' class is applied to badge elements that represent unreached achievement levels */
-  
-  /* Profile view styles - moved to Profile.svelte */
-  
-  /* Expanded progress panel */
-  
-  /* Progress bar */
-  .progress-container {
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    margin: 0 auto;
-  }
-  
-  .progress-bar {
-    height: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .progress-fill {
-    height: 100%;
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .progress-fill::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: shimmer 2s infinite;
-  }
-  
-  .progress-text {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--white);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    
+    .bottom-panel {
+      width: calc(100% - 20px);
+      padding: 15px 10px;
+    }
   }
   
   /* Animation for shimmer effect */
