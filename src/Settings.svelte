@@ -92,19 +92,6 @@
   <div class="glass-panel">
     <!-- Header -->
     <div class="dashboard-header">
-      <div 
-        class="header-icon" 
-        on:click={handleBackToDashboard}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Назад к статистике"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
       <h1 class="dashboard-title">Настройки</h1>
       <div class="header-icon">
         <img src="images/111.png" alt="Настройки" width="24" height="24" />

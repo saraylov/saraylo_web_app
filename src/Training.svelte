@@ -7,16 +7,53 @@
   export let handleTrainingClick: () => void;
   export let handleDevicesClick: () => void;
   export let handleProfileClick: () => void;
-  export let handleSettingsClick: () => void; // Add this new handler
+  export let handleSettingsClick: () => void;
+  export let handleHistoryClick: (() => void) | null = null;
+  
+  // Добавим состояние для управления меню
+  let isMenuOpen = false;
+  let menuContainer: HTMLDivElement | null = null;
+  
+  // Функция для переключения состояния меню
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+    console.log('Menu toggled, isMenuOpen:', isMenuOpen);
+    
+    // После открытия меню регистрируем обработчик клика вне меню
+    if (isMenuOpen) {
+      // Небольшая задержка, чтобы избежать немедленного срабатывания
+      setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+      }, 10);
+    } else {
+      // При закрытии меню удаляем обработчик
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }
+  
+  // Функция для закрытия меню
+  function closeMenu() {
+    isMenuOpen = false;
+    // Удаляем обработчик при закрытии меню
+    document.removeEventListener('click', handleClickOutside);
+  }
+  
+  // Функция для обработки клика вне меню
+  function handleClickOutside(event: MouseEvent) {
+    // Проверяем, что меню открыто и клик был вне меню
+    if (isMenuOpen && menuContainer) {
+      // Проверяем, что клик был вне контейнера меню
+      if (!menuContainer.contains(event.target as Node)) {
+        closeMenu();
+        console.log('Clicked outside menu, closing menu');
+      }
+    }
+  }
   
   // Calorie tracking variables
-  let dailyCalories = 0;
+  let trainingCalories = 0;
   let caloriesInterval: ReturnType<typeof setInterval> | undefined;
-  
-  // Helper function to check if in training mode
-  function isInTrainingMode() {
-    return true;
-  }
+  let trainingStartTime: Date | null = null;
   
   // Mapbox integration
   import mapboxgl from 'mapbox-gl';
@@ -37,54 +74,41 @@
   // Ключ для хранения последней позиции в localStorage
   const LAST_POSITION_KEY = 'lastUserPosition';
   
-  // Function to simulate getting calorie data from fitness tracker
+  // Helper function to check if in training mode
+  function isInTrainingMode() {
+    return true;
+  }
+  
+  // Function to simulate getting calories burned during training
   function getCaloriesFromFitnessTracker(): number {
-    // In a real implementation, this would connect to the fitness tracker API
-    // For now, we'll simulate with a random value that increases over time
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    const secondsSinceMidnight = (now.getTime() - startOfDay.getTime()) / 1000;
+    if (!trainingStartTime) return 0;
     
-    // Simulate burning 0.1 calories per second (about 86 calories per day max in this simulation)
-    // In a real app, this would come from the fitness tracker
-    return Math.floor(secondsSinceMidnight * 0.1);
+    // In a real implementation, this would connect to the fitness tracker API
+    // For now, we'll simulate with a value based on training duration
+    const now = new Date();
+    const trainingDurationMinutes = (now.getTime() - trainingStartTime.getTime()) / (1000 * 60);
+    
+    // Simulate burning 5-15 calories per minute during training
+    const caloriesPerMinute = 10; // Average value
+    return Math.floor(trainingDurationMinutes * caloriesPerMinute);
+  }
+  
+  // Function to start training
+  function startTraining() {
+    trainingStartTime = new Date();
+    updateCalories();
+  }
+  
+  // Function to stop training
+  function stopTraining() {
+    trainingStartTime = null;
+    trainingCalories = 0;
   }
   
   // Function to update calorie display
   function updateCalories() {
-    dailyCalories = getCaloriesFromFitnessTracker();
+    trainingCalories = getCaloriesFromFitnessTracker();
   }
-  
-  onMount(() => {
-    try {
-      // Start updating calories
-      updateCalories();
-      caloriesInterval = setInterval(updateCalories, 60000); // Update every minute
-      
-      // Получаем последнюю сохраненную позицию пользователя
-      const lastPosition = getLastSavedPosition();
-      
-      // Initialize the map with last saved position or default coordinates
-      if (lastPosition) {
-        initializeMap(lastPosition.lng, lastPosition.lat);
-      } else {
-        initializeMap(30.3158, 59.9343); // St. Petersburg coordinates as example
-      }
-    } catch (error) {
-      console.error('Error initializing Mapbox map:', error);
-    }
-  });
-  
-  onDestroy(() => {
-    // Clean up the interval when component is destroyed
-    if (caloriesInterval) {
-      clearInterval(caloriesInterval);
-    }
-    
-    if (watchId !== null) {
-      navigator.geolocation.clearWatch(watchId);
-    }
-  });
   
   // Функция для получения последней сохраненной позиции
   function getLastSavedPosition(): {lng: number, lat: number} | null {
@@ -109,7 +133,7 @@
     }
   }
   
-  function initializeMap(lon: number, lat: number) {
+  function initializeMap() {
     try {
       // Initialize Mapbox map
       mapboxgl.accessToken = 'pk.eyJ1Ijoia29tbXVuMTV0IiwiYSI6ImNtZmk1ZzlsNTBoejAybHF3ejR6bjEwZ3oifQ.GHO6tJYDnc03P7fxUshk8A';
@@ -119,11 +143,17 @@
         return;
       }
       
-      // Инициализируем карту с координатами (последними сохраненными или дефолтными)
+      // Получаем последнюю сохраненную позицию пользователя
+      const lastPosition = getLastSavedPosition();
+      
+      // Инициализируем карту с последними сохраненными координатами или координатами по умолчанию
+      const initialLng = lastPosition ? lastPosition.lng : 30.3158;
+      const initialLat = lastPosition ? lastPosition.lat : 59.9343;
+      
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [lon, lat],
+        center: [initialLng, initialLat],
         zoom: 17, // Очень крупный zoom для тренировки
         maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
         minZoom: 10, // Разрешаем отдаление для просмотра всего пути
@@ -312,14 +342,35 @@
     }
   }
   
-  // Функция для очистки сохраненной позиции (по желанию)
-  function clearSavedPosition() {
+  onMount(() => {
     try {
-      localStorage.removeItem(LAST_POSITION_KEY);
+      // Set training start time
+      trainingStartTime = new Date();
+      
+      // Start updating calories
+      startTraining();
+      caloriesInterval = setInterval(updateCalories, 60000); // Update every minute
+      
+      // Initialize the map
+      initializeMap();
     } catch (error) {
-      console.error('Error clearing saved position:', error);
+      console.error('Error initializing Mapbox map:', error);
     }
-  }
+  });
+  
+  onDestroy(() => {
+    // Clean up the interval when component is destroyed
+    if (caloriesInterval) {
+      clearInterval(caloriesInterval);
+    }
+    
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+    }
+    
+    // Удалим обработчик кликов
+    document.removeEventListener('click', handleClickOutside);
+  });
 </script>
 
 <div class="background-animation">
@@ -348,37 +399,45 @@
 
 <div class="app-container">
   <div class="glass-panel">
-    <!-- Header -->
-    <div class="dashboard-header">
-      <div 
-        class="header-icon" 
-        on:click={handleBackToDashboard}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Назад к статистике"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <h1 class="dashboard-title">Тренировка</h1>
-      <div 
-        class="header-icon"
-        on:click={handleSettingsClick}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSettingsClick(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Настройки"
-      >
-        <img src="images/111.png" alt="Настройки" width="24" height="24" />
+    <!-- Header with left panel button -->
+    <div class="dashboard-header-container">
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">Тренировка</h1>
+        <!-- Добавим кнопку меню в правую часть заголовка -->
+        <div class="header-icon menu-button" on:click={toggleMenu} role="button" tabindex="0" aria-label="Меню">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
       </div>
     </div>
     
+    <!-- Выдвижное меню -->
+    {#if isMenuOpen}
+      <div class="menu-overlay" on:click={closeMenu}>
+        <div class="menu-container" bind:this={menuContainer} on:click|stopPropagation={() => {}}>
+          <div class="menu-header">
+            <h3>Функции</h3>
+            <button class="menu-close" on:click={closeMenu} aria-label="Закрыть меню">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="menu-items">
+            <div class="menu-item" on:click={() => { if (handleHistoryClick) { closeMenu(); handleHistoryClick(); } }}>
+              <span>История тренировок</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+    
     <!-- Training content -->
     <div class="dashboard-main">
-      
       <!-- Container for map and training stats to eliminate gap -->
       <div class="map-stats-container">
         <!-- Map container -->
@@ -418,7 +477,12 @@
           <!-- Calorie tracking card -->
           <div class="stat-card s-nHmVefn3S3wX">
             <h4 class="s-nHmVefn3S3wX">Калории</h4>
-            <p class="stat-value s-nHmVefn3S3wX">{dailyCalories} ккал</p>
+            <p class="stat-value s-nHmVefn3S3wX">{trainingCalories} ккал</p>
+          </div>
+          <!-- Heart rate tracking card -->
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Пульс</h4>
+            <p class="stat-value s-nHmVefn3S3wX">0 уд/мин</p>
           </div>
         </div>
       </div>
@@ -501,91 +565,165 @@
     gap: 0;
   }
   
-  /* Map container styles */
-  .shield-content {
+  /* Container for header with left panel */
+  .dashboard-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  /* Compact dashboard header styles */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between; /* Изменим на space-between для размещения заголовка по центру и кнопки справа */
+    align-items: center;
+    padding: 10px 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+    border-radius: 10px;
+    padding: 8px 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 551px;
+    margin: 0 auto;
+  }
+  
+  .dashboard-title {
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    font-weight: 800;
+    margin: 0;
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 clamp(5px, 1vw, 12px) rgba(0, 191, 255, 0.3);
+    /* Убираем центрирование текста */
+    flex-grow: 0; /* Позволяет заголовку занимать только необходимое пространство */
+    text-align: left; /* Выравниваем текст по левому краю */
+  }
+  
+  /* Стили для кнопки меню */
+  .menu-button {
+    cursor: pointer;
+    padding: 16px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    margin-left: auto; /* Отправляет кнопку вправо */
+    z-index: 1001; /* Убедимся, что кнопка поверх других элементов */
+  }
+  
+  .menu-button:hover {
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+    transform: scale(1.1);
+  }
+  
+  /* Стили для выдвижного меню */
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .menu-container {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(51, 51, 51, 0.7));
+    backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    width: clamp(250px, 70vw, 350px);
     height: 100%;
-    border: none;
-    border-radius: clamp(8px, 2vw, 15px);
     display: flex;
     flex-direction: column;
-    padding: 0;
-    position: relative;
-    background: linear-gradient(135deg, #000000, #333333);
-    /* Уменьшаем минимальную высоту на 30% */
-    min-height: clamp(210px, 49vh, 490px);
-    /* Remove any extra spacing that might create gaps */
-    margin-bottom: 0;
+    animation: slideIn 0.3s ease-out;
+    z-index: 1001;
   }
   
-  /* Custom runner marker */
-  .runner-marker {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #FF1493;
-    border: 2px solid white;
-    box-shadow: 0 0 10px rgba(255, 20, 147, 0.7);
-    position: relative;
-  }
-  
-  .runner-marker::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 10px solid #FF1493;
-  }
-  
-  /* Location message styles */
-  .location-message, .location-error {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
-    background: rgba(0, 0, 0, 0.8);
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    width: 80%;
-    max-width: 300px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .location-error button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background: var(--primary-blue);
-    color: white;
+  .menu-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: var(--gradient-border);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .menu-close {
+    background: none;
     border: none;
-    border-radius: 5px;
+    color: var(--white);
     cursor: pointer;
-  }
-  
-  .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    padding: 8px;
     border-radius: 50%;
-    border-top: 4px solid white;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 10px auto 0;
+    transition: all 0.3s ease;
   }
   
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  .menu-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    flex-grow: 1;
+  }
+  
+  .menu-item {
+    padding: 15px 20px;
+    color: var(--white);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .menu-item:hover {
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+  }
+  
+  .menu-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Анимации */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
   }
   
   .training-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     gap: clamp(8px, 2vw, 15px);
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
@@ -619,6 +757,10 @@
     justify-content: center;
     align-items: center;
     flex: 1;
+    /* Добавляем фиксированную ширину для всех элементов */
+    width: 20%;
+    /* Убираем минимальную ширину, чтобы все элементы были одинакового размера */
+    min-width: 0;
   }
   
   .stat-card h4 {
@@ -628,13 +770,18 @@
   }
   
   .stat-value {
-    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-size: clamp(0.7rem, 2vw, 1rem); /* Reduced from clamp(0.8rem, 2.5vw, 1.2rem) */
     font-weight: 700;
     color: var(--white);
     background: var(--gradient-border);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    /* Ensure value stays on one line */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
   }
   
   /* Ensure the map container fills the shield content area */
@@ -674,22 +821,26 @@
   /* Responsive design for Training component */
   @media (max-width: 768px) {
     .shield-content {
-      min-height: clamp(175px, 42vh, 350px);
+      min-height: clamp(250px, 60vh, 500px);
       border-radius: clamp(6px, 2.5vw, 12px);
     }
     
     .training-stats {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: clamp(5px, 2vw, 10px);
       /* Reduce padding for smaller screens */
       padding: clamp(7px, 1.5vw, 12px);
       border-radius: clamp(8px, 2.5vw, 15px);
+      /* На мобильных устройствах элементы будут располагаться вертикально */
+      flex-direction: column;
     }
     
     .stat-card {
       /* Reduce min-height and padding for smaller screens */
       min-height: clamp(30px, 4vh, 50px);
       padding: clamp(4px, 1vw, 8px);
+      /* На мобильных устройствах ширина будет 100% */
+      width: 100%;
     }
     
     .stat-card h4 {
@@ -698,28 +849,43 @@
     }
     
     .stat-value {
-      font-size: clamp(0.9rem, 3.2vw, 1.3rem);
+      font-size: clamp(0.6rem, 2.5vw, 0.85rem); /* Reduced from clamp(0.7rem, 2.8vw, 1rem) */
+      /* Ensure value stays on one line for mobile */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Compact header for mobile */
+    .dashboard-header {
+      padding: 6px 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
     }
   }
   
   @media (max-width: 480px) {
     .shield-content {
-      min-height: clamp(140px, 38.5vh, 280px);
+      min-height: clamp(200px, 55vh, 400px);
       border-radius: clamp(5px, 3vw, 10px);
     }
     
     .training-stats {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: clamp(4px, 2vw, 8px);
       /* Further reduce padding for very small screens */
       padding: clamp(5px, 1.5vw, 8px);
       border-radius: clamp(6px, 3vw, 12px);
+      /* На мобильных устройствах элементы будут располагаться вертикально */
+      flex-direction: column;
     }
     
     .stat-card {
       /* Further reduce min-height and padding for very small screens */
       min-height: clamp(25px, 3vh, 40px);
       padding: clamp(3px, 1vw, 6px);
+      /* На мобильных устройствах ширина будет 100% */
+      width: 100%;
     }
     
     .stat-card h4 {
@@ -728,19 +894,31 @@
     }
     
     .stat-value {
-      font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+      font-size: clamp(0.5rem, 2.8vw, 0.7rem); /* Reduced from clamp(0.6rem, 3vw, 0.85rem) */
+    }
+    
+    /* Even more compact header for small screens */
+    .dashboard-header {
+      padding: 5px 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+    }
+    
+    /* Адаптация меню для маленьких экранов */
+    .menu-container {
+      width: clamp(200px, 85vw, 300px);
     }
   }
   
   /* Large screens */
   @media (min-width: 1200px) {
     .shield-content {
-      min-height: clamp(280px, 52.5vh, 560px);
+      min-height: clamp(400px, 75vh, 800px);
       border-radius: clamp(10px, 1.5vw, 20px);
     }
     
     .training-stats {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: clamp(12px, 0.8vw, 20px);
       /* Reduce padding for large screens to prevent excessive height */
       padding: clamp(12px, 0.8vw, 18px);
@@ -751,6 +929,8 @@
       /* Reduce min-height for large screens */
       min-height: clamp(50px, 6vh, 75px);
       padding: clamp(10px, 0.7vw, 18px);
+      /* На больших экранах все элементы будут одинакового размера */
+      width: 20%;
     }
     
     .stat-card h4 {
@@ -759,7 +939,7 @@
     }
     
     .stat-value {
-      font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+      font-size: clamp(0.8rem, 1.2vw, 1.1rem); /* Reduced from clamp(0.9rem, 1.5vw, 1.3rem) */
     }
   }
 </style>

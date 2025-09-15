@@ -8,10 +8,47 @@
   export let handleDevicesClick: () => void;
   export let handleProfileClick: () => void;
   
+  // Total calories burned across all trainings
+  let totalCalories = 0;
+  let caloriesInterval: ReturnType<typeof setInterval> | undefined;
+  
   // Helper function to check if in training mode
   function isInTrainingMode() {
     return false;
   }
+  
+  // Function to simulate getting total calories from fitness tracker
+  function getTotalCaloriesFromFitnessTracker(): number {
+    // In a real implementation, this would connect to the fitness tracker API
+    // For now, we'll simulate with a random value that increases over time
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const secondsSinceMidnight = (now.getTime() - startOfDay.getTime()) / 1000;
+    
+    // Simulate burning 0.5 calories per second (about 43,200 calories per day max in this simulation)
+    // In a real app, this would come from the fitness tracker and represent total calories burned
+    return Math.floor(secondsSinceMidnight * 0.5);
+  }
+  
+  // Function to update calorie display
+  function updateCalories() {
+    totalCalories = getTotalCaloriesFromFitnessTracker();
+  }
+  
+  import { onMount, onDestroy } from 'svelte';
+  
+  onMount(() => {
+    // Start updating calories
+    updateCalories();
+    caloriesInterval = setInterval(updateCalories, 60000); // Update every minute
+  });
+  
+  onDestroy(() => {
+    // Clean up the interval when component is destroyed
+    if (caloriesInterval) {
+      clearInterval(caloriesInterval);
+    }
+  });
 </script>
 
 <div class="background-animation">
@@ -42,19 +79,6 @@
   <div class="glass-panel">
     <!-- Header -->
     <div class="dashboard-header">
-      <div 
-        class="header-icon" 
-        on:click={handleBackToDashboard}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Назад к статистике"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
       <h1 class="dashboard-title">Здоровье</h1>
       <div 
         class="header-icon"
@@ -159,7 +183,7 @@
             <h3>Калории</h3>
           </div>
           <div class="panel-content">
-            <div class="calories-value">1,850 <span>ккал</span></div>
+            <div class="calories-value">{totalCalories.toLocaleString()} <span>ккал</span></div>
             <div class="chart-placeholder">
               <!-- Calories chart would go here -->
               <div class="chart-line"></div>

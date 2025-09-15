@@ -6,6 +6,7 @@
   import Devices from './Devices.svelte';
   import Health from './Health.svelte';
   import Settings from './Settings.svelte';
+  import HistoryTrain from './HistoryTrain.svelte'; // Import the new HistoryTrain component
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -64,11 +65,11 @@
   onMount(() => {
     // Add event listener for browser navigation (back/forward buttons)
     window.addEventListener('popstate', handlePopState);
-    
+  
     // Always show dashboard
     currentView = 'dashboard';
     authStatus = 'Production by V Saraylo';
-    
+  
     // Cleanup event listeners
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -87,32 +88,49 @@
   
   // Handle training button click
   function handleTrainingClick() {
+    console.log('handleTrainingClick called, setting currentView to training');
     currentView = 'training';
   }
   
   // Handle back to dashboard from training
   function handleBackToDashboard() {
+    console.log('handleBackToDashboard called, setting currentView to dashboard');
     currentView = 'dashboard';
   }
-  
+
   // Handle profile navigation
   function handleProfileClick() {
+    console.log('handleProfileClick called, setting currentView to profile');
     currentView = 'profile';
   }
-  
+
   // Handle devices navigation
   function handleDevicesClick() {
+    console.log('handleDevicesClick called, setting currentView to devices');
     currentView = 'devices';
   }
-  
+
   // Handle health navigation
   function handleHealthClick() {
+    console.log('handleHealthClick called, setting currentView to health');
     currentView = 'health';
   }
-  
+
   // Handle settings navigation
   function handleSettingsClick() {
+    console.log('handleSettingsClick called, setting currentView to settings');
     currentView = 'settings';
+  }
+
+  // Handle history navigation
+  function handleHistoryClick() {
+    console.log('handleHistoryClick called in App.svelte');
+    console.log('Current view before change:', currentView);
+    // Let's also add a small delay to see if there's a timing issue
+    setTimeout(() => {
+      currentView = 'history';
+      console.log('Current view after change:', currentView);
+    }, 10);
   }
   
   // Helper function to ensure userData has all required properties for Settings component
@@ -479,7 +497,15 @@
     </div>
   </div>
 {:else if currentView === 'training'}
-  <Training {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} {handleSettingsClick} />
+  <Training 
+    {handleBackToDashboard} 
+    {handleHealthClick} 
+    {handleTrainingClick} 
+    {handleDevicesClick} 
+    {handleProfileClick} 
+    {handleSettingsClick} 
+    {handleHistoryClick}
+  />
 {:else if currentView === 'devices'}
   <Devices {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />
 {:else if currentView === 'health'}
@@ -495,6 +521,8 @@
     handleDevicesClick={handleDevicesClick} 
     handleProfileClick={handleProfileClick} 
   />
+{:else if currentView === 'history'}
+  <HistoryTrain {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} {handleSettingsClick} />
 {/if}
 
 <style>

@@ -1,8 +1,14 @@
-<script>
+<script lang="ts">
   import Button from './Button.svelte';
   
-  /** @type {{id?: number, first_name: string, last_name?: string, username?: string} | null} */
-  export let userData = {
+  interface UserData {
+    id?: number;
+    first_name: string;
+    last_name?: string;
+    username?: string;
+  }
+  
+  export let userData: UserData = {
     id: 123456789,
     first_name: 'Тестовый',
     last_name: 'Пользователь',
@@ -10,14 +16,19 @@
   };
   
   // Handle back to dashboard
-  export let handleBackToDashboard;
+  export let handleBackToDashboard: () => void;
   
   // Navigation handlers
-  export let handleHealthClick;
-  export let handleTrainingClick;
-  export let handleDevicesClick;
-  export let handleProfileClick;
-  export let handleSettingsClick; // Add this new handler
+  export let handleHealthClick: () => void;
+  export let handleTrainingClick: () => void;
+  export let handleDevicesClick: () => void;
+  export let handleProfileClick: () => void;
+  export let handleSettingsClick: () => void;
+
+  
+  // Total calories burned across all trainings
+  let totalCalories = 0;
+  let caloriesInterval: number | undefined;
   
   // Profile actions
   function handleEditProfile() {
@@ -35,6 +46,26 @@
     // In a real app, you would implement data export functionality
   }
   
+  // Function to simulate getting total calories from fitness tracker
+  function getTotalCaloriesFromFitnessTracker(): number {
+    // In a real implementation, this would connect to the fitness tracker API
+    // For now, we'll simulate with a random value that increases over time
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const secondsSinceMidnight = (now.getTime() - startOfDay.getTime()) / 1000;
+    
+    // Simulate burning 0.5 calories per second (about 43,200 calories per day max in this simulation)
+    // In a real app, this would come from the fitness tracker and represent total calories burned
+    return Math.floor(secondsSinceMidnight * 0.5);
+  }
+  
+  // Function to update calorie display
+  function updateCalories() {
+    totalCalories = getTotalCaloriesFromFitnessTracker();
+  }
+  
+  import { onMount, onDestroy } from 'svelte';
+  
   // Default implementation for settings click if not provided
   if (typeof handleSettingsClick !== 'function') {
     handleSettingsClick = () => {
@@ -44,11 +75,24 @@
   }
   
   // Helper function to check if in training mode (needed for bottom panel)
-  function isInTrainingMode() {
+  function isInTrainingMode(): boolean {
     // In a real app, this would check the current view or training state
     // For now, we'll return false as Profile is not a training view
     return false;
   }
+  
+  onMount(() => {
+    // Start updating calories
+    updateCalories();
+    caloriesInterval = window.setInterval(updateCalories, 60000); // Update every minute
+  });
+  
+  onDestroy(() => {
+    // Clean up the interval when component is destroyed
+    if (caloriesInterval) {
+      clearInterval(caloriesInterval);
+    }
+  });
 </script>
 
 <div class="background-animation">
@@ -79,19 +123,6 @@
   <div class="glass-panel">
     <!-- Header -->
     <div class="dashboard-header">
-      <div 
-        class="header-icon" 
-        on:click={handleBackToDashboard}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Назад к статистике"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 12H5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 19L5 12L12 5" stroke="var(--primary-blue)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
       <h1 class="dashboard-title">Профиль</h1>
       <div 
         class="header-icon"
@@ -129,8 +160,29 @@
             <p class="stat-label">Км</p>
           </div>
           <div class="stat-item">
-            <p class="stat-value">420</p>
+            <p class="stat-value">{totalCalories}</p>
             <p class="stat-label">Калории</p>
+          </div>
+        </div>
+        
+        
+        <div class="preferences-section">
+          <div class="preferences-grid">
+            <div class="preference-item color-1">
+              <p>1</p>
+            </div>
+            <div class="preference-item color-2">
+              <p>2</p>
+            </div>
+            <div class="preference-item color-3">
+              <p>3</p>
+            </div>
+            <div class="preference-item color-4">
+              <p>4</p>
+            </div>
+            <div class="preference-item color-5">
+              <p>5</p>
+            </div>
           </div>
         </div>
       </div>
@@ -154,13 +206,6 @@
             <div class="progress-bar" style="width: 65%"></div>
           </div>
           <p>Прогресс: 32.5 / 50 км</p>
-        </div>
-        
-        <div class="detail-item">
-          <h4>Предпочтения</h4>
-          <p>Единицы измерения: Метрические</p>
-          <p>Уведомления: Включены</p>
-          <p>Темная тема: Включена</p>
         </div>
       </div>
       
@@ -268,6 +313,9 @@
   
   .profile-header {
     margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .profile-avatar {
@@ -291,22 +339,28 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-align: center;
   }
   
   .profile-username {
     font-size: 1.1rem;
     color: var(--light-gray);
     margin-bottom: 20px;
+    text-align: center;
   }
   
   .profile-stats {
     display: flex;
     justify-content: space-around;
     gap: 15px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
   }
   
   .stat-item {
     flex: 1;
+    text-align: center;
   }
   
   .stat-value {
@@ -325,6 +379,9 @@
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .detail-item {
@@ -334,6 +391,10 @@
     padding: 20px;
     margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .detail-item h4 {
@@ -345,16 +406,77 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-align: center;
   }
   
   .detail-item p {
     font-size: 1rem;
     color: var(--light-gray);
     margin-bottom: 8px;
+    text-align: center;
   }
   
   .detail-item p:last-child {
     margin-bottom: 0;
+  }
+  
+  /* Preferences section with visual separation */
+  .preferences-section {
+    margin: 20px auto;
+    padding: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .preferences-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .preference-item {
+    flex: 1;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    font-size: 1.2rem;
+    /* Adding pop-out effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .preference-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Color classes for preference items */
+  .preference-item.color-1 {
+    background-color: #0cb7fa; /* New color 1 */
+  }
+  
+  .preference-item.color-2 {
+    background-color: #4b8ddf; /* New color 2 */
+  }
+  
+  .preference-item.color-3 {
+    background-color: #7e6bca; /* New color 3 */
+  }
+  
+  .preference-item.color-4 {
+    background-color: #b346b3; /* New color 4 */
+  }
+  
+  .preference-item.color-5 {
+    background-color: #f21c98; /* New color 5 */
   }
   
   /* Progress bar */
@@ -393,6 +515,10 @@
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   /* Animation keyframes - only keep the ones not in app.css */
