@@ -429,8 +429,8 @@
     padding: 0;
     position: relative;
     background: linear-gradient(135deg, #000000, #333333);
-    /* Увеличиваем минимальную высоту для тренировок */
-    min-height: clamp(300px, 70vh, 700px);
+    /* Уменьшаем минимальную высоту на 30% */
+    min-height: clamp(210px, 49vh, 490px);
     /* Remove any extra spacing that might create gaps */
     margin-bottom: 0;
   }
@@ -592,7 +592,7 @@
   /* Responsive design for Training component */
   @media (max-width: 768px) {
     .shield-content {
-      min-height: clamp(250px, 60vh, 500px);
+      min-height: clamp(175px, 42vh, 350px);
       border-radius: clamp(6px, 2.5vw, 12px);
     }
     
@@ -622,7 +622,7 @@
   
   @media (max-width: 480px) {
     .shield-content {
-      min-height: clamp(200px, 55vh, 400px);
+      min-height: clamp(140px, 38.5vh, 280px);
       border-radius: clamp(5px, 3vw, 10px);
     }
     
@@ -653,7 +653,7 @@
   /* Large screens */
   @media (min-width: 1200px) {
     .shield-content {
-      min-height: clamp(400px, 75vh, 800px);
+      min-height: clamp(280px, 52.5vh, 560px);
       border-radius: clamp(10px, 1.5vw, 20px);
     }
     
