@@ -14,7 +14,8 @@
     "build:webauth": "vite build --config viteWebAuth.config.ts",
     "preview": "vite preview",
     "preview:webauth": "vite preview --config viteWebAuth.config.ts",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "start:https": "node https-server.cjs"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
@@ -28,6 +29,7 @@
   },
   "dependencies": {
     "@types/node": "^20.14.11",
+    "express": "^4.21.1",
     "mapbox-gl": "^3.15.0",
     "svelte-mapbox": "^0.6.0"
   }

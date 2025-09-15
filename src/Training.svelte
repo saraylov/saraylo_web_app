@@ -25,52 +25,24 @@
   let geolocateControl: mapboxgl.GeolocateControl | undefined;
   let isLocating = false; // Флаг для отслеживания процесса определения местоположения
   let locationError = false; // Флаг для отслеживания ошибок геолокации
-  
-  // Sample coordinates for real-time tracking (initial position)
-  let currentPosition: [number, number] = [30.3158, 59.9343]; // St. Petersburg coordinates as example
-  
-  // Path coordinates (simulating a running route)
-  let pathCoordinates: [number, number][] = [
-    [30.3158, 59.9343],
-    [30.3168, 59.9345],
-    [30.3178, 59.9347],
-    [30.3188, 59.9349],
-    [30.3198, 59.9351]
-  ];
+  let userLocation: [number, number] | null = null; // Для хранения координат пользователя
+  let watchId: number | null = null; // ID для отслеживания геолокации
+  let previousPosition: [number, number] | null = null; // Для отслеживания предыдущей позиции
   
   onMount(() => {
     try {
-      // Request geolocation permission
-      if ('geolocation' in navigator) {
-        isLocating = true;
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log('Geolocation permission granted');
-            isLocating = false;
-            initializeMap(position.coords.longitude, position.coords.latitude);
-          },
-          (error) => {
-            console.warn('Geolocation permission denied or unavailable:', error);
-            isLocating = false;
-            locationError = true;
-            // Initialize map with default coordinates if geolocation fails
-            initializeMap(currentPosition[0], currentPosition[1]);
-          }
-        );
-      } else {
-        console.warn('Geolocation is not supported by this browser');
-        isLocating = false;
-        locationError = true;
-        // Initialize map with default coordinates if geolocation is not supported
-        initializeMap(currentPosition[0], currentPosition[1]);
-      }
+      // Initialize the map with default coordinates first
+      initializeMap(30.3158, 59.9343); // St. Petersburg coordinates as example
     } catch (error) {
-      console.error('Error requesting geolocation permission:', error);
-      isLocating = false;
-      locationError = true;
-      // Initialize map with default coordinates if there's an error
-      initializeMap(currentPosition[0], currentPosition[1]);
+      console.error('Error initializing Mapbox map:', error);
     }
+    
+    // Cleanup function
+    return () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
   });
   
   function initializeMap(lon: number, lat: number) {
@@ -87,7 +59,11 @@
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [lon, lat],
-        zoom: 14
+        zoom: 17, // Очень крупный zoom для тренировки
+        maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
+        minZoom: 10, // Разрешаем отдаление для просмотра всего пути
+        pitch: 0, // Устанавливаем нулевой угол наклона камеры
+        bearing: 0 // Устанавливаем нулевой поворот камеры
       });
       
       // Add navigation controls
@@ -111,83 +87,154 @@
         geolocateControl.on('geolocate', (position) => {
           console.log('User location found:', position);
           locationError = false;
+          isLocating = false;
+          
+          // Update current position with user location
+          if (position && position.coords && map) {
+            userLocation = [position.coords.longitude, position.coords.latitude];
+            
+            // Update marker position or create new marker
+            if (marker) {
+              marker.setLngLat([position.coords.longitude, position.coords.latitude]);
+            } else {
+              // Создаем маркер в форме бегуна
+              const el = document.createElement('div');
+              el.className = 'runner-marker';
+              marker = new mapboxgl.Marker({ element: el })
+                .setLngLat([position.coords.longitude, position.coords.latitude])
+                .addTo(map!); // Используем оператор ! для утверждения, что map не undefined
+            }
+            
+            // Центрируем карту на пользователе с плавной анимацией
+            map.easeTo({
+              center: [position.coords.longitude, position.coords.latitude],
+              zoom: 17,
+              duration: 1000 // Плавная анимация 1 секунда
+            });
+          }
         });
         
         geolocateControl.on('error', (error) => {
           console.error('Geolocation error:', error);
           locationError = true;
+          isLocating = false;
         });
         
         // Trigger geolocation when map loads
         map.on('load', () => {
+          // Add a small delay to ensure the map is fully loaded
           setTimeout(() => {
-            if (geolocateControl && !locationError) {
-              // @ts-ignore - Trigger the geolocation manually
+            // Автоматически запрашиваем геолокацию при загрузке карты
+            if (geolocateControl) {
+              isLocating = true;
+              // @ts-ignore
               geolocateControl.trigger();
             }
-          }, 1000);
+            
+            // Начинаем отслеживание местоположения в реальном времени
+            startLocationTracking();
+          }, 500);
         });
       }
-      
-      // Add the path line to the map
-      if (map) {
-        map.on('load', () => {
-          if (!map) return;
-          
-          map.addSource('route', {
-            'type': 'geojson',
-            'data': {
-              'type': 'Feature',
-              'properties': {},
-              'geometry': {
-                'type': 'LineString',
-                'coordinates': pathCoordinates
-              }
-            }
-          });
-          
-          map.addLayer({
-            'id': 'route',
-            'type': 'line',
-            'source': 'route',
-            'layout': {
-              'line-join': 'round',
-              'line-cap': 'round'
-            },
-            'paint': {
-              'line-color': '#00BFFF',
-              'line-width': 4
-            }
-          });
-          
-          // Add a marker for the current position
-          if (map) {
-            marker = new mapboxgl.Marker({ color: '#FF1493' })
-              .setLngLat([lon, lat])
-              .addTo(map);
-          }
-        });
-      }
-      
-      // Simulate real-time tracking updates
-      const updatePosition = () => {
-        // In a real app, this would come from GPS/location services
-        // For demo purposes, we'll just move the marker along the path
-        const nextIndex = (pathCoordinates.findIndex(coord => 
-          coord[0] === currentPosition[0] && coord[1] === currentPosition[1]) + 1) % pathCoordinates.length;
-        
-        currentPosition = pathCoordinates[nextIndex];
-        
-        if (marker && map) {
-          marker.setLngLat([currentPosition[0], currentPosition[1]]);
-          map.setCenter([currentPosition[0], currentPosition[1]]);
-        }
-      };
-      
-      // Update position every 3 seconds (simulating real-time tracking)
-      setInterval(updatePosition, 3000);
     } catch (error) {
       console.error('Error initializing Mapbox map:', error);
+    }
+  }
+  
+  // Функция для отслеживания местоположения в реальном времени
+  function startLocationTracking() {
+    if (!('geolocation' in navigator)) {
+      console.error('Geolocation is not supported by this browser');
+      return;
+    }
+    
+    // Начинаем отслеживание местоположения с высокой точностью
+    watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        if (map && position.coords) {
+          const lng = position.coords.longitude;
+          const lat = position.coords.latitude;
+          const currentPosition: [number, number] = [lng, lat];
+          
+          // Обновляем позицию маркера
+          if (marker) {
+            marker.setLngLat(currentPosition);
+          } else {
+            // Создаем маркер в форме бегуна
+            const el = document.createElement('div');
+            el.className = 'runner-marker';
+            marker = new mapboxgl.Marker({ element: el })
+              .setLngLat(currentPosition)
+              .addTo(map);
+          }
+          
+          // Плавно центрируем карту на пользователе, если расстояние достаточно большое
+          if (previousPosition) {
+            const distance = calculateDistance(
+              previousPosition[1], previousPosition[0],
+              lat, lng
+            );
+            
+            // Если пользователь переместился более чем на 5 метров, обновляем карту
+            if (distance > 5) {
+              map.easeTo({
+                center: currentPosition,
+                zoom: 17,
+                duration: 1000 // Плавная анимация 1 секунда
+              });
+              previousPosition = currentPosition;
+            }
+          } else {
+            // Первоначальное центрирование
+            map.easeTo({
+              center: currentPosition,
+              zoom: 17,
+              duration: 1000
+            });
+            previousPosition = currentPosition;
+          }
+          
+          // Сохраняем текущее местоположение
+          userLocation = currentPosition;
+          
+          console.log('Position updated:', lng, lat);
+        }
+      },
+      (error) => {
+        console.error('Error watching position:', error);
+        locationError = true;
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 3000, // Используем кэшированное местоположение до 3 секунд
+        timeout: 8000 // Таймаут 8 секунд
+      }
+    );
+  }
+  
+  // Вспомогательная функция для расчета расстояния между двумя точками (в метрах)
+  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Радиус Земли в метрах
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+    
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    
+    return R * c;
+  }
+  
+  // Функция для повторного запроса геолокации в случае ошибки
+  function retryGeolocation() {
+    locationError = false;
+    if (geolocateControl) {
+      isLocating = true;
+      // @ts-ignore
+      geolocateControl.trigger();
     }
   }
 </script>
@@ -265,14 +312,6 @@
           {#if locationError}
             <div class="location-error">
               <p>Не удалось определить местоположение. Используются координаты по умолчанию.</p>
-              <button on:click={() => {
-                isLocating = true;
-                locationError = false;
-                if (geolocateControl) {
-                  // @ts-ignore
-                  geolocateControl.trigger();
-                }
-              }}>Повторить попытку</button>
             </div>
           {/if}
           
@@ -385,10 +424,34 @@
     padding: 0;
     position: relative;
     background: linear-gradient(135deg, #000000, #333333);
-    /* Ensure the map fills the container */
-    min-height: clamp(250px, 50vh, 500px);
+    /* Увеличиваем минимальную высоту для тренировок */
+    min-height: clamp(300px, 70vh, 700px);
     /* Remove any extra spacing that might create gaps */
     margin-bottom: 0;
+  }
+  
+  /* Custom runner marker */
+  .runner-marker {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #FF1493;
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(255, 20, 147, 0.7);
+    position: relative;
+  }
+  
+  .runner-marker::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 10px solid #FF1493;
   }
   
   /* Location message styles */
@@ -430,19 +493,6 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
-  
-  /* Training stats overlay */
-  .training-stats-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    width: 100%;
-    max-width: min(100%, clamp(280px, 90vw, 600px));
-    padding: 0 clamp(10px, 2vw, 25px);
-    box-sizing: border-box;
   }
   
   .training-stats {
@@ -537,13 +587,8 @@
   /* Responsive design for Training component */
   @media (max-width: 768px) {
     .shield-content {
-      min-height: clamp(200px, 45vh, 400px);
+      min-height: clamp(250px, 60vh, 500px);
       border-radius: clamp(6px, 2.5vw, 12px);
-    }
-    
-    .training-stats-overlay {
-      max-width: min(100%, clamp(250px, 95vw, 500px));
-      padding: 0 clamp(8px, 3vw, 20px);
     }
     
     .training-stats {
@@ -572,13 +617,8 @@
   
   @media (max-width: 480px) {
     .shield-content {
-      min-height: clamp(180px, 40vh, 350px);
+      min-height: clamp(200px, 55vh, 400px);
       border-radius: clamp(5px, 3vw, 10px);
-    }
-    
-    .training-stats-overlay {
-      max-width: min(100%, clamp(220px, 98vw, 400px));
-      padding: 0 clamp(5px, 3.5vw, 15px);
     }
     
     .training-stats {
@@ -608,12 +648,8 @@
   /* Large screens */
   @media (min-width: 1200px) {
     .shield-content {
-      min-height: clamp(300px, 55vh, 600px);
+      min-height: clamp(400px, 75vh, 800px);
       border-radius: clamp(10px, 1.5vw, 20px);
-    }
-    
-    .training-stats-overlay {
-      max-width: min(100%, clamp(400px, 70vw, 800px));
     }
     
     .training-stats {
