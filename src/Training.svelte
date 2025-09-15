@@ -30,10 +30,20 @@
   let previousPosition: [number, number] | null = null; // Для отслеживания предыдущей позиции
   let initialLocationSet = false; // Флаг для отслеживания установки начального местоположения
   
+  // Ключ для хранения последней позиции в localStorage
+  const LAST_POSITION_KEY = 'lastUserPosition';
+  
   onMount(() => {
     try {
-      // Initialize the map without default coordinates first
-      initializeMap();
+      // Получаем последнюю сохраненную позицию пользователя
+      const lastPosition = getLastSavedPosition();
+      
+      // Initialize the map with last saved position or default coordinates
+      if (lastPosition) {
+        initializeMap(lastPosition.lng, lastPosition.lat);
+      } else {
+        initializeMap(30.3158, 59.9343); // St. Petersburg coordinates as example
+      }
     } catch (error) {
       console.error('Error initializing Mapbox map:', error);
     }
@@ -46,7 +56,30 @@
     };
   });
   
-  function initializeMap() {
+  // Функция для получения последней сохраненной позиции
+  function getLastSavedPosition(): {lng: number, lat: number} | null {
+    try {
+      const savedPosition = localStorage.getItem(LAST_POSITION_KEY);
+      if (savedPosition) {
+        return JSON.parse(savedPosition);
+      }
+    } catch (error) {
+      console.error('Error reading last position from localStorage:', error);
+    }
+    return null;
+  }
+  
+  // Функция для сохранения текущей позиции пользователя
+  function saveCurrentPosition(lng: number, lat: number) {
+    try {
+      const position = { lng, lat, timestamp: Date.now() };
+      localStorage.setItem(LAST_POSITION_KEY, JSON.stringify(position));
+    } catch (error) {
+      console.error('Error saving position to localStorage:', error);
+    }
+  }
+  
+  function initializeMap(lon: number, lat: number) {
     try {
       // Initialize Mapbox map
       mapboxgl.accessToken = 'pk.eyJ1Ijoia29tbXVuMTV0IiwiYSI6ImNtZmk1ZzlsNTBoejAybHF3ejR6bjEwZ3oifQ.GHO6tJYDnc03P7fxUshk8A';
@@ -56,11 +89,11 @@
         return;
       }
       
-      // Инициализируем карту с координатами по умолчанию, но не центрируем на них
+      // Инициализируем карту с координатами (последними сохраненными или дефолтными)
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [30.3158, 59.9343], // St. Petersburg coordinates as example
+        center: [lon, lat],
         zoom: 17, // Очень крупный zoom для тренировки
         maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
         minZoom: 10, // Разрешаем отдаление для просмотра всего пути
@@ -94,6 +127,9 @@
           // Update current position with user location
           if (position && position.coords && map) {
             userLocation = [position.coords.longitude, position.coords.latitude];
+            
+            // Сохраняем текущую позицию пользователя
+            saveCurrentPosition(position.coords.longitude, position.coords.latitude);
             
             // Update marker position or create new marker
             if (marker) {
@@ -163,6 +199,9 @@
           const lng = position.coords.longitude;
           const lat = position.coords.latitude;
           const currentPosition: [number, number] = [lng, lat];
+          
+          // Сохраняем текущую позицию пользователя
+          saveCurrentPosition(lng, lat);
           
           // Обновляем позицию маркера
           if (marker) {
@@ -240,6 +279,15 @@
       isLocating = true;
       // @ts-ignore
       geolocateControl.trigger();
+    }
+  }
+  
+  // Функция для очистки сохраненной позиции (по желанию)
+  function clearSavedPosition() {
+    try {
+      localStorage.removeItem(LAST_POSITION_KEY);
+    } catch (error) {
+      console.error('Error clearing saved position:', error);
     }
   }
 </script>
