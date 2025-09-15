@@ -28,11 +28,12 @@
   let userLocation: [number, number] | null = null; // Для хранения координат пользователя
   let watchId: number | null = null; // ID для отслеживания геолокации
   let previousPosition: [number, number] | null = null; // Для отслеживания предыдущей позиции
+  let initialLocationSet = false; // Флаг для отслеживания установки начального местоположения
   
   onMount(() => {
     try {
-      // Initialize the map with default coordinates first
-      initializeMap(30.3158, 59.9343); // St. Petersburg coordinates as example
+      // Initialize the map without default coordinates first
+      initializeMap();
     } catch (error) {
       console.error('Error initializing Mapbox map:', error);
     }
@@ -45,7 +46,7 @@
     };
   });
   
-  function initializeMap(lon: number, lat: number) {
+  function initializeMap() {
     try {
       // Initialize Mapbox map
       mapboxgl.accessToken = 'pk.eyJ1Ijoia29tbXVuMTV0IiwiYSI6ImNtZmk1ZzlsNTBoejAybHF3ejR6bjEwZ3oifQ.GHO6tJYDnc03P7fxUshk8A';
@@ -55,10 +56,11 @@
         return;
       }
       
+      // Инициализируем карту с координатами по умолчанию, но не центрируем на них
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [lon, lat],
+        center: [30.3158, 59.9343], // St. Petersburg coordinates as example
         zoom: 17, // Очень крупный zoom для тренировки
         maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
         minZoom: 10, // Разрешаем отдаление для просмотра всего пути
@@ -105,12 +107,18 @@
                 .addTo(map!); // Используем оператор ! для утверждения, что map не undefined
             }
             
-            // Центрируем карту на пользователе с плавной анимацией
-            map.easeTo({
-              center: [position.coords.longitude, position.coords.latitude],
-              zoom: 17,
-              duration: 1000 // Плавная анимация 1 секунда
-            });
+            // Центрируем карту на пользователе с плавной анимацией только если это первое определение местоположения
+            if (!initialLocationSet) {
+              map.setCenter([position.coords.longitude, position.coords.latitude]);
+              initialLocationSet = true;
+            } else {
+              // Для последующих обновлений используем плавную анимацию
+              map.easeTo({
+                center: [position.coords.longitude, position.coords.latitude],
+                zoom: 17,
+                duration: 1000 // Плавная анимация 1 секунда
+              });
+            }
           }
         });
         
@@ -118,6 +126,9 @@
           console.error('Geolocation error:', error);
           locationError = true;
           isLocating = false;
+          
+          // Если геолокация не удалась, начинаем отслеживание местоположения вручную
+          startLocationTracking();
         });
         
         // Trigger geolocation when map loads
@@ -130,9 +141,6 @@
               // @ts-ignore
               geolocateControl.trigger();
             }
-            
-            // Начинаем отслеживание местоположения в реальном времени
-            startLocationTracking();
           }, 500);
         });
       }
@@ -186,11 +194,8 @@
             }
           } else {
             // Первоначальное центрирование
-            map.easeTo({
-              center: currentPosition,
-              zoom: 17,
-              duration: 1000
-            });
+            map.setCenter(currentPosition);
+            initialLocationSet = true;
             previousPosition = currentPosition;
           }
           
