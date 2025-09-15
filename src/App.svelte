@@ -787,7 +787,7 @@
   @media (max-width: 480px) {
     .app-container {
       padding: clamp(8px, 3vw, 15px);
-      padding-bottom: clamp(70px, 12vw, 120px); /* Add extra padding for fixed bottom panel */
+      padding-bottom: clamp(80px, 14vw, 140px); /* Increased padding for fixed bottom panel */
     }
     
     .glass-panel {
@@ -805,6 +805,7 @@
     
     .activity-rings-container {
       padding: clamp(12px, 3vw, 20px);
+      margin-bottom: clamp(15px, 2vw, 25px); /* Ensure spacing from other elements */
     }
     
     .rings-title {
@@ -827,6 +828,11 @@
     
     .legend-text {
       font-size: clamp(0.7rem, 2vw, 0.9rem);
+    }
+    
+    /* Ensure bottom panel is properly positioned on small screens */
+    .bottom-panel.s-XsEmFtvddWTw {
+      padding-bottom: max(clamp(8px, 3vw, 15px), calc(clamp(8px, 3vw, 15px) + var(--safe-area-inset-bottom)));
     }
   }
 </style>

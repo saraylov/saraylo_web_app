@@ -189,25 +189,28 @@
     
     <!-- Training content -->
     <div class="dashboard-main">
-      <div class="central-shield">
-        <div class="shield-content" bind:this={mapContainer}>
-          <!-- Map content goes here -->
-        </div>
-      </div>
       
-      <!-- Training stats panel positioned below the map -->
-      <div class="training-stats s-nHmVefn3S3wX">
-        <div class="stat-card s-nHmVefn3S3wX">
-          <h4 class="s-nHmVefn3S3wX">Время</h4>
-          <p class="stat-value s-nHmVefn3S3wX">00:00:00</p>
+      <!-- Container for map and training stats to eliminate gap -->
+      <div class="map-stats-container">
+        <!-- Map container -->
+        <div class="shield-content" bind:this={mapContainer}>
+          <!-- Map will be initialized here by Mapbox GL JS -->
         </div>
-        <div class="stat-card s-nHmVefn3S3wX">
-          <h4 class="s-nHmVefn3S3wX">Дистанция</h4>
-          <p class="stat-value s-nHmVefn3S3wX">0.0 км</p>
-        </div>
-        <div class="stat-card s-nHmVefn3S3wX">
-          <h4 class="s-nHmVefn3S3wX">Темп</h4>
-          <p class="stat-value s-nHmVefn3S3wX">0:00 / км</p>
+        
+        <!-- Training stats panel positioned below the map -->
+        <div class="training-stats s-nHmVefn3S3wX">
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Время</h4>
+            <p class="stat-value s-nHmVefn3S3wX">00:00:00</p>
+          </div>
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Дистанция</h4>
+            <p class="stat-value s-nHmVefn3S3wX">0.0 км</p>
+          </div>
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Темп</h4>
+            <p class="stat-value s-nHmVefn3S3wX">0:00 / км</p>
+          </div>
         </div>
       </div>
     </div>
@@ -281,6 +284,14 @@
 </div>
 
 <style>
+  /* Container for map and stats to eliminate gap */
+  .map-stats-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+  }
+  
   /* Map container styles */
   .shield-content {
     width: 100%;
@@ -294,6 +305,8 @@
     background: linear-gradient(135deg, #000000, #333333);
     /* Ensure the map fills the container */
     min-height: clamp(250px, 50vh, 500px);
+    /* Remove any extra spacing that might create gaps */
+    margin-bottom: 0;
   }
   
   /* Training stats overlay */
@@ -317,23 +330,30 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
     border-radius: clamp(10px, 2vw, 20px);
-    padding: clamp(12px, 2vw, 20px);
+    padding: clamp(10px, 1.5vw, 15px);
     border: clamp(1px, 0.2vw, 2px) solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 clamp(5px, 1vw, 10px) clamp(15px, 2vw, 35px) rgba(0, 191, 255, 0.2);
     box-sizing: border-box;
     width: 100%;
-    /* Position below the map */
-    position: relative;
-    margin-top: clamp(10px, 2vw, 20px);
     max-width: min(100%, clamp(280px, 90vw, 600px));
+    /* Position panel directly below map with no gap */
+    margin-top: 0;
+    position: relative;
+    /* Center the panel horizontally */
     margin-left: auto;
     margin-right: auto;
+    z-index: 2;
+    /* Ensure proper height */
+    min-height: auto;
+    height: auto;
   }
   
   .stat-card {
     text-align: center;
-    padding: clamp(8px, 2vw, 15px);
-    min-height: clamp(60px, 10vh, 100px);
+    /* Reduce padding to make panel less tall */
+    padding: clamp(5px, 1vw, 10px);
+    /* Reduce min-height to make panel less tall */
+    min-height: clamp(35px, 5vh, 60px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -405,19 +425,21 @@
     
     .training-stats {
       grid-template-columns: 1fr;
-      gap: clamp(6px, 2.5vw, 12px);
-      padding: clamp(10px, 2.5vw, 15px);
+      gap: clamp(5px, 2vw, 10px);
+      /* Reduce padding for smaller screens */
+      padding: clamp(7px, 1.5vw, 12px);
       border-radius: clamp(8px, 2.5vw, 15px);
     }
     
     .stat-card {
-      min-height: clamp(50px, 8vh, 80px);
-      padding: clamp(6px, 2vw, 12px);
+      /* Reduce min-height and padding for smaller screens */
+      min-height: clamp(30px, 4vh, 50px);
+      padding: clamp(4px, 1vw, 8px);
     }
     
     .stat-card h4 {
       font-size: clamp(0.7rem, 2.2vw, 0.9rem);
-      margin-bottom: clamp(2px, 1vw, 5px);
+      margin-bottom: clamp(1px, 0.5vw, 3px);
     }
     
     .stat-value {
@@ -438,19 +460,21 @@
     
     .training-stats {
       grid-template-columns: 1fr;
-      gap: clamp(5px, 3vw, 10px);
-      padding: clamp(8px, 3vw, 12px);
+      gap: clamp(4px, 2vw, 8px);
+      /* Further reduce padding for very small screens */
+      padding: clamp(5px, 1.5vw, 8px);
       border-radius: clamp(6px, 3vw, 12px);
     }
     
     .stat-card {
-      min-height: clamp(45px, 10vh, 70px);
-      padding: clamp(5px, 2.5vw, 10px);
+      /* Further reduce min-height and padding for very small screens */
+      min-height: clamp(25px, 3vh, 40px);
+      padding: clamp(3px, 1vw, 6px);
     }
     
     .stat-card h4 {
       font-size: clamp(0.6rem, 2.5vw, 0.8rem);
-      margin-bottom: clamp(1px, 1vw, 3px);
+      margin-bottom: clamp(1px, 0.5vw, 2px);
     }
     
     .stat-value {
@@ -471,23 +495,25 @@
     
     .training-stats {
       grid-template-columns: repeat(3, 1fr);
-      gap: clamp(15px, 1vw, 25px);
-      padding: clamp(20px, 1.5vw, 30px);
+      gap: clamp(12px, 0.8vw, 20px);
+      /* Reduce padding for large screens to prevent excessive height */
+      padding: clamp(12px, 0.8vw, 18px);
       border-radius: clamp(15px, 1.5vw, 25px);
     }
     
     .stat-card {
-      min-height: clamp(80px, 12vh, 120px);
-      padding: clamp(15px, 1vw, 25px);
+      /* Reduce min-height for large screens */
+      min-height: clamp(50px, 6vh, 75px);
+      padding: clamp(10px, 0.7vw, 18px);
     }
     
     .stat-card h4 {
-      font-size: clamp(1rem, 1.2vw, 1.3rem);
-      margin-bottom: clamp(5px, 0.5vw, 10px);
+      font-size: clamp(0.9rem, 1vw, 1.2rem);
+      margin-bottom: clamp(3px, 0.3vw, 8px);
     }
     
     .stat-value {
-      font-size: clamp(1.2rem, 2vw, 1.8rem);
+      font-size: clamp(1.1rem, 1.8vw, 1.6rem);
     }
   }
 </style>

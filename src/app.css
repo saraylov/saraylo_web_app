@@ -137,7 +137,7 @@ body {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
   border-radius: clamp(10px, 2vw, 20px);
-  padding: clamp(12px, 2vw, 20px);
+  padding: clamp(10px, 1.5vw, 15px);
   border: clamp(1px, 0.2vw, 2px) solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 clamp(5px, 1vw, 10px) clamp(15px, 2vw, 35px) rgba(0, 191, 255, 0.2);
   box-sizing: border-box;
@@ -145,8 +145,10 @@ body {
   max-width: min(100%, clamp(280px, 90vw, 600px));
   margin-left: auto;
   margin-right: auto;
-  /* Move panel 120px upward */
-  margin-top: clamp(-120px, -6vw, -70px);
+  /* Position panel directly below map with no gap */
+  margin-top: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .rings-wrapper {
@@ -362,12 +364,11 @@ body {
   }
   
   .circle-button {
-    width: clamp(60px, 15vw, 80px);
-    height: clamp(60px, 15vw, 80px);
+    width: clamp(65px, 16vw, 80px);
+    height: clamp(65px, 16vw, 80px);
   }
 }
 
-/* iPhone X and newer devices with notch */
 @media (max-width: 480px) {
   :root {
     --base-font-size: clamp(11px, 3vw, 15px);
@@ -416,8 +417,8 @@ body {
   }
   
   .circle-button {
-    width: clamp(60px, 15vw, 80px);
-    height: clamp(60px, 15vw, 80px);
+    width: clamp(60px, 18vw, 75px);
+    height: clamp(60px, 18vw, 75px);
     margin: 0 auto;
   }
   
@@ -467,8 +468,8 @@ body {
   }
   
   .circle-button {
-    width: clamp(60px, 15vw, 80px);
-    height: clamp(60px, 15vw, 80px);
+    width: clamp(70px, 6vw, 90px);
+    height: clamp(70px, 6vw, 90px);
   }
 }
 
@@ -975,6 +976,8 @@ body {
   /* Ensure proper sizing */
   flex: 1;
   box-sizing: border-box;
+  /* Remove any extra spacing that might create gaps */
+  margin-bottom: 0;
 }
 
 .shield-top {
@@ -1238,21 +1241,17 @@ body {
 }
 
 .circle-button {
-  width: clamp(60px, 15vw, 80px);
-  height: clamp(60px, 15vw, 80px);
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 20px) rgba(0, 191, 255, 0.4);
+  box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
   transition: all 0.3s ease;
-  min-width: var(--touch-target-min);
-  min-height: var(--touch-target-min);
-  margin: 0 auto;
-  
-  /* Ensure the button maintains its circular shape */
-  aspect-ratio: 1 / 1;
+  min-width: var(--touch-target-comfortable); /* Minimum touch target size */
+  min-height: var(--touch-target-comfortable); /* Minimum touch target size */
 }
 
 .circle-button.training-mode {
@@ -1325,27 +1324,34 @@ body {
 
 .training-stats {
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
   max-width: 500px;
-  gap: 15px;
-  margin-top: 20px;
-  
-  /* Improve touch targets for training stats */
-  min-height: var(--touch-target-comfortable);
+  gap: 12px;
+  /* Reduce margin-top to make panel less tall */
+  margin-top: 12px;
+  box-sizing: border-box;
+  /* Ensure proper height */
+  height: auto;
+  /* Remove any fixed height that might cause stretching */
+  min-height: auto;
+  /* Reduce padding */
+  padding: 12px;
 }
 
 .stat-card {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
   backdrop-filter: blur(5px);
   border-radius: 15px;
-  padding: 15px;
+  /* Reduce padding to make panel less tall */
+  padding: 10px;
   text-align: center;
   flex: 1;
   border: 1px solid rgba(255, 255, 255, 0.1);
   
-  /* Ensure minimum touch target size */
-  min-height: var(--touch-target-min);
+  /* Ensure minimum touch target size but reduce height */
+  min-height: 35px;
 }
 
 .stat-card h4 {
@@ -1673,6 +1679,53 @@ body {
   .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
   .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
     font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .training-stats {
+    flex-direction: row;
+    gap: clamp(4px, 2vw, 8px);
+    /* Reduce padding for smaller screens */
+    padding: clamp(5px, 1.5vw, 8px);
+    border-radius: clamp(6px, 3vw, 12px);
+  }
+  
+  .stat-card {
+    /* Reduce min-height and padding for smaller screens */
+    min-height: 30px;
+    padding: clamp(3px, 1vw, 6px);
+  }
+  
+  .stat-card h4 {
+    font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+    margin-bottom: clamp(1px, 0.5vw, 2px);
+  }
+  
+  .stat-value {
+    font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+  }
+}
+
+@media (max-width: 360px) {
+  .training-stats {
+    gap: 5px;
+    /* Further reduce padding for very small screens */
+    padding: 5px;
+  }
+  
+  .stat-card {
+    /* Further reduce min-height and padding for very small screens */
+    min-height: 25px;
+    padding: 5px;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.7rem;
+  }
+  
+  .stat-value {
+    font-size: 0.85rem;
   }
 }
 
@@ -2024,12 +2077,12 @@ body {
   
   .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
   .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
   
   .heart-rate-value span, .bp-value span, .calories-value span, 
   .hydration-value span, .temp-value span, .oxygen-value span {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -2157,8 +2210,8 @@ body {
   }
   
   .circle-button {
-    width: clamp(60px, 15vw, 80px);
-    height: clamp(60px, 15vw, 80px);
+    width: clamp(70px, 6vw, 90px);
+    height: clamp(70px, 6vw, 90px);
   }
 }
 
