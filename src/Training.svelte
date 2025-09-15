@@ -191,23 +191,23 @@
     <div class="dashboard-main">
       <div class="central-shield">
         <div class="shield-content" bind:this={mapContainer}>
-          <!-- Training stats overlay -->
-          <div class="training-stats-overlay">
-            <div class="training-stats">
-              <div class="stat-card">
-                <h4>Время</h4>
-                <p class="stat-value">00:00:00</p>
-              </div>
-              <div class="stat-card">
-                <h4>Дистанция</h4>
-                <p class="stat-value">0.0 км</p>
-              </div>
-              <div class="stat-card">
-                <h4>Темп</h4>
-                <p class="stat-value">0:00 / км</p>
-              </div>
-            </div>
-          </div>
+          <!-- Map content goes here -->
+        </div>
+      </div>
+      
+      <!-- Training stats panel positioned below the map -->
+      <div class="training-stats s-nHmVefn3S3wX">
+        <div class="stat-card s-nHmVefn3S3wX">
+          <h4 class="s-nHmVefn3S3wX">Время</h4>
+          <p class="stat-value s-nHmVefn3S3wX">00:00:00</p>
+        </div>
+        <div class="stat-card s-nHmVefn3S3wX">
+          <h4 class="s-nHmVefn3S3wX">Дистанция</h4>
+          <p class="stat-value s-nHmVefn3S3wX">0.0 км</p>
+        </div>
+        <div class="stat-card s-nHmVefn3S3wX">
+          <h4 class="s-nHmVefn3S3wX">Темп</h4>
+          <p class="stat-value s-nHmVefn3S3wX">0:00 / км</p>
         </div>
       </div>
     </div>
@@ -322,6 +322,12 @@
     box-shadow: 0 clamp(5px, 1vw, 10px) clamp(15px, 2vw, 35px) rgba(0, 191, 255, 0.2);
     box-sizing: border-box;
     width: 100%;
+    /* Position below the map */
+    position: relative;
+    margin-top: clamp(10px, 2vw, 20px);
+    max-width: min(100%, clamp(280px, 90vw, 600px));
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .stat-card {
