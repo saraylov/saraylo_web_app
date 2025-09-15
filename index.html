@@ -9,10 +9,30 @@
     <meta name="theme-color" content="#00BFFF">
     <meta name="description" content="Интеллектуальный анализ вашего физиологического состояния в реальном времени для оптимизации тренировок">
     <meta name="format-detection" content="telephone=no">
+    <!-- Добавляем разрешения для геолокации -->
+    <meta name="geo.position" content="59.9343;30.3158">
+    <meta name="geo.placename" content="Санкт-Петербург">
+    <meta name="geo.region" content="RU-SPE">
+    <!-- Добавляем манифест для PWA -->
+    <link rel="manifest" href="/manifest.json">
     <title>Квантовый Беговой Тренер</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <!-- Регистрация сервис-воркера -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('Service Worker зарегистрирован:', registration);
+            })
+            .catch((error) => {
+              console.log('Ошибка регистрации Service Worker:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

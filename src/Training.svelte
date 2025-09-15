@@ -22,6 +22,9 @@
   let mapContainer: HTMLElement | undefined;
   let map: mapboxgl.Map | undefined;
   let marker: mapboxgl.Marker | undefined;
+  let geolocateControl: mapboxgl.GeolocateControl | undefined;
+  let isLocating = false; // Флаг для отслеживания процесса определения местоположения
+  let locationError = false; // Флаг для отслеживания ошибок геолокации
   
   // Sample coordinates for real-time tracking (initial position)
   let currentPosition: [number, number] = [30.3158, 59.9343]; // St. Petersburg coordinates as example
@@ -37,6 +40,41 @@
   
   onMount(() => {
     try {
+      // Request geolocation permission
+      if ('geolocation' in navigator) {
+        isLocating = true;
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('Geolocation permission granted');
+            isLocating = false;
+            initializeMap(position.coords.longitude, position.coords.latitude);
+          },
+          (error) => {
+            console.warn('Geolocation permission denied or unavailable:', error);
+            isLocating = false;
+            locationError = true;
+            // Initialize map with default coordinates if geolocation fails
+            initializeMap(currentPosition[0], currentPosition[1]);
+          }
+        );
+      } else {
+        console.warn('Geolocation is not supported by this browser');
+        isLocating = false;
+        locationError = true;
+        // Initialize map with default coordinates if geolocation is not supported
+        initializeMap(currentPosition[0], currentPosition[1]);
+      }
+    } catch (error) {
+      console.error('Error requesting geolocation permission:', error);
+      isLocating = false;
+      locationError = true;
+      // Initialize map with default coordinates if there's an error
+      initializeMap(currentPosition[0], currentPosition[1]);
+    }
+  });
+  
+  function initializeMap(lon: number, lat: number) {
+    try {
       // Initialize Mapbox map
       mapboxgl.accessToken = 'pk.eyJ1Ijoia29tbXVuMTV0IiwiYSI6ImNtZmk1ZzlsNTBoejAybHF3ejR6bjEwZ3oifQ.GHO6tJYDnc03P7fxUshk8A';
       
@@ -48,7 +86,7 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [currentPosition[0], currentPosition[1]],
+        center: [lon, lat],
         zoom: 14
       });
       
@@ -59,15 +97,36 @@
       
       // Add geolocate control
       if (map) {
-        map.addControl(
-          new mapboxgl.GeolocateControl({
-            positionOptions: {
-              enableHighAccuracy: true
-            },
-            trackUserLocation: true,
-            showUserHeading: true
-          })
-        );
+        geolocateControl = new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true,
+          showUserHeading: true
+        });
+        
+        map.addControl(geolocateControl);
+        
+        // Listen for geolocation events
+        geolocateControl.on('geolocate', (position) => {
+          console.log('User location found:', position);
+          locationError = false;
+        });
+        
+        geolocateControl.on('error', (error) => {
+          console.error('Geolocation error:', error);
+          locationError = true;
+        });
+        
+        // Trigger geolocation when map loads
+        map.on('load', () => {
+          setTimeout(() => {
+            if (geolocateControl && !locationError) {
+              // @ts-ignore - Trigger the geolocation manually
+              geolocateControl.trigger();
+            }
+          }, 1000);
+        });
       }
       
       // Add the path line to the map
@@ -104,7 +163,7 @@
           // Add a marker for the current position
           if (map) {
             marker = new mapboxgl.Marker({ color: '#FF1493' })
-              .setLngLat([currentPosition[0], currentPosition[1]])
+              .setLngLat([lon, lat])
               .addTo(map);
           }
         });
@@ -130,7 +189,7 @@
     } catch (error) {
       console.error('Error initializing Mapbox map:', error);
     }
-  });
+  }
 </script>
 
 <div class="background-animation">
@@ -194,6 +253,29 @@
       <div class="map-stats-container">
         <!-- Map container -->
         <div class="shield-content" bind:this={mapContainer}>
+          <!-- Отображаем сообщение о поиске местоположения -->
+          {#if isLocating}
+            <div class="location-message">
+              <p>Поиск вашего местоположения...</p>
+              <div class="spinner"></div>
+            </div>
+          {/if}
+          
+          <!-- Отображаем сообщение об ошибке геолокации -->
+          {#if locationError}
+            <div class="location-error">
+              <p>Не удалось определить местоположение. Используются координаты по умолчанию.</p>
+              <button on:click={() => {
+                isLocating = true;
+                locationError = false;
+                if (geolocateControl) {
+                  // @ts-ignore
+                  geolocateControl.trigger();
+                }
+              }}>Повторить попытку</button>
+            </div>
+          {/if}
+          
           <!-- Map will be initialized here by Mapbox GL JS -->
         </div>
         
@@ -307,6 +389,47 @@
     min-height: clamp(250px, 50vh, 500px);
     /* Remove any extra spacing that might create gaps */
     margin-bottom: 0;
+  }
+  
+  /* Location message styles */
+  .location-message, .location-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    width: 80%;
+    max-width: 300px;
+  }
+  
+  .location-error button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid white;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 10px auto 0;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   
   /* Training stats overlay */
