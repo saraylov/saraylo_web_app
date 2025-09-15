@@ -9,6 +9,10 @@
   export let handleProfileClick: () => void;
   export let handleSettingsClick: () => void; // Add this new handler
   
+  // Calorie tracking variables
+  let dailyCalories = 0;
+  let caloriesInterval: ReturnType<typeof setInterval> | undefined;
+  
   // Helper function to check if in training mode
   function isInTrainingMode() {
     return true;
@@ -16,7 +20,7 @@
   
   // Mapbox integration
   import mapboxgl from 'mapbox-gl';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Button from './Button.svelte'; // Импортируем универсальный компонент Button
   
   let mapContainer: HTMLElement | undefined;
@@ -33,8 +37,30 @@
   // Ключ для хранения последней позиции в localStorage
   const LAST_POSITION_KEY = 'lastUserPosition';
   
+  // Function to simulate getting calorie data from fitness tracker
+  function getCaloriesFromFitnessTracker(): number {
+    // In a real implementation, this would connect to the fitness tracker API
+    // For now, we'll simulate with a random value that increases over time
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const secondsSinceMidnight = (now.getTime() - startOfDay.getTime()) / 1000;
+    
+    // Simulate burning 0.1 calories per second (about 86 calories per day max in this simulation)
+    // In a real app, this would come from the fitness tracker
+    return Math.floor(secondsSinceMidnight * 0.1);
+  }
+  
+  // Function to update calorie display
+  function updateCalories() {
+    dailyCalories = getCaloriesFromFitnessTracker();
+  }
+  
   onMount(() => {
     try {
+      // Start updating calories
+      updateCalories();
+      caloriesInterval = setInterval(updateCalories, 60000); // Update every minute
+      
       // Получаем последнюю сохраненную позицию пользователя
       const lastPosition = getLastSavedPosition();
       
@@ -47,13 +73,17 @@
     } catch (error) {
       console.error('Error initializing Mapbox map:', error);
     }
+  });
+  
+  onDestroy(() => {
+    // Clean up the interval when component is destroyed
+    if (caloriesInterval) {
+      clearInterval(caloriesInterval);
+    }
     
-    // Cleanup function
-    return () => {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-      }
-    };
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+    }
   });
   
   // Функция для получения последней сохраненной позиции
@@ -385,6 +415,11 @@
             <h4 class="s-nHmVefn3S3wX">Темп</h4>
             <p class="stat-value s-nHmVefn3S3wX">0:00 / км</p>
           </div>
+          <!-- Calorie tracking card -->
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Калории</h4>
+            <p class="stat-value s-nHmVefn3S3wX">{dailyCalories} ккал</p>
+          </div>
         </div>
       </div>
     </div>
@@ -549,9 +584,8 @@
   }
   
   .training-stats {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: clamp(8px, 2vw, 15px);
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
@@ -645,7 +679,7 @@
     }
     
     .training-stats {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: clamp(5px, 2vw, 10px);
       /* Reduce padding for smaller screens */
       padding: clamp(7px, 1.5vw, 12px);
@@ -675,7 +709,7 @@
     }
     
     .training-stats {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: clamp(4px, 2vw, 8px);
       /* Further reduce padding for very small screens */
       padding: clamp(5px, 1.5vw, 8px);
@@ -706,7 +740,7 @@
     }
     
     .training-stats {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: clamp(12px, 0.8vw, 20px);
       /* Reduce padding for large screens to prevent excessive height */
       padding: clamp(12px, 0.8vw, 18px);
