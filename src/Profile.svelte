@@ -476,7 +476,7 @@
   }
   
   .preference-item.color-2 {
-    background: #ADFF2F; /* Кислотно-зеленый (Acid Green) */
+    background: #18ff00; /* Changed to #18ff00 as requested */
     position: relative;
     overflow: hidden;
   }
@@ -499,7 +499,7 @@
   }
   
   .preference-item.color-3 {
-    background: #FFD700; /* Желтый (Yellow) */
+    background: #fffc00; /* Changed to #fffc00 as requested */
     position: relative;
     overflow: hidden;
   }
@@ -522,7 +522,7 @@
   }
   
   .preference-item.color-4 {
-    background: #FF4500; /* Ярко оранжевый (Bright Orange) */
+    background: #ff8800; /* Changed to #ff8800 as requested */
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -557,7 +557,7 @@
   }
   
   .preference-item.color-5 {
-    background: #FF0000; /* Ярко-красный (Bright Red) */
+    background: #9b0000; /* Changed to #9b0000 as requested */
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;

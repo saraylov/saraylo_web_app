@@ -247,16 +247,6 @@
     <div class="glass-panel">
       <!-- Header -->
       <div class="dashboard-header">
-        <div 
-          class="header-icon" 
-          on:click={handleSettingsClick}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSettingsClick(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Настройки"
-        >
-          <img src="images/111.png" alt="Настройки" width="24" height="24" />
-        </div>
         <h1 class="dashboard-title">Статистика</h1>
         <div 
           class="header-icon" 

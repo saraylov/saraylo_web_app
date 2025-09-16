@@ -9,6 +9,13 @@
 	export let handleProfileClick: () => void;
 	export let handleSettingsClick: () => void;
 	
+	// Helper function to check if in training mode (needed for bottom panel)
+	function isInTrainingMode(): boolean {
+		// In a real app, this would check the current view or training state
+		// For now, we'll return false as History is not a training view
+		return false;
+	}
+	
 	interface TrainingSession {
 		id: number;
 		date: string;
@@ -120,6 +127,72 @@
 			</div>
 		{/if}
 	</div>
+</div>
+
+<!-- Bottom navigation panel - identical to the one in App.svelte -->
+<div class="bottom-panel">
+  <div 
+    class="nav-item"
+    on:click={handleBackToDashboard}
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
+    role="button"
+    tabindex="0"
+    aria-label="Статистика"
+  >
+    <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
+    <span>Статистика</span>
+  </div>
+  <div 
+    class="nav-item"
+    on:click={handleHealthClick}
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
+    role="button"
+    tabindex="0"
+    aria-label="Здоровье"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+    </svg>
+    <span>Здоровье</span>
+  </div>
+  <div class="nav-item nav-item-center">
+    <div 
+      class="circle-button"
+      class:training-mode={isInTrainingMode()}
+      on:click={handleTrainingClick}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
+      role="button"
+      tabindex="0"
+      aria-label="Начать тренировку"
+    >
+      <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
+    </div>
+  </div>
+  <div 
+    class="nav-item"
+    on:click={handleDevicesClick}
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
+    role="button"
+    tabindex="0"
+    aria-label="Устройства"
+  >
+    <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
+    <span>Устройства</span>
+  </div>
+  <div 
+    class="nav-item"
+    on:click={handleProfileClick}
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
+    role="button"
+    tabindex="0"
+    aria-label="Профиль"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
+    </svg>
+    <span>Профиль</span>
+  </div>
 </div>
 
 <style>
@@ -250,6 +323,94 @@
 	@keyframes fadeIn {
 		from { opacity: 0; transform: translateY(20px); }
 		to { opacity: 1; transform: translateY(0); }
+	}
+	
+	/* Bottom panel styles - imported from app.css */
+	.bottom-panel {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		align-items: center;
+		padding: clamp(10px, 2vw, 25px) clamp(8px, 2vw, 20px);
+		background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+		backdrop-filter: blur(10px);
+		border-radius: var(--border-radius);
+		position: fixed;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: calc(100% - (var(--container-padding) * 2));
+		max-width: min(100%, clamp(300px, 95vw, 800px));
+		margin: 0 auto;
+		z-index: 1000;
+		padding-bottom: max(clamp(10px, 2vw, 25px), calc(clamp(10px, 2vw, 25px) + var(--safe-area-inset-bottom)));
+		margin-bottom: var(--safe-area-inset-bottom);
+		min-height: var(--touch-target-min);
+		box-sizing: border-box;
+	}
+	
+	.nav-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(3px, 1vw, 10px);
+		cursor: pointer;
+		color: var(--light-gray);
+		transition: all 0.3s ease;
+		padding: clamp(8px, 2vw, 16px);
+		border-radius: clamp(5px, 1vw, 12px);
+		min-width: var(--touch-target-min);
+		min-height: var(--touch-target-min);
+		justify-content: center;
+		text-align: center;
+	}
+	
+	.nav-item-center {
+		margin-top: calc(clamp(-25px, -4vw, -50px));
+		grid-column: 3;
+	}
+	
+	.circle-button {
+		/* Make the button responsive using clamp with viewport units */
+		width: clamp(60px, 15vw, 80px);
+		height: clamp(60px, 15vw, 80px);
+		border-radius: 50%;
+		background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 20px) rgba(0, 191, 255, 0.4);
+		transition: all 0.3s ease;
+		min-width: var(--touch-target-min);
+		min-height: var(--touch-target-min);
+		margin: 0 auto;
+		
+		/* Ensure the button maintains its circular shape */
+		aspect-ratio: 1 / 1;
+	}
+	
+	.circle-button:hover {
+		transform: scale(1.05);
+		box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 30px) rgba(0, 191, 255, 0.6);
+	}
+	
+	.circle-button:active {
+		transform: scale(0.95);
+	}
+	
+	.circle-button.training-mode {
+		animation: pulse 2s infinite;
+	}
+	
+	@keyframes pulse {
+		0% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.7); }
+		70% { box-shadow: 0 0 0 clamp(15px, 3vw, 30px) rgba(0, 191, 255, 0); }
+		100% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0); }
+	}
+	
+	.nav-item:hover {
+		color: var(--white);
+		background: rgba(255, 255, 255, 0.1);
+		transform: translateY(-3px);
 	}
 	
 	@media (max-width: 600px) {
