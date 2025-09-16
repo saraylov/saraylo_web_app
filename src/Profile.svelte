@@ -166,23 +166,22 @@
         </div>
         
         
-        <div class="preferences-section">
-          <div class="preferences-grid">
-            <div class="preference-item color-1">
-              <p>1</p>
-            </div>
-            <div class="preference-item color-2">
-              <p>2</p>
-            </div>
-            <div class="preference-item color-3">
-              <p>3</p>
-            </div>
-            <div class="preference-item color-4">
-              <p>4</p>
-            </div>
-            <div class="preference-item color-5">
-              <p>5</p>
-            </div>
+        <!-- Five numbered panels as requested -->
+        <div class="profile-stats additional-stats">
+          <div class="preference-item color-1">
+            <p></p>
+          </div>
+          <div class="preference-item color-2">
+            <p></p>
+          </div>
+          <div class="preference-item color-3">
+            <p></p>
+          </div>
+          <div class="preference-item color-4">
+            <p></p>
+          </div>
+          <div class="preference-item color-5">
+            <p></p>
           </div>
         </div>
       </div>
@@ -206,6 +205,11 @@
             <div class="progress-bar" style="width: 65%"></div>
           </div>
           <p>Прогресс: 32.5 / 50 км</p>
+        </div>
+        
+        <div class="detail-item s-5bxgN2DE9Rcr">
+          <h4 class="s-5bxgN2DE9Rcr">Предпочтения</h4>
+          <!-- Replacing the existing paragraph elements with 5 identically sized numbered elements in a row -->
         </div>
       </div>
       
@@ -313,9 +317,6 @@
   
   .profile-header {
     margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   
   .profile-avatar {
@@ -339,28 +340,28 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-align: center;
   }
   
   .profile-username {
     font-size: 1.1rem;
     color: var(--light-gray);
     margin-bottom: 20px;
-    text-align: center;
   }
   
   .profile-stats {
     display: flex;
     justify-content: space-around;
     gap: 15px;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 400px;
+  }
+  
+  .additional-stats {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .stat-item {
     flex: 1;
-    text-align: center;
   }
   
   .stat-value {
@@ -379,9 +380,6 @@
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   
   .detail-item {
@@ -391,10 +389,6 @@
     padding: 20px;
     margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    width: 100%;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
   }
   
   .detail-item h4 {
@@ -406,77 +400,195 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-align: center;
   }
   
   .detail-item p {
     font-size: 1rem;
     color: var(--light-gray);
     margin-bottom: 8px;
-    text-align: center;
   }
   
   .detail-item p:last-child {
     margin-bottom: 0;
   }
   
-  /* Preferences section with visual separation */
-  .preferences-section {
-    margin: 20px auto;
-    padding: 15px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    width: 100%;
-    max-width: 400px;
-  }
-  
+  /* New styles for the preferences grid */
   .preferences-grid {
     display: flex;
+    flex-direction: row;
     gap: 10px;
-    margin-top: 10px;
+    width: 100%;
   }
   
   .preference-item {
     flex: 1;
-    height: 50px;
+    text-align: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    font-weight: 600;
-    color: white;
-    font-size: 1.2rem;
-    /* Adding pop-out effect */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(0);
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
   }
   
   .preference-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 
+      0 10px 15px rgba(0, 0, 0, 0.2),
+      0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  /* Color classes for preference items */
+  .preference-item p {
+    font-weight: 600;
+    color: var(--white);
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  /* Color styles for preference items */
   .preference-item.color-1 {
-    background-color: #0cb7fa; /* New color 1 */
+    background: #00BFFF; /* Голубой (Light Blue) */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .preference-item.color-1::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
   }
   
   .preference-item.color-2 {
-    background-color: #4b8ddf; /* New color 2 */
+    background: #ADFF2F; /* Кислотно-зеленый (Acid Green) */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .preference-item.color-2::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
   }
   
   .preference-item.color-3 {
-    background-color: #7e6bca; /* New color 3 */
+    background: #FFD700; /* Желтый (Yellow) */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .preference-item.color-3::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
   }
   
   .preference-item.color-4 {
-    background-color: #b346b3; /* New color 4 */
+    background: #FF4500; /* Ярко оранжевый (Bright Orange) */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .preference-item.color-4:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+      0 10px 15px rgba(0, 0, 0, 0.2),
+      0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .preference-item.color-4::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
   }
   
   .preference-item.color-5 {
-    background-color: #f21c98; /* New color 5 */
+    background: #FF0000; /* Ярко-красный (Bright Red) */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .preference-item.color-5:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+      0 10px 15px rgba(0, 0, 0, 0.2),
+      0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .preference-item.color-5::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
   }
   
   /* Progress bar */
@@ -515,10 +627,6 @@
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
-    width: 100%;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
   }
   
   /* Animation keyframes - only keep the ones not in app.css */
