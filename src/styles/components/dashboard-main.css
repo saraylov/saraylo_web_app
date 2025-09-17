@@ -1,0 +1,91 @@
+/* Coffee button */
+.coffee-button {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 15px);
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, var(--deep-black), #333333);
+  border: clamp(1.5px, 0.2vw, 3px) solid var(--primary-pink);
+  border-radius: clamp(10px, 2vw, 20px);
+  padding: clamp(12px, 2.5vw, 20px) clamp(20px, 4vw, 40px);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 16px) rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: clamp(250px, 50vw, 400px);
+  margin: 0 auto;
+}
+
+.coffee-button:hover {
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, #333333, var(--deep-black));
+  transform: translateY(-3px);
+  box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 20px) rgba(0, 0, 0, 0.4);
+  border-color: var(--primary-blue);
+}
+
+.coffee-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 8px) rgba(0, 0, 0, 0.3);
+}
+
+/* Training date */
+.training-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1.5vw, 15px);
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.1));
+  padding: clamp(12px, 2vw, 20px) clamp(20px, 3vw, 30px);
+  border-radius: clamp(10px, 2vw, 20px);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: clamp(280px, 60vw, 500px);
+  margin: 0 auto;
+}
+
+.training-date p {
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  color: var(--light-gray);
+  font-weight: 500;
+}
+
+.details-button {
+  background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+  border: none;
+  border-radius: clamp(8px, 1.5vw, 15px);
+  padding: clamp(8px, 1.5vw, 15px) clamp(15px, 2.5vw, 25px);
+  color: white;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 clamp(3px, 0.8vw, 6px) clamp(6px, 1.5vw, 10px) rgba(0, 0, 0, 0.2);
+}
+
+.details-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 15px) rgba(0, 0, 0, 0.3);
+  background: linear-gradient(90deg, var(--primary-pink), var(--primary-blue));
+}
+
+.details-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 clamp(1.5px, 0.4vw, 3px) clamp(3px, 0.8vw, 6px) rgba(0, 0, 0, 0.2);
+}
+
+/* Component-specific styles */
+.dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2vw, 20px);
+  width: 100%;
+  max-width: clamp(250px, 50vw, 350px);
+  margin: 0 auto;
+  align-items: center;
+}

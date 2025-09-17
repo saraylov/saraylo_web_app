@@ -48,8 +48,8 @@
   }
   
   .circle-button {
-    width: clamp(65px, 16vw, 80px);
-    height: clamp(65px, 16vw, 80px);
+    width: clamp(50px, 12vw, 80px);
+    height: clamp(50px, 12vw, 80px);
   }
 }
 
@@ -101,8 +101,8 @@
   }
   
   .circle-button {
-    width: clamp(60px, 18vw, 75px);
-    height: clamp(60px, 18vw, 75px);
+    width: clamp(50px, 12vw, 80px);
+    height: clamp(50px, 12vw, 80px);
     margin: 0 auto;
   }
   
@@ -152,8 +152,8 @@
   }
   
   .circle-button {
-    width: clamp(70px, 6vw, 90px);
-    height: clamp(70px, 6vw, 90px);
+    width: clamp(50px, 12vw, 80px);
+    height: clamp(50px, 12vw, 80px);
   }
 }
 
@@ -199,8 +199,8 @@
   }
   
   .circle-button {
-    width: 80px;
-    height: 80px;
+    width: clamp(50px, 12vw, 80px);
+    height: clamp(50px, 12vw, 80px);
   }
   
   .health-grid {
@@ -352,8 +352,8 @@
   }
   
   .circle-button {
-    width: clamp(70px, 6vw, 90px);
-    height: clamp(70px, 6vw, 90px);
+    width: clamp(50px, 12vw, 80px);
+    height: clamp(50px, 12vw, 80px);
   }
 }
 

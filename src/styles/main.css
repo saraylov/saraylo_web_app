@@ -25,6 +25,7 @@
 @import './components/training.css';
 @import './components/assessment-training.css';
 @import './components/background.css';
+@import './components/dashboard-main.css';
 
 /* Utility classes */
 @import './utilities/animations.css';

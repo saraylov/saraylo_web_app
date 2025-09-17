@@ -51,9 +51,9 @@
 }
 
 .circle-button {
-  /* Make the button responsive using clamp with viewport units */
-  width: clamp(60px, 15vw, 80px);
-  height: clamp(60px, 15vw, 80px);
+  /* Make the button responsive using consistent clamp values */
+  width: clamp(50px, 12vw, 80px);
+  height: clamp(50px, 12vw, 80px);
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
   display: flex;
@@ -67,6 +67,10 @@
   
   /* Ensure the button maintains its circular shape */
   aspect-ratio: 1 / 1;
+  
+  /* Prevent deformation at small screen sizes */
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .circle-button.training-mode {
