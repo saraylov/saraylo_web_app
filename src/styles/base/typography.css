@@ -1,0 +1,246 @@
+/* Typography styles */
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.production-info {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.production-info-static {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--white);
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--light-gray);
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.description {
+  margin-bottom: 30px;
+}
+
+.description p {
+  font-size: 1rem;
+  color: var(--light-gray);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.description p:last-child {
+  margin-bottom: 0;
+}
+
+.access-info {
+  font-size: 1.3rem;
+  color: var(--light-gray);
+  margin-bottom: 15px;
+}
+
+.user-info p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+}
+
+.profile-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 10px 0 5px;
+  color: var(--white);
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.profile-username {
+  font-size: 1.1rem;
+  color: var(--light-gray);
+  margin: 0 0 15px;
+}
+
+.stat-item .stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+  color: var(--white);
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-item .stat-label {
+  font-size: 0.9rem;
+  color: var(--light-gray);
+  margin: 0;
+}
+
+.detail-item h4 {
+  font-size: 1.2rem;
+  color: var(--white);
+  margin-bottom: 15px;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.detail-item p {
+  font-size: 1rem;
+  color: var(--light-gray);
+  margin: 8px 0;
+}
+
+.shield-content h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.achievement-title {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: var(--light-gray);
+  font-weight: 600;
+}
+
+.badge-text {
+  font-size: 0.7rem;
+  color: #000000;
+  font-weight: 800;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.training-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--white);
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.training-description {
+  font-size: 1rem;
+  color: var(--light-gray);
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.devices-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+  margin-bottom: 10px;
+}
+
+.devices-description {
+  font-size: 1rem;
+  color: var(--light-gray);
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.device-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 5px;
+}
+
+.device-type {
+  font-size: 0.9rem;
+  color: var(--light-gray);
+  margin-bottom: 10px;
+}
+
+.battery-label {
+  font-size: 0.9rem;
+  color: var(--light-gray);
+}
+
+.battery-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.panel-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+  background: var(--gradient-border);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+.hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.heart-rate-value span, .bp-value span, .calories-value span, 
+.hydration-value span, .temp-value span, .oxygen-value span {
+  font-size: 1rem;
+  color: var(--light-gray);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

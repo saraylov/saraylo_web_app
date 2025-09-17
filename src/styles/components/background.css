@@ -1,0 +1,81 @@
+/* Background animation */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Sports items */
+.sports-item {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  animation: float 20s infinite linear;
+  
+  /* Improve rendering on high-density screens */
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.football {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300BFFF'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cline x1='12' y1='2' x2='12' y2='5' stroke='%2300BFFF' stroke-width='1'/%3E%3Cline x1='12' y1='19' x2='12' y2='22' stroke='%2300BFFF' stroke-width='1'/%3E%3Cline x1='2' y1='12' x2='5' y2='12' stroke='%2300BFFF' stroke-width='1'/%3E%3Cline x1='19' y1='12' x2='22' y2='12' stroke='%2300BFFF' stroke-width='1'/%3E%3C/svg%3E");
+}
+
+.basketball {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF1493' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20'/%3E%3C/svg%3E");
+}
+
+.sneakers {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300BFFF' stroke-width='2'%3E%3Cpath d='M10 10l2-2 2 2m-2 2v4m-8 4h16a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z'/%3E%3C/svg%3E");
+}
+
+.shorts {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF1493' stroke-width='2'%3E%3Cpath d='M4 6h16l-2 8H6l-2-8z'/%3E%3C/svg%3E");
+}
+
+.tshirt {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300BFFF' stroke-width='2'%3E%3Cpath d='M20 20v-4h-4v-4h4V8h-4V4h-4v4h4V4H4v4H0v4h16v-4h-4v-4h4z'/%3E%3C/svg%3E");
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0.1;
+  }
+}
+
+/* 20 sports items positioning */
+.sports-item:nth-child(1) { top: 10%; left: 20%; }
+.sports-item:nth-child(2) { top: 20%; right: 10%; }
+.sports-item:nth-child(3) { bottom: 30%; left: 15%; }
+.sports-item:nth-child(4) { bottom: 20%; right: 25%; }
+.sports-item:nth-child(5) { top: 40%; left: 50%; }
+.sports-item:nth-child(6) { top: 15%; right: 30%; }
+.sports-item:nth-child(7) { bottom: 25%; left: 35%; }
+.sports-item:nth-child(8) { top: 60%; right: 15%; }
+.sports-item:nth-child(9) { bottom: 40%; left: 70%; }
+.sports-item:nth-child(10) { top: 30%; left: 5%; }
+.sports-item:nth-child(11) { top: 25%; left: 40%; }
+.sports-item:nth-child(12) { top: 70%; right: 20%; }
+.sports-item:nth-child(13) { bottom: 15%; left: 25%; }
+.sports-item:nth-child(14) { bottom: 35%; right: 35%; }
+.sports-item:nth-child(15) { top: 50%; left: 60%; }
+.sports-item:nth-child(16) { top: 5%; right: 40%; }
+.sports-item:nth-child(17) { bottom: 45%; left: 10%; }
+.sports-item:nth-child(18) { top: 55%; right: 5%; }
+.sports-item:nth-child(19) { bottom: 5%; left: 80%; }
+.sports-item:nth-child(20) { top: 15%; left: 30%; }

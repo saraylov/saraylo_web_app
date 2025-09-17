@@ -6,7 +6,10 @@
   import Devices from './Devices.svelte';
   import Health from './Health.svelte';
   import Settings from './Settings.svelte';
-  import HistoryTrain from './HistoryTrain.svelte'; // Import the new HistoryTrain component
+  import HistoryTrain from './HistoryTrain.svelte';
+  import AssessmentTraining from './AssessmentTraining.svelte';
+  import Dashboard from './Dashboard.svelte';
+  import Login from './Login.svelte';
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -133,6 +136,17 @@
     }, 10);
   }
   
+  // Handle assessment training navigation
+  function handleAssessmentTrainingClick() {
+    console.log('handleAssessmentTrainingClick called, setting currentView to assessment');
+    currentView = 'assessment';
+  }
+  
+  // Handle setting current view (for Login component)
+  function setCurrentView(view) {
+    currentView = view;
+  }
+  
   // Helper function to ensure userData has all required properties for Settings component
   function getSettingsUserData() {
     if (!userData) {
@@ -165,327 +179,20 @@
 </svelte:head>
 
 {#if currentView === 'login'}
-  <div class="background-animation">
-    <!-- 20 sports items -->
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-  </div>
-
-  <div class="app-container">
-    <div class="glass-panel">
-      <h1 class="main-title">SARAYLO</h1>
-      
-      <h2 class="subtitle">Next-gen система для спорта</h2>
-      
-      <div class="description">
-        <p>Система, основанная на AI-технологии, которая совместно с пользователем создает революцию в восприятии спорта и фитнеса.</p>
-        <p>Получайте персонализированные рекомендации для достижения ваших целей и предотвращения перетренированности</p>
-        <p>Ваш личный тренер в режиме реального времени</p>
-      </div>
-      
-      <div class="auth-section">
-        <p class="production-info-static"><strong>Добро пожаловать</strong></p>
-        
-        <!-- Простая кнопка для перехода к dashboard -->
-        <button 
-          class="telegram-auth-button" 
-          on:click={() => currentView = 'dashboard'}
-          aria-label="Перейти к статистике"
-        >
-          <span>Перейти к статистике</span>
-        </button>
-        
-        <p class="auth-status">Production by V Saraylo</p>
-      </div>
-    </div>
-  </div>
+  <Login {setCurrentView} />
 {:else if currentView === 'dashboard'}
-  <!-- Dashboard view -->
-  <div class="background-animation">
-    <!-- 20 sports items -->
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-    <div class="sports-item football"></div>
-    <div class="sports-item basketball"></div>
-    <div class="sports-item sneakers"></div>
-    <div class="sports-item shorts"></div>
-    <div class="sports-item tshirt"></div>
-  </div>
-
-  <div class="app-container">
-    <div class="glass-panel">
-      <!-- Header -->
-      <div class="dashboard-header">
-        <h1 class="dashboard-title">Статистика</h1>
-        <div 
-          class="header-icon" 
-          on:click={handleAddClick}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAddClick(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Добавить"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 5V19" stroke="var(--primary-pink)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M5 12H19" stroke="var(--primary-pink)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </div>
-      
-      <!-- Main content -->
-      <div class="dashboard-main">
-        <!-- Activity Rings -->
-        <div class="activity-rings-container">
-          <h2 class="rings-title">Активность</h2>
-          <div class="rings-wrapper">
-            <!-- Move Ring -->
-            <div class="ring-container">
-              <svg class="ring" width="100%" height="100%" viewBox="0 0 120 120">
-                <circle 
-                  class="ring-background" 
-                  cx="60" 
-                  cy="60" 
-                  r="50" 
-                  fill="none" 
-                  stroke="rgba(255, 255, 255, 0.1)" 
-                  stroke-width="10"
-                />
-                <circle 
-                  class="ring-progress" 
-                  cx="60" 
-                  cy="60" 
-                  r="50" 
-                  fill="none" 
-                  stroke={activityData.move.color} 
-                  stroke-width="10"
-                  stroke-dasharray="314.16"
-                  stroke-dashoffset={314.16 - (314.16 * Math.min(activityData.move.value / activityData.move.goal, 1))}
-                  stroke-linecap="round"
-                />
-              </svg>
-              <div class="ring-label">
-                <span class="ring-value">{activityData.move.value}</span>
-                <span class="ring-unit">ккал</span>
-              </div>
-            </div>
-            
-            <!-- Exercise Ring -->
-            <div class="ring-container">
-              <svg class="ring" width="100%" height="100%" viewBox="0 0 120 120">
-                <circle 
-                  class="ring-background" 
-                  cx="60" 
-                  cy="60" 
-                  r="50" 
-                  fill="none" 
-                  stroke="rgba(255, 255, 255, 0.1)" 
-                  stroke-width="10"
-                />
-                <circle 
-                  class="ring-progress" 
-                  cx="60" 
-                  cy="60" 
-                  r="50" 
-                  fill="none" 
-                  stroke={activityData.exercise.color} 
-                  stroke-width="10"
-                  stroke-dasharray="314.16"
-                  stroke-dashoffset={314.16 - (314.16 * Math.min(activityData.exercise.value / activityData.exercise.goal, 1))}
-                  stroke-linecap="round"
-                />
-              </svg>
-              <div class="ring-label">
-                <span class="ring-value">{activityData.exercise.value}</span>
-                <span class="ring-unit">мин</span>
-              </div>
-            </div>
-            
-            <!-- Stand Ring -->
-            <div class="ring-container">
-              <svg class="ring" width="100%" height="100%" viewBox="0 0 120 120">
-                <circle 
-                  class="ring-background" 
-                  cx="60" 
-                  cy="60" 
-                  r="50" 
-                  fill="none" 
-                  stroke="rgba(255, 255, 255, 0.1)" 
-                  stroke-width="10"
-                />
-                <circle 
-                  class="ring-progress" 
-                  cx="60" 
-                  cy="60" 
-                  r="50" 
-                  fill="none" 
-                  stroke={activityData.stand.color} 
-                  stroke-width="10"
-                  stroke-dasharray="314.16"
-                  stroke-dashoffset={314.16 - (314.16 * Math.min(activityData.stand.value / activityData.stand.goal, 1))}
-                  stroke-linecap="round"
-                />
-              </svg>
-              <div class="ring-label">
-                <span class="ring-value">{activityData.stand.value}</span>
-                <span class="ring-unit">ч</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Rings Legend -->
-          <div class="rings-legend">
-            <div class="legend-item">
-              <div class="legend-color" style="background-color: {activityData.move.color};"></div>
-              <span class="legend-text">Затрата</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color" style="background-color: {activityData.exercise.color};"></div>
-              <span class="legend-text">Нагрузка</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color" style="background-color: {activityData.stand.color};"></div>
-              <span class="legend-text">Сон</span>
-            </div>
-          </div>
-          
-          <!-- Progress bar -->
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 5.8%;"></div>
-            </div>
-            <p class="progress-text">2900 / 50000 шагов</p>
-          </div>
-        </div>
-        
-        <!-- Coffee button -->
-        <button class="coffee-button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 8H20C20.5304 8 21.0391 8.21071 21.4142 8.58579C21.7893 8.96086 22 9.46957 22 10V12C22 15.3137 19.3137 18 16 18H6C3.79086 18 2 16.2091 2 14V10C2 9.46957 2.21071 8.96086 2.58579 8.58579C2.96086 8.21071 3.46957 8 4 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M6 8V6C6 3.79086 7.79086 2 10 2H12C14.2091 2 16 3.79086 16 6V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M18 12V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M18 16V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M20 16V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M22 16V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span>Подзарядите наши идеи</span>
-        </button>
-        
-        <!-- Last training date -->
-        <div class="training-date">
-          <p>12 сент. 2024 г. (22:25 — 22:27)</p>
-          <button class="details-button" on:click={handleDetailsClick}>Детали</button>
-        </div>
-        
-        <!-- Logout button -->
-        <div class="dashboard-actions">
-          <button 
-            class="telegram-auth-button" 
-            on:click={handleLogout}
-            style="background: rgba(255, 0, 0, 0.1);"
-          >
-            Выйти
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Bottom navigation panel - moved outside glass-panel for consistent fixed positioning -->
-    <div class="bottom-panel s-XsEmFtvddWTw">
-      <div 
-        class="nav-item"
-        on:click={handleBackToDashboard}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Статистика"
-      >
-        <img src="images/Graf.png" alt="Статистика" width="24" height="24" />
-        <span>Статистика</span>
-      </div>
-      <div 
-        class="nav-item"
-        on:click={handleHealthClick}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleHealthClick(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Здоровье"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
-        </svg>
-        <span>Здоровье</span>
-      </div>
-      <div class="nav-item nav-item-center">
-        <div 
-          class="circle-button"
-          class:training-mode={isInTrainingMode()}
-          on:click={handleTrainingClick}
-          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
-          role="button"
-          tabindex="0"
-          aria-label="Начать тренировку"
-        >
-          <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
-        </div>
-      </div>
-      <div 
-        class="nav-item"
-        on:click={handleDevicesClick}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDevicesClick(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Устройства"
-      >
-        <img src="images/Smart.png" alt="Устройства" width="24" height="24" />
-        <span>Устройства</span>
-      </div>
-      <div 
-        class="nav-item"
-        on:click={handleProfileClick}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleProfileClick(); }}
-        role="button"
-        tabindex="0"
-        aria-label="Профиль"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
-        </svg>
-        <span>Профиль</span>
-      </div>
-    </div>
-  </div>
+  <Dashboard 
+    {activityData}
+    {handleAddClick}
+    {handleDetailsClick}
+    {handleLogout}
+    isInTrainingMode={isInTrainingMode()}
+    {handleBackToDashboard}
+    {handleHealthClick}
+    {handleTrainingClick}
+    {handleDevicesClick}
+    {handleProfileClick}
+  />
 {:else if currentView === 'training'}
   <Training 
     {handleBackToDashboard} 
@@ -513,6 +220,15 @@
   />
 {:else if currentView === 'history'}
   <HistoryTrain {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} {handleSettingsClick} />
+{:else if currentView === 'assessment'}
+  <AssessmentTraining 
+    {handleBackToDashboard} 
+    {handleHealthClick} 
+    {handleTrainingClick} 
+    {handleDevicesClick} 
+    {handleProfileClick} 
+    {handleSettingsClick} 
+  />
 {/if}
 
 <style>

@@ -1,0 +1,83 @@
+/* Bottom panel - responsive with proportional sizing */
+.bottom-panel {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  padding: clamp(10px, 2vw, 25px) clamp(8px, 2vw, 20px);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - (var(--container-padding) * 2));
+  max-width: min(100%, clamp(300px, 95vw, 800px));
+  margin: 0 auto;
+  z-index: 1000;
+  padding-bottom: max(clamp(10px, 2vw, 25px), calc(clamp(10px, 2vw, 25px) + var(--safe-area-inset-bottom)));
+  margin-bottom: var(--safe-area-inset-bottom);
+  
+  /* Improve touch accessibility */
+  min-height: var(--touch-target-min);
+  box-sizing: border-box;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 1vw, 10px);
+  cursor: pointer;
+  color: var(--light-gray);
+  transition: all 0.3s ease;
+  padding: clamp(8px, 2vw, 16px);
+  border-radius: clamp(5px, 1vw, 12px);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  justify-content: center;
+  text-align: center;
+}
+
+.nav-item:hover {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
+}
+
+.nav-item-center {
+  margin-top: calc(clamp(-25px, -4vw, -50px));
+  grid-column: 3;
+}
+
+.circle-button {
+  /* Make the button responsive using clamp with viewport units */
+  width: clamp(60px, 15vw, 80px);
+  height: clamp(60px, 15vw, 80px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 20px) rgba(0, 191, 255, 0.4);
+  transition: all 0.3s ease;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  margin: 0 auto;
+  
+  /* Ensure the button maintains its circular shape */
+  aspect-ratio: 1 / 1;
+}
+
+.circle-button.training-mode {
+  background: linear-gradient(135deg, #9ACD32, #32CD32);
+}
+
+.circle-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(255, 20, 147, 0.6);
+}
+
+.circle-button.training-mode:hover {
+  box-shadow: 0 8px 20px rgba(50, 205, 50, 0.6);
+}

@@ -1,0 +1,153 @@
+/* Training view styles */
+.training-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.training-stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 500px;
+  gap: 12px;
+  /* Reduce margin-top to make panel less tall */
+  margin-top: 12px;
+  box-sizing: border-box;
+  /* Ensure proper height */
+  height: auto;
+  /* Remove any fixed height that might cause stretching */
+  min-height: auto;
+  /* Reduce padding */
+  padding: 12px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(5px);
+  border-radius: 12px; /* Slightly reduced border radius */
+  /* Reduce padding to make panel less tall */
+  padding: 7px; /* Reduced padding */
+  text-align: center;
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Ensure minimum touch target size but reduce height */
+  min-height: 30px; /* Reduced min-height */
+}
+
+.stat-card h4 {
+  font-size: 0.75rem; /* Reduced font size */
+  color: var(--light-gray);
+  margin-bottom: 5px; /* Reduced margin */
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1rem; /* Reduced font size */
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  /* Improve training stats for small screens */
+  .training-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .training-stats {
+    flex-direction: row;
+    gap: clamp(3px, 1.5vw, 6px); /* Further reduced gap for smaller screens */
+    /* Reduce padding for smaller screens */
+    padding: clamp(4px, 1vw, 6px); /* Further reduced padding */
+    border-radius: clamp(5px, 2vw, 10px); /* Further reduced border radius */
+  }
+  
+  .stat-card {
+    /* Reduce min-height and padding for smaller screens */
+    min-height: 25px; /* Further reduced min-height */
+    padding: clamp(2px, 0.8vw, 4px); /* Further reduced padding */
+  }
+  
+  .stat-card h4 {
+    font-size: 0.65rem; /* Further reduced font size */
+    margin-bottom: 3px; /* Further reduced margin */
+  }
+  
+  .stat-value {
+    font-size: 0.8rem; /* Further reduced font size */
+  }
+}
+
+@media (max-width: 360px) {
+  .training-stats {
+    gap: 5px;
+    /* Further reduce padding for very small screens */
+    padding: 5px;
+  }
+  
+  .stat-card {
+    /* Further reduce min-height and padding for very small screens */
+    min-height: 25px;
+    padding: 5px;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.7rem;
+  }
+  
+  .stat-value {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 320px) {
+  /* Improve training stats for very small screens */
+  .training-stats {
+    gap: 6px;
+  }
+  
+  .stat-card {
+    padding: 8px;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.75rem;
+  }
+  
+  .stat-value {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Improve training stats for medium screens */
+  .training-stats {
+    gap: 20px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card h4 {
+    font-size: 1rem;
+  }
+  
+  .stat-value {
+    font-size: 1.4rem;
+  }
+}

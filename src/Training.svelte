@@ -9,6 +9,7 @@
   export let handleProfileClick: () => void;
   export let handleSettingsClick: () => void;
   export let handleHistoryClick: (() => void) | null = null;
+  export let handleAssessmentTrainingClick: (() => void) | null = null;
   
   // Добавим состояние для управления меню
   let isMenuOpen = false;
@@ -430,6 +431,9 @@
           <div class="menu-items">
             <div class="menu-item" on:click={() => { if (handleHistoryClick) { closeMenu(); handleHistoryClick(); } }}>
               <span>История тренировок</span>
+            </div>
+            <div class="menu-item" on:click={() => { if (handleAssessmentTrainingClick) { closeMenu(); handleAssessmentTrainingClick(); } }}>
+              <span>Оценочная тренировка</span>
             </div>
           </div>
         </div>

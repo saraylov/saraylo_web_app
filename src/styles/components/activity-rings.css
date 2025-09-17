@@ -1,0 +1,155 @@
+/* Activity Rings Container - responsive with proportional sizing */
+.activity-rings-container {
+  width: 100%;
+  max-width: min(100%, clamp(300px, 85vw, 600px));
+  margin: 0 auto var(--element-spacing);
+  padding: clamp(15px, 3vw, 30px);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(5px);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.training-stats.s-nHmVefn3S3wX.s-nHmVefn3S3wX {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: clamp(5px, 1.5vw, 10px); /* Reduced gap to fit 5 elements */
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: clamp(8px, 1.5vw, 15px); /* Slightly reduced border radius */
+  padding: clamp(7px, 1vw, 10px); /* Reduced padding */
+  border: clamp(1px, 0.15vw, 1.5px) solid rgba(255, 255, 255, 0.1); /* Slightly thinner border */
+  box-shadow: 0 clamp(3px, 0.7vw, 7px) clamp(10px, 1.5vw, 25px) rgba(0, 191, 255, 0.2); /* Reduced shadow */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: min(100%, clamp(280px, 90vw, 600px));
+  margin-left: auto;
+  margin-right: auto;
+  /* Position panel directly below map with no gap */
+  margin-top: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.rings-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(80px, 20vw, 120px), 1fr));
+  gap: clamp(10px, 2vw, 20px);
+  margin-bottom: clamp(5px, 1vw, 15px);
+  justify-items: center;
+}
+
+.ring-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(80px, 20vw, 120px);
+  height: clamp(80px, 20vw, 120px);
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(270deg);
+}
+
+.ring-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-value {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 700;
+  color: var(--white);
+}
+
+.ring-unit {
+  font-size: clamp(0.7rem, 2vw, 0.9rem);
+  color: var(--light-gray);
+}
+
+.rings-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(20px, 5vw, 60px);
+  margin-top: clamp(5px, 1vw, 10px);
+  margin-bottom: clamp(10px, 2vw, 20px);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 0 clamp(5px, 1vw, 15px);
+}
+
+.legend-color {
+  width: clamp(10px, 2vw, 15px);
+  height: clamp(10px, 2vw, 15px);
+  border-radius: 50%;
+  margin-right: clamp(3px, 1vw, 8px);
+}
+
+.legend-text {
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  color: var(--light-gray);
+}
+
+@media (max-width: 480px) {
+  .training-stats {
+    flex-direction: row;
+    gap: clamp(3px, 1.5vw, 6px); /* Further reduced gap for smaller screens */
+    /* Reduce padding for smaller screens */
+    padding: clamp(4px, 1vw, 6px); /* Further reduced padding */
+    border-radius: clamp(5px, 2vw, 10px); /* Further reduced border radius */
+  }
+  
+  .stat-card {
+    /* Reduce min-height and padding for smaller screens */
+    min-height: 25px; /* Further reduced min-height */
+    padding: clamp(2px, 0.8vw, 4px); /* Further reduced padding */
+  }
+  
+  .stat-card h4 {
+    font-size: 0.65rem; /* Further reduced font size */
+    margin-bottom: 3px; /* Further reduced margin */
+  }
+  
+  .stat-value {
+    font-size: 0.8rem; /* Further reduced font size */
+  }
+}
+
+@media (max-width: 360px) {
+  .training-stats {
+    gap: 5px;
+    /* Further reduce padding for very small screens */
+    padding: 5px;
+  }
+  
+  .stat-card {
+    /* Further reduce min-height and padding for very small screens */
+    min-height: 25px;
+    padding: 5px;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.7rem;
+  }
+  
+  .stat-value {
+    font-size: 0.85rem;
+  }
+}

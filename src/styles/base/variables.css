@@ -1,0 +1,28 @@
+/* Global variables for Miami Hit color scheme - Updated with responsive units */
+:root {
+  --primary-blue: #00BFFF;
+  --primary-pink: #FF1493;
+  --deep-black: #000000;
+  --light-gray: #CCCCCC;
+  --white: #FFFFFF;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+  --gradient-bg: linear-gradient(135deg, #000033, #33001a);
+  --gradient-border: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+  
+  /* Responsive sizing variables using viewport units */
+  --base-font-size: clamp(14px, 2.5vw, 18px);
+  --container-padding: clamp(10px, 3vw, 40px);
+  --container-margin: clamp(5px, 2vw, 30px);
+  --border-radius: clamp(10px, 2.5vw, 25px);
+  --element-spacing: clamp(10px, 2vw, 30px);
+  --touch-target-min: clamp(44px, 8vw, 56px);
+  --header-height: clamp(50px, 10vw, 80px);
+  
+  /* Safe area variables for mobile devices */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+}

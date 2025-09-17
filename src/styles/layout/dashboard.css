@@ -1,0 +1,49 @@
+/* Dashboard main - improved responsive behavior with CSS Grid */
+.dashboard-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--element-spacing);
+  padding: var(--element-spacing) 0;
+  width: 100%;
+  flex: 1;
+  
+  /* Ensure content doesn't overflow */
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 25px;
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+  border-radius: 15px;
+  padding: 15px 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-icon {
+  cursor: pointer;
+  padding: 16px; /* Increased for better touch targets */
+  /* Ensure perfect circle shape */
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+  /* Make sure the element is perfectly square */
+  width: var(--touch-target-min); /* Increased for better touch targets */
+  height: var(--touch-target-min); /* Increased for better touch targets */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-target-min); /* Minimum touch target size */
+  min-height: var(--touch-target-min); /* Minimum touch target size */
+}
+
+.header-icon:hover {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+  transform: scale(1.1);
+}

@@ -1,0 +1,56 @@
+/* Progress bar - responsive sizing */
+.progress-container {
+  width: 100%;
+  max-width: min(100%, clamp(250px, 80vw, 500px));
+  text-align: center;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  height: clamp(20px, 4vw, 30px);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: calc(clamp(8px, 2vw, 15px) / 2);
+  overflow: hidden;
+  margin-bottom: clamp(5px, 1vw, 15px);
+  border: clamp(1px, 0.2vw, 3px) solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 clamp(2px, 0.5vw, 6px) clamp(4px, 1vw, 10px) rgba(0, 0, 0, 0.2);
+}
+
+.progress-text {
+  font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.progress-fill {
+  height: 100%;
+  /* Updated to use Miami Hit color scheme */
+  background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

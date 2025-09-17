@@ -1,0 +1,24 @@
+/* App container - improved responsive container with proportional sizing */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  padding: var(--container-padding);
+  padding-top: max(var(--container-padding), var(--safe-area-inset-top));
+  padding-bottom: calc(max(var(--container-padding), var(--safe-area-inset-bottom)) + var(--header-height));
+  margin: 0 auto;
+  
+  /* Improve scrolling on mobile devices */
+  -webkit-overflow-scrolling: touch;
+  
+  /* Ensure content doesn't overflow on small screens */
+  box-sizing: border-box;
+  
+  /* Improved responsive behavior */
+  flex: 1;
+  height: auto;
+}

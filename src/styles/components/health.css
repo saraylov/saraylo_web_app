@@ -1,0 +1,139 @@
+/* Health view styles */
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.health-panel {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.health-panel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(51, 51, 51, 0.4));
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.panel-header svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--primary-blue);
+}
+
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chart-placeholder {
+  height: 60px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-line {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+  opacity: 0.3;
+}
+
+@media (max-width: 768px) {
+  .health-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .health-panel {
+    min-height: 120px;
+    padding: 15px;
+  }
+  
+  .panel-header h3 {
+    font-size: 1rem;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .health-grid {
+    gap: 10px;
+  }
+  
+  .health-panel {
+    min-height: 110px;
+    padding: 15px;
+  }
+  
+  .panel-header h3 {
+    font-size: 1rem;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.4rem;
+  }
+  
+  .heart-rate-value span, .bp-value span, .calories-value span, 
+  .hydration-value span, .temp-value span, .oxygen-value span {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .health-grid {
+    gap: 10px;
+  }
+  
+  .health-panel {
+    min-height: 100px;
+    padding: 12px;
+  }
+  
+  .panel-header h3 {
+    font-size: 0.9rem;
+  }
+  
+  .heart-rate-value, .bp-value, .sleep-value, .steps-value, .calories-value, 
+  .hydration-value, .stress-value, .temp-value, .oxygen-value, .activity-value {
+    font-size: 1.2rem;
+  }
+  
+  .heart-rate-value span, .bp-value span, .calories-value span, 
+  .hydration-value span, .temp-value span, .oxygen-value span {
+    font-size: 0.7rem;
+  }
+}
