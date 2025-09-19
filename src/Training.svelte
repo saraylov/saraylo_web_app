@@ -80,6 +80,13 @@
   
   // Ключ для хранения последней позиции в localStorage
   const LAST_POSITION_KEY = 'lastUserPosition';
+  const POSITION_VALIDITY_DURATION = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
+  
+  // Функция для очистки сохраненной позиции (для отладки)
+  function clearSavedPosition() {
+    console.log('Clearing saved position from localStorage');
+    localStorage.removeItem(LAST_POSITION_KEY);
+  }
   
   // Helper function to check if in training mode
   function isInTrainingMode() {
@@ -123,11 +130,14 @@
   }
   
   // Функция для получения последней сохраненной позиции
-  function getLastSavedPosition(): {lng: number, lat: number} | null {
+  function getLastSavedPosition(): {lng: number, lat: number, timestamp: number} | null {
     try {
       const savedPosition = localStorage.getItem(LAST_POSITION_KEY);
+      console.log('Raw saved position from localStorage:', savedPosition);
       if (savedPosition) {
-        return JSON.parse(savedPosition);
+        const position = JSON.parse(savedPosition);
+        console.log('Parsed saved position:', position);
+        return position;
       }
     } catch (error) {
       console.error('Error reading last position from localStorage:', error);
@@ -138,45 +148,65 @@
   // Функция для сохранения текущей позиции пользователя
   function saveCurrentPosition(lng: number, lat: number) {
     try {
-      const position = { lng, lat, timestamp: Date.now() };
+      const position = { 
+        lng, 
+        lat, 
+        timestamp: Date.now(),
+        // Добавим дополнительные данные для отладки
+        savedAt: new Date().toISOString()
+      };
       localStorage.setItem(LAST_POSITION_KEY, JSON.stringify(position));
-      console.log('Position saved:', position);
+      console.log('Position saved to localStorage:', position);
+      
+      // Дополнительно проверим, что данные действительно сохранились
+      const saved = localStorage.getItem(LAST_POSITION_KEY);
+      console.log('Verification - data actually saved:', saved);
     } catch (error) {
       console.error('Error saving position to localStorage:', error);
     }
   }
   
-  // Функция для проверки, является ли сохраненная позиция актуальной (не старше 1 часа)
+  // Функция для проверки, является ли сохраненная позиция актуальной
   function isSavedPositionValid(savedPosition: {lng: number, lat: number, timestamp: number} | null): boolean {
-    if (!savedPosition || !savedPosition.timestamp) return false;
+    if (!savedPosition || !savedPosition.timestamp) {
+      console.log('No saved position or timestamp');
+      return false;
+    }
     
-    const oneHour = 60 * 60 * 1000; // 1 час в миллисекундах
     const now = Date.now();
+    const positionAge = now - savedPosition.timestamp;
     
-    return (now - savedPosition.timestamp) < oneHour;
+    console.log(`Position age: ${positionAge}ms, validity duration: ${POSITION_VALIDITY_DURATION}ms`);
+    
+    const isValid = positionAge < POSITION_VALIDITY_DURATION;
+    console.log('Is saved position valid:', isValid);
+    
+    return isValid;
   }
   
   // Функция для получения последней сохраненной позиции с проверкой актуальности
   function getLastValidPosition(): {lng: number, lat: number} | null {
     try {
-      const savedPosition = localStorage.getItem(LAST_POSITION_KEY);
+      const savedPosition = getLastSavedPosition();
       if (savedPosition) {
-        const position = JSON.parse(savedPosition);
-        if (isSavedPositionValid(position)) {
-          console.log('Using saved position:', position);
-          return { lng: position.lng, lat: position.lat };
+        console.log('Found saved position, checking validity...');
+        if (isSavedPositionValid(savedPosition)) {
+          console.log('Using valid saved position:', savedPosition);
+          return { lng: savedPosition.lng, lat: savedPosition.lat };
         } else {
           console.log('Saved position is outdated, removing it');
           // Удаляем устаревшую позицию
           localStorage.removeItem(LAST_POSITION_KEY);
         }
+      } else {
+        console.log('No saved position found');
       }
     } catch (error) {
       console.error('Error reading last position from localStorage:', error);
       // В случае ошибки удаляем поврежденные данные
       localStorage.removeItem(LAST_POSITION_KEY);
     }
-    console.log('No valid saved position found, using default');
+    console.log('No valid saved position found, will use default');
     return null;
   }
   
@@ -197,6 +227,7 @@
   
   // Функция для обновления статистики на основе новой позиции
   function updateTrainingStats(position: GeolocationPosition) {
+    console.log('Updating training stats with position:', position);
     const now = new Date();
     const currentTime = now.getTime();
     
@@ -243,6 +274,9 @@
     // Store current position for next calculation
     if (position.coords) {
       previousPosition = [position.coords.longitude, position.coords.latitude, currentTime];
+      
+      // Также сохраняем позицию в localStorage
+      saveCurrentPosition(position.coords.longitude, position.coords.latitude);
     }
   }
   
@@ -257,13 +291,21 @@
       }
       
       // Получаем последнюю сохраненную позицию пользователя
+      console.log('Getting last valid position...');
       const lastPosition = getLastValidPosition();
       
       // Инициализируем карту с последними сохраненными координатами или координатами по умолчанию
       const initialLng = lastPosition ? lastPosition.lng : 30.3158;
       const initialLat = lastPosition ? lastPosition.lat : 59.9343;
       
-      console.log('Initializing map with coordinates:', initialLng, initialLat);
+      console.log('Initializing map with coordinates:', initialLng, initialLat, 'Last position was:', lastPosition);
+      
+      // Дополнительно проверим, что координаты действительно взяты из сохраненных данных
+      if (lastPosition) {
+        console.log('CONFIRMATION: Using saved coordinates - Lng:', initialLng, 'Lat:', initialLat);
+      } else {
+        console.log('CONFIRMATION: Using default coordinates - Lng:', initialLng, 'Lat:', initialLat);
+      }
       
       map = new mapboxgl.Map({
         container: mapContainer,
@@ -295,7 +337,7 @@
         
         // Listen for geolocation events
         geolocateControl.on('geolocate', (position) => {
-          console.log('User location found:', position);
+          console.log('User location found via geolocate event:', position);
           locationError = false;
           isLocating = false;
           
@@ -323,10 +365,12 @@
             
             // Центрируем карту на пользователе с плавной анимацией только если это первое определение местоположения
             if (!initialLocationSet) {
+              console.log('Setting initial map center');
               map.setCenter([position.coords.longitude, position.coords.latitude]);
               initialLocationSet = true;
             } else {
               // Для последующих обновлений используем плавную анимацию
+              console.log('Animating map to new position');
               map.easeTo({
                 center: [position.coords.longitude, position.coords.latitude],
                 zoom: 17,
@@ -342,33 +386,42 @@
           isLocating = false;
           
           // Если геолокация не удалась, начинаем отслеживание местоположения вручную
-          startLocationTracking();
+          if (map) {
+            startLocationTracking();
+          }
         });
         
         // Trigger geolocation when map loads
-        map.on('load', () => {
-          // Add a small delay to ensure the map is fully loaded
-          setTimeout(() => {
-            // Автоматически запрашиваем геолокацию при загрузке карты
-            if (geolocateControl) {
-              isLocating = true;
-              // @ts-ignore
-              geolocateControl.trigger();
+        if (map) {
+          map.on('load', () => {
+            if (map) {
+              console.log('Map loaded, current center:', map.getCenter());
+              console.log('Map loaded, triggering geolocation');
+              // Add a small delay to ensure the map is fully loaded
+              setTimeout(() => {
+                // Автоматически запрашиваем геолокацию при загрузке карты
+                if (geolocateControl) {
+                  isLocating = true;
+                  // @ts-ignore
+                  geolocateControl.trigger();
+                }
+              }, 500);
             }
-          }, 500);
-        });
-        
-        // Дополнительно проверяем позицию при каждом обновлении карты
-        map.on('moveend', () => {
-          if (userLocation && map) {
-            const center = map.getCenter();
-            // Проверяем, если центр карты изменился, сохраняем новую позицию
-            if (Math.abs(center.lng - userLocation[0]) > 0.0001 || Math.abs(center.lat - userLocation[1]) > 0.0001) {
-              saveCurrentPosition(center.lng, center.lat);
-              userLocation = [center.lng, center.lat];
+          });
+          
+          // Дополнительно проверяем позицию при каждом обновлении карты
+          map.on('moveend', () => {
+            if (userLocation && map) {
+              const center = map.getCenter();
+              // Проверяем, если центр карты изменился, сохраняем новую позицию
+              if (Math.abs(center.lng - userLocation[0]) > 0.0001 || Math.abs(center.lat - userLocation[1]) > 0.0001) {
+                console.log('Map moved, saving new position:', center.lng, center.lat);
+                saveCurrentPosition(center.lng, center.lat);
+                userLocation = [center.lng, center.lat];
+              }
             }
-          }
-        });
+          });
+        }
       }
     } catch (error) {
       console.error('Error initializing Mapbox map:', error);
@@ -382,9 +435,12 @@
       return;
     }
     
+    console.log('Starting manual location tracking');
+    
     // Начинаем отслеживание местоположения с высокой точностью
     watchId = navigator.geolocation.watchPosition(
       (position) => {
+        console.log('Manual location tracking update:', position);
         if (map && position.coords) {
           const lng = position.coords.longitude;
           const lat = position.coords.latitude;
@@ -417,6 +473,7 @@
             
             // Если пользователь переместился более чем на 5 метров, обновляем карту
             if (distance > 5) {
+              console.log('User moved significantly, updating map position');
               map.easeTo({
                 center: currentPosition,
                 zoom: 17,
@@ -427,6 +484,7 @@
             }
           } else {
             // Первоначальное центрирование
+            console.log('Initial map centering in manual tracking');
             map.setCenter(currentPosition);
             initialLocationSet = true;
             previousPosition = [lng, lat, Date.now()];
@@ -435,7 +493,7 @@
           // Сохраняем текущее местоположение
           userLocation = currentPosition;
           
-          console.log('Position updated:', lng, lat);
+          console.log('Position updated via manual tracking:', lng, lat);
         }
       },
       (error) => {
@@ -478,6 +536,13 @@
   
   onMount(() => {
     try {
+      console.log('Training component mounted');
+      
+      // Проверим сохраненную позицию до инициализации карты
+      console.log('Checking for saved position before map initialization...');
+      const savedPosition = getLastValidPosition();
+      console.log('Saved position before map init:', savedPosition);
+      
       // Set training start time
       trainingStartTime = new Date();
       
@@ -493,6 +558,7 @@
   });
   
   onDestroy(() => {
+    console.log('Training component destroying');
     // Clean up the interval when component is destroyed
     if (caloriesInterval) {
       clearInterval(caloriesInterval);
@@ -505,6 +571,7 @@
     // Сохраняем последнюю позицию перед уничтожением компонента
     if (map && userLocation) {
       const center = map.getCenter();
+      console.log('Saving final position before destroy:', center.lng, center.lat);
       saveCurrentPosition(center.lng, center.lat);
     }
     
