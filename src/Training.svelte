@@ -62,6 +62,7 @@
   import mapboxgl from 'mapbox-gl';
   import { onMount, onDestroy } from 'svelte';
   import Button from './Button.svelte'; // Импортируем универсальный компонент Button
+  import BottomNav from './BottomNav.svelte'; // Импортируем нижнюю панель навигации
   
   let mapContainer: HTMLElement | undefined;
   let map: mapboxgl.Map | undefined;
@@ -535,6 +536,11 @@
   function formatSpeed(speed: number): string {
     return speed.toFixed(2);
   }
+  
+  // Helper function to check if in training mode (always true for this page)
+  function isInTrainingMode() {
+    return true;
+  }
 </script>
 
 <div class="background-animation">
@@ -669,6 +675,16 @@
       </div>
     </div>
   </div>
+  
+  <!-- Bottom navigation panel -->
+  <BottomNav 
+    {handleBackToDashboard}
+    {handleHealthClick}
+    {handleTrainingClick}
+    {handleDevicesClick}
+    {handleProfileClick}
+    isInTrainingMode={isInTrainingMode}
+  />
 </div>
 
 <style>
