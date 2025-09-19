@@ -10,6 +10,12 @@
     stand: { value: 8, goal: 12, color: '#00FF00' }
   };
   
+  // Add stepsData export
+  export let stepsData = {
+    value: 0,
+    goal: 50000
+  };
+  
   export let handleAddClick;
   export let handleDetailsClick;
   export let handleLogout;
@@ -58,6 +64,7 @@
     <Header {handleAddClick} />
     <MainContent 
       {activityData} 
+      {stepsData} 
       {handleDetailsClick} 
       {handleLogout} 
       {handleCalendarClick} 

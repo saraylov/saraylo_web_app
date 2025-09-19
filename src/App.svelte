@@ -11,6 +11,8 @@
   import Dashboard from './Dashboard.svelte';
   import Login from './Login.svelte';
   import Calendar from './Calendar.svelte';
+  import { saveDailyData, loadDailyData, getToday, formatDate } from './utils/dataStorage';
+  import { requestAllPermissions } from './permissions'; // Restore permission functions
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -43,17 +45,40 @@
     goal: 50000
   };
   
+  // Store today's date to check when the day changes
+  let today = getToday();
+  
   // Helper function to check if in training mode
   function isInTrainingMode() {
     return currentView === 'training';
   }
   
+  // Function to save today's data
+  function saveTodaysData() {
+    const todayDate = getToday();
+    const dataToSave = {
+      date: todayDate,
+      steps: { ...stepsData },
+      activity: { ...activityData }
+    };
+    
+    saveDailyData(dataToSave);
+    console.log(`Saved data for ${todayDate}`);
+  }
+  
   // Function to simulate getting real user data
   function getRealUserData() {
-    // In a real implementation, this would connect to a fitness/health API
-    // For now, we'll simulate with realistic values that change over time
-    
     const now = new Date();
+    const currentDate = getToday();
+    
+    // Check if the day has changed
+    if (currentDate !== today) {
+      // Save yesterday's data before updating
+      saveTodaysData();
+      // Update today's date
+      today = currentDate;
+    }
+    
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
     const hoursSinceMidnight = (now.getTime() - startOfDay.getTime()) / (1000 * 60 * 60);
     
@@ -81,6 +106,8 @@
   
   // Handle logout
   function handleLogout() {
+    // Save data before logout
+    saveTodaysData();
     // Временно отключим logout
     console.log('Logout temporarily disabled');
   }
@@ -111,6 +138,13 @@
     currentView = 'dashboard';
     authStatus = 'Production by V Saraylo';
     
+    // Request necessary permissions for Android app
+    requestAllPermissions().then((permissions) => {
+      console.log('Permissions granted:', permissions);
+    }).catch((error) => {
+      console.error('Error requesting permissions:', error);
+    });
+    
     // Initialize with real user data
     getRealUserData();
     
@@ -120,6 +154,8 @@
     // Cleanup event listeners
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      // Save data when component is destroyed
+      saveTodaysData();
     };
   });
   
@@ -233,6 +269,7 @@
 {:else if currentView === 'dashboard'}
   <Dashboard 
     {activityData}
+    {stepsData}
     {handleAddClick}
     {handleDetailsClick}
     {handleLogout}

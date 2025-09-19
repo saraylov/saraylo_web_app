@@ -15,7 +15,14 @@
     "preview": "vite preview",
     "preview:webauth": "vite preview --config viteWebAuth.config.ts",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "start:https": "node https-server.cjs"
+    "start:https": "node https-server.cjs",
+    "cap:add:android": "npx cap add android",
+    "cap:add:ios": "npx cap add ios",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "cap:open:ios": "npx cap open ios",
+    "cap:run:android": "npx cap run android",
+    "cap:build:android": "npx cap build android"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
@@ -28,6 +35,12 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "@capacitor/geolocation": "^7.1.5",
+    "@capacitor/ios": "^6.2.1",
+    "@capacitor/push-notifications": "^7.0.3",
     "@types/node": "^20.14.11",
     "express": "^5.1.0",
     "mapbox-gl": "^3.15.0",

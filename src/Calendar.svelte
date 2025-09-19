@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { loadDailyData, formatDate } from './utils/dataStorage';
   
   // Navigation handlers passed from parent
   export let handleBackToDashboard;
@@ -43,7 +44,10 @@
     // Исправлено: правильно определяем день недели для первого дня месяца
     const firstDayOfWeek = firstDay.getDay();
     // В России неделя начинается с понедельника (1), а не с воскресенья (0)
-    const prevMonthDays = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+    // Для понедельника (1) нужно 0 дней предыдущего месяца
+    // Для воскресенья (0) нужно 6 дней предыдущего месяца
+    // Исправлено: учитываем, что getDay() возвращает 0 для воскресенья, но у нас понедельник первый
+    const prevMonthDays = (firstDayOfWeek + 6) % 7;
     // Days from next month to show
     const nextMonthDays = 42 - lastDay.getDate() - prevMonthDays;
     
@@ -96,30 +100,40 @@
     selectedDate = date;
     popupDate = date;
     
-    // Generate mock data for the selected date
-    const dayOfMonth = date.getDate();
-    selectedActivityData = {
-      move: { 
-        value: Math.min(500, Math.floor(dayOfMonth * 15)), 
-        goal: 500, 
-        color: '#00BFFF' 
-      },
-      exercise: { 
-        value: Math.min(60, Math.floor(dayOfMonth * 2)), 
-        goal: 60, 
-        color: '#FF1493' 
-      },
-      stand: { 
-        value: Math.min(12, Math.floor(dayOfMonth * 0.4)), 
-        goal: 12, 
-        color: '#00FF00' 
-      }
-    };
+    // Load data for the selected date
+    const dateStr = formatDate(date);
+    const savedData = loadDailyData(dateStr);
     
-    selectedStepsData = {
-      value: Math.min(50000, Math.floor(dayOfMonth * 300)),
-      goal: 50000
-    };
+    if (savedData) {
+      // Use saved data
+      selectedActivityData = savedData.activity;
+      selectedStepsData = savedData.steps;
+    } else {
+      // Generate mock data for the selected date if no saved data exists
+      const dayOfMonth = date.getDate();
+      selectedActivityData = {
+        move: { 
+          value: Math.min(500, Math.floor(dayOfMonth * 15)), 
+          goal: 500, 
+          color: '#00BFFF' 
+        },
+        exercise: { 
+          value: Math.min(60, Math.floor(dayOfMonth * 2)), 
+          goal: 60, 
+          color: '#FF1493' 
+        },
+        stand: { 
+          value: Math.min(12, Math.floor(dayOfMonth * 0.4)), 
+          goal: 12, 
+          color: '#00FF00' 
+        }
+      };
+      
+      selectedStepsData = {
+        value: Math.min(50000, Math.floor(dayOfMonth * 300)),
+        goal: 50000
+      };
+    }
     
     // Show popup with selected date info
     showPopup = true;
@@ -164,16 +178,19 @@
   <div class="glass-panel">
     <!-- Header -->
     <div class="dashboard-header">
-      <h1 class="dashboard-title">Календарь</h1>
+      <h1 class="dashboard-title">Статистика</h1>
       <div 
         class="header-icon"
-        on:click={handleSettingsClick}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSettingsClick(); }}
+        on:click={handleBackToDashboard}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleBackToDashboard(); }}
         role="button"
         tabindex="0"
-        aria-label="Настройки"
+        aria-label="Закрыть календарь"
       >
-        <img src="images/111.png" alt="Настройки" width="24" height="24" />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </div>
     
@@ -359,9 +376,10 @@
         <!-- Progress bar (Steps) -->
         <div class="progress-container">
           <div class="progress-bar">
-            <div class="progress-fill" style="width: {Math.min(100, (selectedActivityData.move.value / 50000) * 100)}%;"></div>
+            <div class="progress-fill" style="width: {Math.min(100, (selectedStepsData.value / 50000) * 100)}%;"></div>
+            <span class="progress-bar-text">{selectedStepsData.value.toLocaleString()}</span>
           </div>
-          <p class="progress-text">{selectedActivityData.move.value.toLocaleString()} / 50000 шагов</p>
+          <p class="progress-text">{selectedStepsData.value.toLocaleString()} / {selectedStepsData.goal.toLocaleString()} шагов</p>
         </div>
       </div>
     </div>
@@ -431,6 +449,9 @@
     
     /* Allow flexible scaling */
     width: 100%;
+    
+    /* Ensure calendar scales proportionally */
+    max-height: 100%;
   }
   
   .calendar-day-headers {
@@ -438,6 +459,9 @@
     grid-template-columns: repeat(7, 1fr);
     gap: clamp(5px, 1vw, 8px);
     margin-bottom: clamp(10px, 1.5vw, 15px);
+    
+    /* Ensure proper scaling on all screen sizes */
+    width: 100%;
   }
   
   .calendar-day-header {
@@ -446,15 +470,22 @@
     font-weight: 600;
     color: var(--light-gray);
     padding: clamp(8px, 1.5vw, 12px) 0;
+    
+    /* Ensure proper scaling on all screen sizes */
+    min-width: 0;
+    width: 100%;
   }
   
   .calendar-days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(6, 1fr);
     gap: clamp(5px, 1vw, 8px);
     flex: 1;
     min-height: 0; /* Allow flex children to shrink below their content size */
+    
+    /* Ensure proper scaling on all screen sizes */
+    width: 100%;
+    max-height: 100%;
   }
   
   .calendar-day {
@@ -470,6 +501,12 @@
     transition: all 0.3s ease;
     color: var(--white);
     font-weight: 500;
+    
+    /* Ensure proper scaling on all screen sizes */
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
   }
   
   .calendar-day:hover {
@@ -481,7 +518,7 @@
   }
   
   .calendar-day.empty {
-    visibility: hidden;
+    display: none;
   }
   
   /* Popup overlay */
@@ -671,6 +708,7 @@
     height: clamp(12px, 2vw, 20px);
     margin-bottom: clamp(10px, 1.5vw, 15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative; /* Added for positioning the text */
   }
   
   .progress-bar {
@@ -685,6 +723,20 @@
     height: 100%;
     background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
     border-radius: clamp(5px, 1vw, 10px);
+  }
+  
+  /* Added style for text inside progress bar */
+  .progress-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    z-index: 2;
+    white-space: nowrap;
   }
   
   .progress-text {

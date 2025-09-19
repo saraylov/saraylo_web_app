@@ -13,6 +13,12 @@
     stand: { value: 8, goal: 12, color: '#00FF00' }
   };
   
+  // Add stepsData export
+  export let stepsData = {
+    value: 0,
+    goal: 50000
+  };
+  
   export let handleDetailsClick: () => void;
   export let handleLogout: () => void;
   
@@ -22,8 +28,31 @@
   const dispatch = createEventDispatcher();
   
   // Calculate progress percentage for steps
-  $: stepsPercentage = activityData.move.value && activityData.move.goal ? 
-    Math.min(100, (activityData.move.value / activityData.move.goal) * 100) : 0;
+  $: stepsPercentage = stepsData.value && stepsData.goal ? 
+    Math.min(100, (stepsData.value / stepsData.goal) * 100) : 0;
+  
+  // Function to determine the correct form of "шаг" based on the number
+  $: getStepsWord = (value: number) => {
+    const lastDigit = value % 10;
+    const lastTwoDigits = value % 100;
+    
+    // Special case for 11-19
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return 'шагов';
+    }
+    
+    // Cases for 1, 2, 3, 4
+    switch (lastDigit) {
+      case 1:
+        return 'шаг';
+      case 2:
+      case 3:
+      case 4:
+        return 'шага';
+      default:
+        return 'шагов';
+    }
+  };
 </script>
 
 <!-- Main content -->
@@ -156,10 +185,18 @@
     <!-- Progress bar (Steps) -->
     <div class="progress-container">
       <div class="progress-bar">
-        <div class="progress-fill" style="width: {Math.min(100, (activityData.move.value / 50000) * 100)}%;"></div>
+        <div class="progress-fill" style="width: {stepsPercentage}%;"></div>
+        <span class="progress-bar-text">{stepsData.value.toLocaleString()}</span>
       </div>
-      <p class="progress-text">{activityData.move.value.toLocaleString()} / 50000 шагов</p>
+      <p class="progress-text">{stepsData.value.toLocaleString()} / {stepsData.goal.toLocaleString()} шагов</p>
     </div>
+    
+    <!-- Step count display -->
+    <div class="steps-count-display">
+      <p class="steps-count">{stepsData.value.toLocaleString()}</p>
+      <p class="steps-label">{getStepsWord(stepsData.value)} пройдено сегодня</p>
+    </div>
+
   </div>
   
   <!-- Coffee button -->
@@ -336,6 +373,7 @@
     height: clamp(12px, 2vw, 20px);
     margin-bottom: clamp(10px, 1.5vw, 15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative; /* Added for positioning the text */
   }
   
   .progress-bar {
@@ -352,10 +390,43 @@
     border-radius: clamp(5px, 1vw, 10px);
   }
   
+  /* Added style for text inside progress bar */
+  .progress-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    z-index: 2;
+    white-space: nowrap;
+  }
+  
   .progress-text {
     text-align: center;
     font-size: clamp(0.8rem, 2vw, 1rem);
     color: var(--light-gray);
+  }
+  
+  /* Steps count display */
+  .steps-count-display {
+    text-align: center;
+    margin-top: clamp(10px, 2vw, 20px);
+  }
+  
+  .steps-count {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 800;
+    color: var(--white);
+    margin: 0;
+  }
+  
+  .steps-label {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--light-gray);
+    margin: 0;
   }
   
   /* Coffee button */
