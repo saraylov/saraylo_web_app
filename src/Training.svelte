@@ -264,7 +264,7 @@
       const mapConfig: mapboxgl.MapboxOptions = {
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        zoom: lastPosition ? 17 : 1, // Use lower zoom when no position
+        zoom: lastPosition ? 17 : 10, // Use more appropriate zoom level (10) when no position
         maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
         minZoom: 1, // Allow zooming out to world view
         pitch: 0, // Устанавливаем нулевой угол наклона камеры
@@ -330,7 +330,7 @@
             if (!initialLocationSet) {
               console.log('Setting initial map center');
               map.setCenter([position.coords.longitude, position.coords.latitude]);
-              map.setZoom(17); // Set appropriate zoom level for tracking
+              map.setZoom(15); // Set more appropriate zoom level for initial tracking
               initialLocationSet = true;
             } else {
               // Для последующих обновлений используем плавную анимацию
@@ -440,7 +440,7 @@
               console.log('User moved significantly, updating map position');
               map.easeTo({
                 center: currentPosition,
-                zoom: 17,
+                zoom: 15, // Use more appropriate zoom level for tracking
                 duration: 1000 // Плавная анимация 1 секунда
               });
               // Update previous position
@@ -450,7 +450,7 @@
             // Первоначальное центрирование
             console.log('Initial map centering in manual tracking');
             map.setCenter(currentPosition);
-            map.setZoom(17); // Set appropriate zoom level
+            map.setZoom(15); // Set more appropriate zoom level for initial tracking
             initialLocationSet = true;
             previousPosition = [lng, lat, Date.now()];
           }
