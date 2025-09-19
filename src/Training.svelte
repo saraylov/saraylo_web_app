@@ -140,9 +140,44 @@
     try {
       const position = { lng, lat, timestamp: Date.now() };
       localStorage.setItem(LAST_POSITION_KEY, JSON.stringify(position));
+      console.log('Position saved:', position);
     } catch (error) {
       console.error('Error saving position to localStorage:', error);
     }
+  }
+  
+  // Функция для проверки, является ли сохраненная позиция актуальной (не старше 1 часа)
+  function isSavedPositionValid(savedPosition: {lng: number, lat: number, timestamp: number} | null): boolean {
+    if (!savedPosition || !savedPosition.timestamp) return false;
+    
+    const oneHour = 60 * 60 * 1000; // 1 час в миллисекундах
+    const now = Date.now();
+    
+    return (now - savedPosition.timestamp) < oneHour;
+  }
+  
+  // Функция для получения последней сохраненной позиции с проверкой актуальности
+  function getLastValidPosition(): {lng: number, lat: number} | null {
+    try {
+      const savedPosition = localStorage.getItem(LAST_POSITION_KEY);
+      if (savedPosition) {
+        const position = JSON.parse(savedPosition);
+        if (isSavedPositionValid(position)) {
+          console.log('Using saved position:', position);
+          return { lng: position.lng, lat: position.lat };
+        } else {
+          console.log('Saved position is outdated, removing it');
+          // Удаляем устаревшую позицию
+          localStorage.removeItem(LAST_POSITION_KEY);
+        }
+      }
+    } catch (error) {
+      console.error('Error reading last position from localStorage:', error);
+      // В случае ошибки удаляем поврежденные данные
+      localStorage.removeItem(LAST_POSITION_KEY);
+    }
+    console.log('No valid saved position found, using default');
+    return null;
   }
   
   // Функция для расчета скорости между двумя точками
@@ -222,11 +257,13 @@
       }
       
       // Получаем последнюю сохраненную позицию пользователя
-      const lastPosition = getLastSavedPosition();
+      const lastPosition = getLastValidPosition();
       
       // Инициализируем карту с последними сохраненными координатами или координатами по умолчанию
       const initialLng = lastPosition ? lastPosition.lng : 30.3158;
       const initialLat = lastPosition ? lastPosition.lat : 59.9343;
+      
+      console.log('Initializing map with coordinates:', initialLng, initialLat);
       
       map = new mapboxgl.Map({
         container: mapContainer,
@@ -319,6 +356,18 @@
               geolocateControl.trigger();
             }
           }, 500);
+        });
+        
+        // Дополнительно проверяем позицию при каждом обновлении карты
+        map.on('moveend', () => {
+          if (userLocation && map) {
+            const center = map.getCenter();
+            // Проверяем, если центр карты изменился, сохраняем новую позицию
+            if (Math.abs(center.lng - userLocation[0]) > 0.0001 || Math.abs(center.lat - userLocation[1]) > 0.0001) {
+              saveCurrentPosition(center.lng, center.lat);
+              userLocation = [center.lng, center.lat];
+            }
+          }
         });
       }
     } catch (error) {
@@ -451,6 +500,12 @@
     
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
+    }
+    
+    // Сохраняем последнюю позицию перед уничтожением компонента
+    if (map && userLocation) {
+      const center = map.getCenter();
+      saveCurrentPosition(center.lng, center.lat);
     }
     
     // Удалим обработчик кликов
