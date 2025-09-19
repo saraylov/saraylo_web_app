@@ -601,22 +601,7 @@
     {#if isMenuOpen}
       <div class="menu-overlay" on:click={closeMenu}>
         <div class="menu-container" bind:this={menuContainer} on:click|stopPropagation={() => {}}>
-          <div class="menu-header">
-            <h3>Функции</h3>
-            <button class="menu-close" on:click={closeMenu} aria-label="Закрыть меню">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
           <div class="menu-items">
-            <div class="menu-item" on:click={() => { if (handleHistoryClick) { closeMenu(); handleHistoryClick(); } }}>
-              <span>История тренировок</span>
-            </div>
-            <div class="menu-item" on:click={() => { if (handleAssessmentTrainingClick) { closeMenu(); handleAssessmentTrainingClick(); } }}>
-              <span>Оценочная тренировка</span>
-            </div>
           </div>
         </div>
       </div>
