@@ -52,7 +52,7 @@ export interface Window {
 }
 
 // Bot configuration
-const BOT_TOKEN = '7950779597:AAFZ8xZJ590qQ9yjLGCu6K_mhrxK46av7zo';
+const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_TOKEN || '7950779597:AAFZ8xZJ590qQ9yjLGCu6K_mhrxK46av7zo';
 const BOT_USERNAME = 'Saraylo_bot';
 
 export function initTelegramWebApp() {
