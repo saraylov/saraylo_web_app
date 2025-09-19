@@ -688,6 +688,8 @@
     flex-direction: column;
     width: 100%;
     gap: 0;
+    /* Ограничиваем максимальную высоту контейнера */
+    max-height: 80vh;
   }
   
   /* Container for header with left panel */
@@ -949,6 +951,23 @@
   }
   
   /* Responsive design for Training component */
+  .shield-content {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    background: linear-gradient(135deg, #000000, #333333);
+    flex: 1;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    /* Ограничиваем максимальную высоту контейнера карты */
+    max-height: 70vh;
+  }
+  
   @media (max-width: 768px) {
     .shield-content {
       min-height: clamp(250px, 60vh, 500px);
@@ -1050,10 +1069,39 @@
     }
   }
   
+  /* Medium screens */
+  @media (min-width: 769px) and (max-width: 1199px) {
+    .shield-content {
+      min-height: clamp(350px, 70vh, 600px);
+      border-radius: clamp(8px, 1.5vw, 15px);
+    }
+    
+    .training-stats {
+      gap: clamp(10px, 1vw, 15px);
+      padding: clamp(10px, 1vw, 15px);
+      border-radius: clamp(12px, 1.5vw, 20px);
+    }
+    
+    .stat-card {
+      min-height: clamp(40px, 5vh, 60px);
+      padding: clamp(8px, 0.8vw, 15px);
+      width: 20%;
+    }
+    
+    .stat-card h4 {
+      font-size: clamp(0.8rem, 1.2vw, 1.1rem);
+      margin-bottom: clamp(2px, 0.3vw, 6px);
+    }
+    
+    .stat-value {
+      font-size: clamp(0.7rem, 1.3vw, 1rem);
+    }
+  }
+  
   /* Large screens */
   @media (min-width: 1200px) {
     .shield-content {
-      min-height: clamp(400px, 75vh, 800px);
+      min-height: clamp(400px, 65vh, 700px);
       border-radius: clamp(10px, 1.5vw, 20px);
     }
     
@@ -1071,8 +1119,6 @@
       padding: clamp(10px, 0.7vw, 18px);
       /* На больших экранах все элементы будут одинакового размера */
       width: 20%;
-      /* Ensure content fits properly */
-      box-sizing: border-box;
     }
     
     .stat-card h4 {
@@ -1082,6 +1128,35 @@
     
     .stat-value {
       font-size: clamp(0.8rem, 1.2vw, 1.1rem); /* Reduced from clamp(0.9rem, 1.5vw, 1.3rem) */
+    }
+  }
+  
+  /* Extra large screens */
+  @media (min-width: 1600px) {
+    .shield-content {
+      min-height: clamp(400px, 60vh, 650px);
+      border-radius: clamp(12px, 1.5vw, 25px);
+    }
+    
+    .training-stats {
+      gap: clamp(15px, 0.8vw, 25px);
+      padding: clamp(15px, 0.8vw, 22px);
+      border-radius: clamp(18px, 1.5vw, 30px);
+    }
+    
+    .stat-card {
+      min-height: clamp(55px, 6vh, 80px);
+      padding: clamp(12px, 0.7vw, 20px);
+      width: 20%;
+    }
+    
+    .stat-card h4 {
+      font-size: clamp(1rem, 1vw, 1.3rem);
+      margin-bottom: clamp(4px, 0.3vw, 10px);
+    }
+    
+    .stat-value {
+      font-size: clamp(0.9rem, 1.2vw, 1.2rem);
     }
   }
 </style>
