@@ -56,6 +56,13 @@
   let caloriesInterval: ReturnType<typeof setInterval> | undefined;
   let trainingStartTime: Date | null = null;
   
+  // Speed tracking variables
+  let currentSpeed = 0; // Current speed in km/h
+  let averageSpeed = 0; // Average speed in km/h
+  let maxSpeed = 0; // Maximum speed in km/h
+  let totalDistance = 0; // Total distance in km
+  let previousPosition: [number, number, number] | null = null; // [longitude, latitude, timestamp]
+  
   // Mapbox integration
   import mapboxgl from 'mapbox-gl';
   import { onMount, onDestroy } from 'svelte';
@@ -69,7 +76,6 @@
   let locationError = false; // Флаг для отслеживания ошибок геолокации
   let userLocation: [number, number] | null = null; // Для хранения координат пользователя
   let watchId: number | null = null; // ID для отслеживания геолокации
-  let previousPosition: [number, number] | null = null; // Для отслеживания предыдущей позиции
   let initialLocationSet = false; // Флаг для отслеживания установки начального местоположения
   
   // Ключ для хранения последней позиции в localStorage
@@ -104,6 +110,11 @@
   function stopTraining() {
     trainingStartTime = null;
     trainingCalories = 0;
+    currentSpeed = 0;
+    averageSpeed = 0;
+    maxSpeed = 0;
+    totalDistance = 0;
+    previousPosition = null;
   }
   
   // Function to update calorie display
@@ -131,6 +142,72 @@
       localStorage.setItem(LAST_POSITION_KEY, JSON.stringify(position));
     } catch (error) {
       console.error('Error saving position to localStorage:', error);
+    }
+  }
+  
+  // Функция для расчета скорости между двумя точками
+  function calculateSpeed(lat1: number, lon1: number, time1: number, lat2: number, lon2: number, time2: number): number {
+    // Calculate distance in meters
+    const distance = calculateDistance(lat1, lon1, lat2, lon2);
+    
+    // Calculate time difference in hours
+    const timeDiffHours = (time2 - time1) / (1000 * 60 * 60);
+    
+    // Avoid division by zero
+    if (timeDiffHours <= 0) return 0;
+    
+    // Calculate speed in km/h
+    return (distance / 1000) / timeDiffHours;
+  }
+  
+  // Функция для обновления статистики на основе новой позиции
+  function updateTrainingStats(position: GeolocationPosition) {
+    const now = new Date();
+    const currentTime = now.getTime();
+    
+    // Update total training time
+    let trainingTime = "00:00:00";
+    if (trainingStartTime) {
+      const diffMs = currentTime - trainingStartTime.getTime();
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffMinutes = Math.floor((diffMs % 3600000) / 60000);
+      const diffSeconds = Math.floor((diffMs % 60000) / 1000);
+      
+      trainingTime = `${diffHours.toString().padStart(2, '0')}:${diffMinutes.toString().padStart(2, '0')}:${diffSeconds.toString().padStart(2, '0')}`;
+    }
+    
+    // If we have a previous position, calculate distance and speed
+    if (previousPosition && position.coords) {
+      const [prevLng, prevLat, prevTime] = previousPosition;
+      const currentLng = position.coords.longitude;
+      const currentLat = position.coords.latitude;
+      
+      // Calculate distance between points in meters
+      const distance = calculateDistance(prevLat, prevLng, currentLat, currentLng);
+      
+      // Convert to kilometers and add to total distance
+      totalDistance += distance / 1000;
+      
+      // Calculate current speed in km/h
+      currentSpeed = calculateSpeed(prevLat, prevLng, prevTime, currentLat, currentLng, currentTime);
+      
+      // Update maximum speed if current speed is higher
+      if (currentSpeed > maxSpeed) {
+        maxSpeed = currentSpeed;
+      }
+      
+      // Calculate average speed
+      if (trainingStartTime) {
+        const totalTrainingTimeHours = (currentTime - trainingStartTime.getTime()) / (1000 * 60 * 60);
+        if (totalTrainingTimeHours > 0) {
+          averageSpeed = totalDistance / totalTrainingTimeHours;
+        }
+      }
+    }
+    
+    // Store current position for next calculation
+    if (position.coords) {
+      previousPosition = [position.coords.longitude, position.coords.latitude, currentTime];
     }
   }
   
@@ -184,6 +261,9 @@
           console.log('User location found:', position);
           locationError = false;
           isLocating = false;
+          
+          // Update training stats
+          updateTrainingStats(position);
           
           // Update current position with user location
           if (position && position.coords && map) {
@@ -261,6 +341,9 @@
           const lat = position.coords.latitude;
           const currentPosition: [number, number] = [lng, lat];
           
+          // Update training stats
+          updateTrainingStats(position);
+          
           // Сохраняем текущую позицию пользователя
           saveCurrentPosition(lng, lat);
           
@@ -290,13 +373,14 @@
                 zoom: 17,
                 duration: 1000 // Плавная анимация 1 секунда
               });
-              previousPosition = currentPosition;
+              // Update previous position
+              previousPosition = [lng, lat, Date.now()];
             }
           } else {
             // Первоначальное центрирование
             map.setCenter(currentPosition);
             initialLocationSet = true;
-            previousPosition = currentPosition;
+            previousPosition = [lng, lat, Date.now()];
           }
           
           // Сохраняем текущее местоположение
@@ -372,6 +456,29 @@
     // Удалим обработчик кликов
     document.removeEventListener('click', handleClickOutside);
   });
+  
+  // Helper function to format time
+  function formatTime(date: Date | null): string {
+    if (!date) return "00:00:00";
+    
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffMinutes = Math.floor((diffMs % 3600000) / 60000);
+    const diffSeconds = Math.floor((diffMs % 60000) / 1000);
+    
+    return `${diffHours.toString().padStart(2, '0')}:${diffMinutes.toString().padStart(2, '0')}:${diffSeconds.toString().padStart(2, '0')}`;
+  }
+  
+  // Helper function to format distance
+  function formatDistance(distance: number): string {
+    return distance.toFixed(2);
+  }
+  
+  // Helper function to format speed
+  function formatSpeed(speed: number): string {
+    return speed.toFixed(2);
+  }
 </script>
 
 <div class="background-animation">
@@ -468,22 +575,36 @@
         <div class="training-stats s-nHmVefn3S3wX">
           <div class="stat-card s-nHmVefn3S3wX">
             <h4 class="s-nHmVefn3S3wX">Время</h4>
-            <p class="stat-value s-nHmVefn3S3wX">00:00:00</p>
+            <p class="stat-value s-nHmVefn3S3wX">{formatTime(trainingStartTime)}</p>
           </div>
           <div class="stat-card s-nHmVefn3S3wX">
             <h4 class="s-nHmVefn3S3wX">Дистанция</h4>
-            <p class="stat-value s-nHmVefn3S3wX">0.0 км</p>
+            <p class="stat-value s-nHmVefn3S3wX">{formatDistance(totalDistance)} км</p>
           </div>
           <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Темп</h4>
-            <p class="stat-value s-nHmVefn3S3wX">0:00 / км</p>
+            <h4 class="s-nHmVefn3S3wX">Скорость</h4>
+            <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(currentSpeed)} км/ч</p>
           </div>
-          <!-- Calorie tracking card -->
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Средняя</h4>
+            <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(averageSpeed)} км/ч</p>
+          </div>
+        </div>
+        
+        <!-- Копия панели статистики тренировки -->
+        <div class="training-stats s-nHmVefn3S3wX">
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Темп</h4>
+            <p class="stat-value s-nHmVefn3S3wX">{currentSpeed > 0 ? (60 / currentSpeed).toFixed(2) : '0.00'} мин/км</p>
+          </div>
+          <div class="stat-card s-nHmVefn3S3wX">
+            <h4 class="s-nHmVefn3S3wX">Ср.Темп</h4>
+            <p class="stat-value s-nHmVefn3S3wX">{averageSpeed > 0 ? (60 / averageSpeed).toFixed(2) : '0.00'} мин/км</p>
+          </div>
           <div class="stat-card s-nHmVefn3S3wX">
             <h4 class="s-nHmVefn3S3wX">Калории</h4>
             <p class="stat-value s-nHmVefn3S3wX">{trainingCalories} ккал</p>
           </div>
-          <!-- Heart rate tracking card -->
           <div class="stat-card s-nHmVefn3S3wX">
             <h4 class="s-nHmVefn3S3wX">Пульс</h4>
             <p class="stat-value s-nHmVefn3S3wX">0 уд/мин</p>
@@ -765,6 +886,8 @@
     width: 20%;
     /* Убираем минимальную ширину, чтобы все элементы были одинакового размера */
     min-width: 0;
+    /* Ensure content fits properly */
+    box-sizing: border-box;
   }
   
   .stat-card h4 {
@@ -786,6 +909,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+    /* Ensure text fits within container */
+    min-width: 0;
+    box-sizing: border-box;
   }
   
   /* Ensure the map container fills the shield content area */
@@ -845,6 +971,8 @@
       padding: clamp(4px, 1vw, 8px);
       /* На мобильных устройствах ширина будет 100% */
       width: 100%;
+      /* Ensure content fits properly */
+      box-sizing: border-box;
     }
     
     .stat-card h4 {
@@ -858,6 +986,9 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      /* Ensure text fits within container */
+      min-width: 0;
+      box-sizing: border-box;
     }
     
     /* Compact header for mobile */
@@ -890,6 +1021,8 @@
       padding: clamp(3px, 1vw, 6px);
       /* На мобильных устройствах ширина будет 100% */
       width: 100%;
+      /* Ensure content fits properly */
+      box-sizing: border-box;
     }
     
     .stat-card h4 {
@@ -899,6 +1032,9 @@
     
     .stat-value {
       font-size: clamp(0.5rem, 2.8vw, 0.7rem); /* Reduced from clamp(0.6rem, 3vw, 0.85rem) */
+      /* Ensure text fits within container */
+      min-width: 0;
+      box-sizing: border-box;
     }
     
     /* Even more compact header for small screens */
@@ -935,6 +1071,8 @@
       padding: clamp(10px, 0.7vw, 18px);
       /* На больших экранах все элементы будут одинакового размера */
       width: 20%;
+      /* Ensure content fits properly */
+      box-sizing: border-box;
     }
     
     .stat-card h4 {
