@@ -34,6 +34,19 @@
 - Node.js версии 20 или выше (для локальной разработки)
 - Docker и Docker Compose (для запуска в контейнерах)
 
+### Конфигурация переменных окружения
+
+Перед запуском приложения необходимо настроить переменные окружения:
+
+1. Скопируйте файл [.env.example](file://e:/DevBuild/AI/AI%20Running/saraylo_web_app/.env.example) в `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Откройте файл [.env](file://e:/DevBuild/AI/AI%20Running/saraylo_web_app/.env) и замените `your_telegram_bot_token_here` на реальный токен вашего Telegram бота
+
+**ВАЖНО**: Файл [.env](file://e:/DevBuild/AI/AI%20Running/saraylo_web_app/.env) добавлен в [.gitignore](file://e:/DevBuild/AI/AI%20Running/saraylo_web_app/.gitignore) и никогда не попадет в репозиторий для обеспечения безопасности.
+
 ### Вариант 1: Локальный запуск (рекомендуется для разработки)
 
 1. Установите зависимости:
