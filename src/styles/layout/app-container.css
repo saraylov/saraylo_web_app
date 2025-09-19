@@ -21,4 +21,8 @@
   /* Improved responsive behavior */
   flex: 1;
   height: auto;
+  
+  /* Allow flexible scaling without fixed aspect ratio */
+  width: 100%;
+  max-width: 100vw;
 }

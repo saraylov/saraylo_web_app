@@ -23,6 +23,10 @@
   export let handleTrainingClick;
   export let handleDevicesClick;
   export let handleProfileClick;
+  export let handleSettingsClick;
+  
+  // Add export for handleCalendarClick
+  export let handleCalendarClick;
 </script>
 
 <div class="background-animation">
@@ -52,7 +56,12 @@
 <div class="app-container">
   <div class="glass-panel">
     <Header {handleAddClick} />
-    <MainContent {activityData} {handleDetailsClick} {handleLogout} />
+    <MainContent 
+      {activityData} 
+      {handleDetailsClick} 
+      {handleLogout} 
+      {handleCalendarClick} 
+    />
   </div>
   
   <BottomNav 
@@ -61,6 +70,7 @@
     {handleTrainingClick}
     {handleDevicesClick}
     {handleProfileClick}
+    {handleSettingsClick}
     isInTrainingMode={isInTrainingMode}
   />
 </div>

@@ -20,8 +20,18 @@
   box-sizing: border-box;
   min-height: calc(100vh - (var(--container-padding) * 2) - var(--header-height));
   
+  /* Ensure content fits without scrolling */
+  min-height: 0; /* Allow flex children to shrink below their content size */
+  
   /* Improve performance on mobile devices */
   will-change: transform;
+  
+  /* Ensure proportional scaling on all screen sizes */
+  max-width: 95vw;
+  max-height: 95vh;
+  
+  /* Center the panel */
+  margin: auto;
 }
 
 .glass-panel::before {

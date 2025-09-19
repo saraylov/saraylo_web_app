@@ -219,6 +219,7 @@
           Редактировать профиль
         </Button>
         
+        <!-- Removed buttons as requested:
         <Button on:click={handleShareProfile} variant="outline" size="medium">
           Поделиться профилем
         </Button>
@@ -226,6 +227,7 @@
         <Button on:click={handleExportData} variant="secondary" size="medium">
           Экспорт данных
         </Button>
+        -->
       </div>
     </div>
   </div>
@@ -560,18 +562,6 @@
     background: #9b0000; /* Changed to #9b0000 as requested */
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
-    transform: translateY(0);
-    box-shadow: 
-      0 4px 6px rgba(0, 0, 0, 0.1),
-      0 1px 3px rgba(0, 0, 0, 0.08);
-  }
-  
-  .preference-item.color-5:hover {
-    transform: translateY(-5px);
-    box-shadow: 
-      0 10px 15px rgba(0, 0, 0, 0.2),
-      0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
   .preference-item.color-5::before {

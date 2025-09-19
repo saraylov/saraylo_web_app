@@ -9,6 +9,12 @@
   
   /* Ensure content doesn't overflow */
   box-sizing: border-box;
+  
+  /* Ensure calendar fits without scrolling */
+  min-height: 0; /* Allow flex children to shrink below their content size */
+  
+  /* Allow flexible scaling without fixed aspect ratio */
+  width: 100%;
 }
 
 .dashboard-header {

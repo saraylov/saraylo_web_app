@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import './app.css';
   import Profile from './Profile.svelte';
@@ -10,6 +10,7 @@
   import AssessmentTraining from './AssessmentTraining.svelte';
   import Dashboard from './Dashboard.svelte';
   import Login from './Login.svelte';
+  import Calendar from './Calendar.svelte';
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -29,16 +30,53 @@
   /** @type {boolean} */
   let showTelegramWidget = false;
   
-  // Activity rings data
+  // Activity rings data - updated to use real user data
   let activityData = {
-    move: { value: 450, goal: 500, color: '#00BFFF' },
-    exercise: { value: 30, goal: 60, color: '#FF1493' },
-    stand: { value: 8, goal: 12, color: '#00FF00' }
+    move: { value: 0, goal: 500, color: '#00BFFF' }, // calories
+    exercise: { value: 0, goal: 60, color: '#FF1493' }, // exercise minutes
+    stand: { value: 0, goal: 12, color: '#00FF00' } // sleep hours
+  };
+  
+  // Steps data for progress bar
+  let stepsData = {
+    value: 0,
+    goal: 50000
   };
   
   // Helper function to check if in training mode
   function isInTrainingMode() {
     return currentView === 'training';
+  }
+  
+  // Function to simulate getting real user data
+  function getRealUserData() {
+    // In a real implementation, this would connect to a fitness/health API
+    // For now, we'll simulate with realistic values that change over time
+    
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const hoursSinceMidnight = (now.getTime() - startOfDay.getTime()) / (1000 * 60 * 60);
+    
+    // Simulate calories burned (average 2000-2500 calories per day)
+    const caloriesBurned = Math.min(500, Math.floor(hoursSinceMidnight * 200));
+    
+    // Simulate exercise minutes (average 30-60 minutes per day)
+    const exerciseMinutes = Math.min(60, Math.floor(hoursSinceMidnight * 2.5));
+    
+    // Simulate sleep hours (typically 7-9 hours per night)
+    // For simulation, we'll assume sleep started 8 hours ago
+    const sleepHours = Math.min(12, Math.max(0, 8 - (hoursSinceMidnight > 8 ? hoursSinceMidnight - 8 : 0)));
+    
+    // Simulate steps (average 8000-10000 steps per day)
+    const steps = Math.min(50000, Math.floor(hoursSinceMidnight * 400));
+    
+    // Update activity data
+    activityData.move.value = caloriesBurned;
+    activityData.exercise.value = exerciseMinutes;
+    activityData.stand.value = sleepHours;
+    
+    // Update steps data
+    stepsData.value = steps;
   }
   
   // Handle logout
@@ -72,6 +110,12 @@
     // Always show dashboard
     currentView = 'dashboard';
     authStatus = 'Production by V Saraylo';
+    
+    // Initialize with real user data
+    getRealUserData();
+    
+    // Update data every minute to simulate real-time updates
+    setInterval(getRealUserData, 60000);
   
     // Cleanup event listeners
     return () => {
@@ -142,8 +186,14 @@
     currentView = 'assessment';
   }
   
+  // Handle calendar navigation
+  function handleCalendarClick() {
+    console.log('handleCalendarClick called, setting currentView to calendar');
+    currentView = 'calendar';
+  }
+  
   // Handle setting current view (for Login component)
-  function setCurrentView(view) {
+  function setCurrentView(view: string) {
     currentView = view;
   }
   
@@ -192,6 +242,8 @@
     {handleTrainingClick}
     {handleDevicesClick}
     {handleProfileClick}
+    {handleSettingsClick}
+    {handleCalendarClick}
   />
 {:else if currentView === 'training'}
   <Training 
@@ -229,6 +281,8 @@
     {handleProfileClick} 
     {handleSettingsClick} 
   />
+{:else if currentView === 'calendar'}
+  <Calendar {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} {handleSettingsClick} />
 {/if}
 
 <style>
