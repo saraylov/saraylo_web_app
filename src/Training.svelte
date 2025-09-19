@@ -683,6 +683,7 @@
     {handleTrainingClick}
     {handleDevicesClick}
     {handleProfileClick}
+    {handleSettingsClick}
     isInTrainingMode={isInTrainingMode}
   />
 </div>

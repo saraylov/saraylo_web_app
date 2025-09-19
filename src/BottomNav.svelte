@@ -4,6 +4,7 @@
   export let handleTrainingClick;
   export let handleDevicesClick;
   export let handleProfileClick;
+  export let handleSettingsClick;
   export let isInTrainingMode;
 </script>
 
