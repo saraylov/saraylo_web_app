@@ -246,9 +246,10 @@
       console.log('Getting last valid position...');
       const lastPosition = getLastValidPosition();
       
-      // Инициализируем карту с последними сохраненными координатами или координатами по умолчанию
-      const initialLng = lastPosition ? lastPosition.lng : 30.3158;
-      const initialLat = lastPosition ? lastPosition.lat : 59.9343;
+      // Инициализируем карту с последними сохраненными координатами или без координат (null)
+      // Убираем значения по умолчанию - карта должна определять местоположение пользователя
+      const initialLng = lastPosition ? lastPosition.lng : null;
+      const initialLat = lastPosition ? lastPosition.lat : null;
       
       console.log('Initializing map with coordinates:', initialLng, initialLat, 'Last position was:', lastPosition);
       
@@ -256,19 +257,27 @@
       if (lastPosition) {
         console.log('CONFIRMATION: Using saved coordinates - Lng:', initialLng, 'Lat:', initialLat);
       } else {
-        console.log('CONFIRMATION: Using default coordinates - Lng:', initialLng, 'Lat:', initialLat);
+        console.log('CONFIRMATION: No saved coordinates, will determine user location');
       }
       
-      map = new mapboxgl.Map({
+      // Create map configuration
+      const mapConfig = {
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [initialLng, initialLat],
         zoom: 17, // Очень крупный zoom для тренировки
         maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
         minZoom: 10, // Разрешаем отдаление для просмотра всего пути
         pitch: 0, // Устанавливаем нулевой угол наклона камеры
         bearing: 0 // Устанавливаем нулевой поворот камеры
-      });
+      };
+      
+      // Only set center if we have coordinates
+      if (initialLng !== null && initialLat !== null) {
+        // @ts-ignore
+        mapConfig.center = [initialLng, initialLat];
+      }
+      
+      map = new mapboxgl.Map(mapConfig);
       
       // Add navigation controls
       if (map) {
