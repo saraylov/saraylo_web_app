@@ -260,21 +260,23 @@
         console.log('CONFIRMATION: No saved coordinates, will determine user location');
       }
       
-      // Create map configuration
-      const mapConfig = {
+      // Create map configuration with a default world view when no coordinates
+      const mapConfig: mapboxgl.MapboxOptions = {
         container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v12',
-        zoom: 17, // Очень крупный zoom для тренировки
+        zoom: lastPosition ? 17 : 1, // Use lower zoom when no position
         maxZoom: 23, // Увеличен максимальный zoom до 23 уровня
-        minZoom: 10, // Разрешаем отдаление для просмотра всего пути
+        minZoom: 1, // Allow zooming out to world view
         pitch: 0, // Устанавливаем нулевой угол наклона камеры
         bearing: 0 // Устанавливаем нулевой поворот камеры
       };
       
       // Only set center if we have coordinates
       if (initialLng !== null && initialLat !== null) {
-        // @ts-ignore
         mapConfig.center = [initialLng, initialLat];
+      } else {
+        // Set a default world view center to avoid map splitting
+        mapConfig.center = [0, 0];
       }
       
       map = new mapboxgl.Map(mapConfig);
@@ -328,6 +330,7 @@
             if (!initialLocationSet) {
               console.log('Setting initial map center');
               map.setCenter([position.coords.longitude, position.coords.latitude]);
+              map.setZoom(17); // Set appropriate zoom level for tracking
               initialLocationSet = true;
             } else {
               // Для последующих обновлений используем плавную анимацию
@@ -366,7 +369,7 @@
                   // @ts-ignore
                   geolocateControl.trigger();
                 }
-              }, 500);
+              }, 1000); // Increased delay to 1 second
             }
           });
           
@@ -447,6 +450,7 @@
             // Первоначальное центрирование
             console.log('Initial map centering in manual tracking');
             map.setCenter(currentPosition);
+            map.setZoom(17); // Set appropriate zoom level
             initialLocationSet = true;
             previousPosition = [lng, lat, Date.now()];
           }
@@ -464,7 +468,7 @@
       {
         enableHighAccuracy: true,
         maximumAge: 3000, // Используем кэшированное местоположение до 3 секунд
-        timeout: 8000 // Таймаут 8 секунд
+        timeout: 10000 // Increased timeout to 10 seconds
       }
     );
   }
@@ -635,7 +639,7 @@
           <!-- Отображаем сообщение об ошибке геолокации -->
           {#if locationError}
             <div class="location-error">
-              <p>Не удалось определить местоположение. Используются координаты по умолчанию.</p>
+              <p>Не удалось определить местоположение. Пожалуйста, проверьте настройки геолокации.</p>
             </div>
           {/if}
           
@@ -716,6 +720,10 @@
     max-height: 500px;
     /* Добавим box-sizing для правильного расчета размеров */
     box-sizing: border-box;
+    /* Ensure proper rendering to prevent map splitting */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
   }
   
   /* Responsive map height adjustments */
