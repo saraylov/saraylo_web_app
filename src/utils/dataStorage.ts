@@ -16,6 +16,17 @@ export interface DailyActivityData {
   };
 }
 
+// Define the structure for user calibration data
+export interface UserCalibrationData {
+  userId: string;
+  timestamp: string; // ISO timestamp
+  zones: {
+    name: 'Синяя' | 'Зеленая' | 'Желтая' | 'Оранжевая' | 'Красная';
+    avgSpeed: number; // Average speed in km/h
+    speedRange: { min: number; max: number }; // Speed range [avg-1, avg+1] km/h
+  }[];
+}
+
 /**
  * Save daily activity data to localStorage
  * @param data Daily activity data to save
@@ -62,6 +73,43 @@ export function getAllSavedDates(): string[] {
   } catch (error) {
     console.error('Error getting saved dates:', error);
     return [];
+  }
+}
+
+/**
+ * Save user calibration data to localStorage
+ * @param data User calibration data to save
+ */
+export function saveUserCalibrationData(data: UserCalibrationData): void {
+  try {
+    localStorage.setItem('userCalibrationData', JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving user calibration data:', error);
+  }
+}
+
+/**
+ * Load user calibration data from localStorage
+ * @returns User calibration data or null if not found
+ */
+export function loadUserCalibrationData(): UserCalibrationData | null {
+  try {
+    const data = localStorage.getItem('userCalibrationData');
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error('Error loading user calibration data:', error);
+    return null;
+  }
+}
+
+/**
+ * Clear user calibration data from localStorage
+ */
+export function clearUserCalibrationData(): void {
+  try {
+    localStorage.removeItem('userCalibrationData');
+  } catch (error) {
+    console.error('Error clearing user calibration data:', error);
   }
 }
 

@@ -7,6 +7,8 @@
   height: 100%;
   padding: 20px;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .training-stats {
@@ -14,118 +16,105 @@
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  max-width: 500px;
   gap: 12px;
-  /* Reduce margin-top to make panel less tall */
   margin-top: 12px;
   box-sizing: border-box;
-  /* Ensure proper height */
-  height: auto;
-  /* Remove any fixed height that might cause stretching */
-  min-height: auto;
-  /* Reduce padding */
   padding: 12px;
+  align-items: stretch;
+  min-height: 80px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 191, 255, 0.1);
+  /* Ensure consistent height for all stat panels */
+  height: fit-content;
+  /* Prevent scrolling */
+  overflow: hidden;
+  
+  /* Ensure all child elements maintain consistent width */
+  align-items: stretch;
+  
+  /* Ensure the stats panels have the same width as the map */
+  max-width: 100%;
+  margin: 0 auto;
+  
+  /* Prevent wrapping to ensure elements stay in a single row */
+  flex-wrap: nowrap;
+  /* Force single line layout */
+  white-space: nowrap;
 }
 
 .stat-card {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
   backdrop-filter: blur(5px);
-  border-radius: 12px; /* Slightly reduced border radius */
-  /* Reduce padding to make panel less tall */
-  padding: 7px; /* Reduced padding */
+  border-radius: 12px;
+  padding: 12px 8px;
   text-align: center;
   flex: 1;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  transition: all 0.3s ease-in-out;
+  /* Ensure consistent sizing */
+  aspect-ratio: 3/4;
+  width: calc(20% - 9px);
+  /* Prevent scrolling */
+  overflow: hidden;
   
-  /* Ensure minimum touch target size but reduce height */
-  min-height: 30px; /* Reduced min-height */
+  /* Ensure consistent width and proportional scaling */
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  
+  /* Prevent height-based wrapping */
+  height: auto;
+  /* Ensure all elements stay in a single row */
+  flex: 1 0 auto;
+  min-width: 0;
 }
 
 .stat-card h4 {
-  font-size: 0.75rem; /* Reduced font size */
+  font-size: 0.75rem;
   color: var(--light-gray);
-  margin-bottom: 5px; /* Reduced margin */
+  margin-bottom: 8px;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stat-value {
-  font-size: 1rem; /* Reduced font size */
+  font-size: 1rem;
   font-weight: 700;
   color: var(--white);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
-  /* Improve training stats for small screens */
   .training-stats {
-    flex-direction: column;
     gap: 10px;
+    padding: 10px;
   }
   
   .stat-card {
-    padding: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .training-stats {
-    flex-direction: row;
-    gap: clamp(3px, 1.5vw, 6px); /* Further reduced gap for smaller screens */
-    /* Reduce padding for smaller screens */
-    padding: clamp(4px, 1vw, 6px); /* Further reduced padding */
-    border-radius: clamp(5px, 2vw, 10px); /* Further reduced border radius */
-  }
-  
-  .stat-card {
-    /* Reduce min-height and padding for smaller screens */
-    min-height: 25px; /* Further reduced min-height */
-    padding: clamp(2px, 0.8vw, 4px); /* Further reduced padding */
-  }
-  
-  .stat-card h4 {
-    font-size: 0.65rem; /* Further reduced font size */
-    margin-bottom: 3px; /* Further reduced margin */
-  }
-  
-  .stat-value {
-    font-size: 0.8rem; /* Further reduced font size */
-  }
-}
-
-@media (max-width: 360px) {
-  .training-stats {
-    gap: 5px;
-    /* Further reduce padding for very small screens */
-    padding: 5px;
-  }
-  
-  .stat-card {
-    /* Further reduce min-height and padding for very small screens */
-    min-height: 25px;
-    padding: 5px;
+    padding: 10px 6px;
+    aspect-ratio: 2/3;
+    width: calc(20% - 7px);
   }
   
   .stat-card h4 {
     font-size: 0.7rem;
-  }
-  
-  .stat-value {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 320px) {
-  /* Improve training stats for very small screens */
-  .training-stats {
-    gap: 6px;
-  }
-  
-  .stat-card {
-    padding: 8px;
-  }
-  
-  .stat-card h4 {
-    font-size: 0.75rem;
+    margin-bottom: 6px;
   }
   
   .stat-value {
@@ -133,21 +122,73 @@
   }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
-  /* Improve training stats for medium screens */
+@media (max-width: 480px) {
   .training-stats {
-    gap: 20px;
+    gap: 8px;
+    padding: 8px;
+    margin-top: 10px;
+    flex-direction: row;
+    /* Prevent wrapping to ensure elements stay in a single row */
+    flex-wrap: nowrap;
+    overflow: hidden;
+    /* Force single line layout */
+    white-space: nowrap;
   }
   
   .stat-card {
-    padding: 20px;
+    padding: 8px 5px;
+    aspect-ratio: 3/2;
+    /* Ensure all elements stay in a single row */
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: calc(20% - 5px);
+    /* Prevent height-based wrapping */
+    height: auto;
+    /* Ensure consistent sizing */
+    box-sizing: border-box;
   }
   
   .stat-card h4 {
-    font-size: 1rem;
+    font-size: 0.65rem;
+    margin-bottom: 5px;
   }
   
   .stat-value {
-    font-size: 1.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .training-stats {
+    gap: 6px;
+    padding: 6px;
+    /* Prevent wrapping to ensure elements stay in a single row */
+    flex-wrap: nowrap;
+    overflow: hidden;
+    /* Force single line layout */
+    white-space: nowrap;
+  }
+  
+  .stat-card {
+    padding: 6px 4px;
+    aspect-ratio: 3/2;
+    /* Ensure all elements stay in a single row */
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: calc(20% - 3px);
+    /* Prevent height-based wrapping */
+    height: auto;
+    /* Ensure consistent sizing */
+    box-sizing: border-box;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.6rem;
+  }
+  
+  .stat-value {
+    font-size: 0.8rem;
   }
 }

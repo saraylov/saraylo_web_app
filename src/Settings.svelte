@@ -18,6 +18,9 @@
   export let handleDevicesClick: () => void;
   export let handleProfileClick: () => void;
   
+  // Handle logout
+  export let handleLogout: () => void;
+  
   // Helper function to check if in training mode
   function isInTrainingMode() {
     return false;
@@ -201,6 +204,17 @@
         <div class="setting-item">
           <Button on:click={clearData} variant="danger">
             Очистить данные
+          </Button>
+        </div>
+      </div>
+      
+      <!-- Logout button section -->
+      <div class="settings-section">
+        <h2>Выход из профиля</h2>
+        
+        <div class="setting-item">
+          <Button on:click={handleLogout} variant="danger">
+            Выйти
           </Button>
         </div>
       </div>

@@ -347,6 +347,8 @@
     display: flex;
     justify-content: space-around;
     gap: 15px;
+    /* Принудительно устанавливаем горизонтальное отображение */
+    flex-direction: row !important;
   }
   
   .additional-stats {
@@ -646,25 +648,25 @@
       font-size: 1.1rem;
       margin-bottom: 10px;
     }
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 15px;
   }
   
-  @media (max-width: 480px) {
-    .profile-card {
-      padding: 15px;
-    }
-    
-    .profile-avatar {
-      width: 60px;
-      height: 60px;
-    }
-    
-    .profile-name {
-      font-size: 1.3rem;
-    }
-    
-    .profile-stats {
-      flex-direction: column;
-      gap: 15px;
-    }
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
   }
+  
+  .profile-name {
+    font-size: 1.3rem;
+  }
+  
+  /* Убираем изменение flex-direction для profile-stats */
+  .profile-stats {
+    gap: 10px;
+  }
+}
 </style>

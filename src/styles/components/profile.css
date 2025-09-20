@@ -33,6 +33,9 @@
   justify-content: space-around;
   margin-top: 20px;
   padding: 0 10px;
+  /* Удаляем flex-direction: column чтобы сохранить горизонтальное отображение */
+  flex-direction: row !important;
+  gap: 10px;
 }
 
 .profile-details {
@@ -53,11 +56,7 @@
 }
 
 @media (max-width: 480px) {
-  .profile-stats {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
+  /* Убираем изменение flex-direction для profile-stats */
   .profile-name {
     font-size: 1.5rem;
   }
@@ -72,13 +71,9 @@
 }
 
 @media (max-width: 360px) {
+  /* Убираем изменение flex-direction для profile-stats */
   .profile-name {
     font-size: 1.3rem;
-  }
-  
-  .profile-stats {
-    flex-direction: column;
-    gap: 15px;
   }
   
   .stat-item .stat-value {

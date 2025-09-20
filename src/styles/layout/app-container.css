@@ -25,4 +25,26 @@
   /* Allow flexible scaling without fixed aspect ratio */
   width: 100%;
   max-width: 100vw;
+  
+  /* Добавим свойства для правильного масштабирования */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* Установим минимальную высоту в зависимости от высоты экрана */
+  min-height: 100vh;
+  
+  /* Добавим плавное изменение размеров */
+  transition: all 0.3s ease-in-out;
+  
+  /* Убедимся, что содержимое правильно масштабируется */
+  flex: 1 1 auto;
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* Добавим свойства для правильного масштабирования на мобильных устройствах */
+  padding: clamp(10px, 2vw, 30px);
+  padding-top: max(clamp(10px, 2vw, 30px), var(--safe-area-inset-top));
+  padding-bottom: calc(max(clamp(10px, 2vw, 30px), var(--safe-area-inset-bottom)) + var(--header-height));
 }

@@ -15,38 +15,84 @@
   
   /* Allow flexible scaling without fixed aspect ratio */
   width: 100%;
+  
+  /* Добавим свойства для правильного масштабирования */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  
+  /* Установим минимальную высоту в зависимости от высоты экрана */
+  min-height: clamp(200px, 40vh, 600px);
+  
+  /* Добавим плавное изменение размеров */
+  transition: all 0.3s ease-in-out;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
-  margin-bottom: 25px;
+  padding: var(--panel-padding-vertical) var(--panel-padding-horizontal);
+  margin-bottom: var(--panel-margin-bottom);
   /* Updated to use Miami Hit color scheme */
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
-  border-radius: 15px;
-  padding: 15px 20px;
+  border-radius: var(--panel-border-radius);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Fixed width for consistent sizing across all devices */
+  width: 551px;
+  max-width: 100%;
+  box-sizing: border-box;
+  
+  /* Standardized height */
+  min-height: var(--panel-min-height);
+  
+  /* Smooth transitions */
+  transition: all 0.3s ease-in-out;
+  
+  /* Ensure proper scaling */
+  flex: 1 1 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-title {
+  /* Responsive font sizing */
+  font-size: var(--panel-header-font-size);
+  margin: 0;
+  padding: 0;
+  
+  /* Ensure proper scaling */
+  flex: 1 1 auto;
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* Standardized styling */
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .header-icon {
   cursor: pointer;
-  padding: 16px; /* Increased for better touch targets */
+  padding: var(--panel-icon-padding);
   /* Ensure perfect circle shape */
   border-radius: 50%;
   transition: all 0.3s ease;
   /* Updated to use Miami Hit color scheme */
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
   /* Make sure the element is perfectly square */
-  width: var(--touch-target-min); /* Increased for better touch targets */
-  height: var(--touch-target-min); /* Increased for better touch targets */
+  width: var(--panel-icon-size);
+  height: var(--panel-icon-size);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: var(--touch-target-min); /* Minimum touch target size */
-  min-height: var(--touch-target-min); /* Minimum touch target size */
+  min-width: var(--panel-icon-size);
+  min-height: var(--panel-icon-size);
+  
+  /* Smooth transitions */
+  transition: all 0.3s ease-in-out;
 }
 
 .header-icon:hover {

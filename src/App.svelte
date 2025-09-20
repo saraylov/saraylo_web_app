@@ -3,11 +3,13 @@
   import './app.css';
   import Profile from './Profile.svelte';
   import Training from './Training.svelte';
+  import PreTraining from './PreTraining.svelte';
   import Devices from './Devices.svelte';
   import Health from './Health.svelte';
   import Settings from './Settings.svelte';
   import HistoryTrain from './HistoryTrain.svelte';
   import AssessmentTraining from './AssessmentTraining.svelte';
+  import AudioAssistedAssessment from './AudioAssistedAssessment.svelte';
   import Dashboard from './Dashboard.svelte';
   import Login from './Login.svelte';
   import Calendar from './Calendar.svelte';
@@ -31,6 +33,7 @@
   let currentView = 'dashboard'; // Всегда показываем dashboard
   /** @type {boolean} */
   let showTelegramWidget = false;
+  
   
   // Activity rings data - initialized to 0 to avoid simulation
   let activityData = {
@@ -146,9 +149,15 @@
     showTelegramWidget = true;
   }
   
-  // Handle training button click
+  // Handle training button click - now goes to pre-training page
   function handleTrainingClick() {
-    console.log('handleTrainingClick called, setting currentView to training');
+    console.log('handleTrainingClick called, setting currentView to pre-training');
+    currentView = 'pre-training';
+  }
+  
+  // Handle start training from pre-training page
+  function handleStartTraining() {
+    console.log('handleStartTraining called, setting currentView to training');
     currentView = 'training';
   }
   
@@ -259,6 +268,16 @@
     {handleSettingsClick}
     {handleCalendarClick}
   />
+{:else if currentView === 'pre-training'}
+  <PreTraining 
+    {handleBackToDashboard}
+    {handleStartTraining}
+    {handleHealthClick}
+    {handleTrainingClick}
+    {handleDevicesClick}
+    {handleProfileClick}
+    {handleSettingsClick}
+  />
 {:else if currentView === 'training'}
   <Training 
     {handleBackToDashboard} 
@@ -283,11 +302,21 @@
     handleTrainingClick={handleTrainingClick} 
     handleDevicesClick={handleDevicesClick} 
     handleProfileClick={handleProfileClick} 
+    handleLogout={handleLogout}
   />
 {:else if currentView === 'history'}
   <HistoryTrain {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} {handleSettingsClick} />
 {:else if currentView === 'assessment'}
   <AssessmentTraining 
+    {handleBackToDashboard} 
+    {handleHealthClick} 
+    {handleTrainingClick} 
+    {handleDevicesClick} 
+    {handleProfileClick} 
+    {handleSettingsClick} 
+  />
+{:else if currentView === 'audio-assessment'}
+  <AudioAssistedAssessment 
     {handleBackToDashboard} 
     {handleHealthClick} 
     {handleTrainingClick} 

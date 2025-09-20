@@ -25,7 +25,7 @@
   box-shadow: 0 clamp(3px, 0.7vw, 7px) clamp(10px, 1.5vw, 25px) rgba(0, 191, 255, 0.2); /* Reduced shadow */
   box-sizing: border-box;
   width: 100%;
-  max-width: min(100%, clamp(280px, 90vw, 600px));
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
   /* Position panel directly below map with no gap */
@@ -114,12 +114,26 @@
     /* Reduce padding for smaller screens */
     padding: clamp(4px, 1vw, 6px); /* Further reduced padding */
     border-radius: clamp(5px, 2vw, 10px); /* Further reduced border radius */
+    /* Prevent wrapping to ensure elements stay in a single row */
+    flex-wrap: nowrap;
+    overflow: hidden;
+    /* Force single line layout */
+    white-space: nowrap;
   }
   
   .stat-card {
     /* Reduce min-height and padding for smaller screens */
     min-height: 25px; /* Further reduced min-height */
     padding: clamp(2px, 0.8vw, 4px); /* Further reduced padding */
+    /* Ensure all elements stay in a single row */
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: calc(20% - 4px);
+    /* Prevent height-based wrapping */
+    height: auto;
+    /* Ensure consistent sizing */
+    box-sizing: border-box;
   }
   
   .stat-card h4 {
@@ -137,12 +151,26 @@
     gap: 5px;
     /* Further reduce padding for very small screens */
     padding: 5px;
+    /* Prevent wrapping to ensure elements stay in a single row */
+    flex-wrap: nowrap;
+    overflow: hidden;
+    /* Force single line layout */
+    white-space: nowrap;
   }
   
   .stat-card {
     /* Further reduce min-height and padding for very small screens */
     min-height: 25px;
     padding: 5px;
+    /* Ensure all elements stay in a single row */
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: calc(20% - 2px);
+    /* Prevent height-based wrapping */
+    height: auto;
+    /* Ensure consistent sizing */
+    box-sizing: border-box;
   }
   
   .stat-card h4 {

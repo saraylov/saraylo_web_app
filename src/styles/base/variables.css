@@ -20,6 +20,16 @@
   --touch-target-min: clamp(44px, 8vw, 56px);
   --header-height: clamp(50px, 10vw, 80px);
   
+  /* Unified panel sizing variables */
+  --panel-padding-vertical: 15px;
+  --panel-padding-horizontal: 20px;
+  --panel-margin-bottom: 20px;
+  --panel-border-radius: 12px;
+  --panel-min-height: 80px;
+  --panel-header-font-size: 1.5rem;
+  --panel-icon-size: 50px;
+  --panel-icon-padding: 14px;
+  
   /* Safe area variables for mobile devices */
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-right: env(safe-area-inset-right);

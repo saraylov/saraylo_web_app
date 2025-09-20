@@ -109,6 +109,42 @@
   .nav-item-center {
     margin-top: calc(clamp(-20px, -5vw, -40px));
   }
+  
+  /* Improve training stats for small screens */
+  .training-stats {
+    gap: 8px;
+    padding: 8px;
+    margin-top: 10px;
+    flex-direction: row;
+    /* Prevent wrapping to ensure elements stay in a single row */
+    flex-wrap: nowrap;
+    overflow: hidden;
+    /* Force single line layout */
+    white-space: nowrap;
+  }
+  
+  .stat-card {
+    padding: 8px 5px;
+    aspect-ratio: 3/2;
+    /* Ensure all elements stay in a single row */
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: calc(20% - 5px);
+    /* Prevent height-based wrapping */
+    height: auto;
+    /* Ensure consistent sizing */
+    box-sizing: border-box;
+  }
+  
+  .stat-card h4 {
+    font-size: 0.65rem;
+    margin-bottom: 5px;
+  }
+  
+  .stat-value {
+    font-size: 0.85rem;
+  }
 }
 
 /* Large screens */
@@ -170,19 +206,11 @@
     min-height: calc(100vh - 110px);
   }
   
-  .dashboard-header {
-    padding: 8px 0;
-  }
+  /* Using unified dashboard header styles from dashboard.css */
   
-  .dashboard-title {
-    font-size: 1.2rem;
-  }
+  /* Using base styles from typography.css */
   
-  .header-icon {
-    width: 36px;
-    height: 36px;
-    padding: 8px;
-  }
+  /* Using unified header icon styles from dashboard.css */
   
   .bottom-panel {
     padding: 15px 10px;
@@ -241,9 +269,7 @@
     min-height: calc(100vh - 120px);
   }
   
-  .dashboard-title {
-    font-size: 1.4rem;
-  }
+  /* Using base styles from typography.css */
   
   .health-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -269,9 +295,7 @@
     min-height: calc(100vh - 140px);
   }
   
-  .dashboard-title {
-    font-size: 1.6rem;
-  }
+  /* Using base styles from typography.css */
   
   .health-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -298,9 +322,7 @@
     padding: 35px;
   }
   
-  .dashboard-title {
-    font-size: 1.8rem;
-  }
+  /* Using base styles from typography.css */
   
   .health-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -370,6 +392,8 @@
     padding-left: env(safe-area-inset-left);
   }
   
+  /* Using unified dashboard header styles from dashboard.css */
+  /* Only safe area adjustments for notched devices */
   .dashboard-header {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
@@ -407,9 +431,11 @@
   }
   
   .header-icon {
-    padding: 10px;
-    width: 40px;
-    height: 40px;
+    padding: var(--panel-icon-padding);
+    width: var(--panel-icon-size);
+    height: var(--panel-icon-size);
+    min-width: var(--panel-icon-size);
+    min-height: var(--panel-icon-size);
   }
 }
 
@@ -424,7 +450,7 @@
   }
   
   .header-icon {
-    border-radius: 52px;
+    border-radius: 50%;
   }
 }
 
@@ -440,7 +466,7 @@
   }
   
   .dashboard-title {
-    font-size: 1.5rem;
+    font-size: var(--panel-header-font-size);
   }
   
   .profile-name {
@@ -477,7 +503,7 @@
   }
   
   .dashboard-title {
-    font-size: 2rem;
+    font-size: var(--panel-header-font-size);
   }
   
   .profile-name {
@@ -490,7 +516,7 @@
   }
   
   .header-icon {
-    padding: 14px;
+    padding: var(--panel-icon-padding);
   }
 }
 
@@ -542,9 +568,7 @@
     padding: 6px 12px;
   }
   
-  .dashboard-title {
-    font-size: 0.9rem;
-  }
+  /* Using base styles from typography.css */
   
   .profile-name {
     font-size: 1.1rem;
@@ -560,18 +584,34 @@
   }
   
   .header-icon {
-    padding: 15px;
-    width: 48px;
-    height: 48px;
+    padding: var(--panel-icon-padding);
+    width: var(--panel-icon-size);
+    height: var(--panel-icon-size);
+    min-width: var(--panel-icon-size);
+    min-height: var(--panel-icon-size);
   }
   
   /* Improve training stats for very small screens */
   .training-stats {
     gap: 6px;
+    /* Prevent wrapping to ensure elements stay in a single row */
+    flex-wrap: nowrap;
+    overflow: hidden;
+    /* Force single line layout */
+    white-space: nowrap;
   }
   
   .stat-card {
     padding: 8px;
+    /* Ensure all elements stay in a single row */
+    max-width: none;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: calc(20% - 3px);
+    /* Prevent height-based wrapping */
+    height: auto;
+    /* Ensure consistent sizing */
+    box-sizing: border-box;
   }
   
   .stat-card h4 {

@@ -11,6 +11,18 @@
   export let handleHistoryClick: (() => void) | null = null;
   export let handleAssessmentTrainingClick: (() => void) | null = null;
   
+  // Training options - adding this data structure for the selected training panel
+  const trainingOptions = [
+    { id: 1, title: 'Оценочная тренировка', duration: '15 мин', intensity: 'Низкая' },
+    { id: 2, title: 'Базовая тренировка', duration: '20 мин', intensity: 'Низкая' },
+    { id: 3, title: 'Интервальная тренировка', duration: '30 мин', intensity: 'Средняя' },
+    { id: 4, title: 'Силовая тренировка', duration: '45 мин', intensity: 'Высокая' },
+    { id: 5, title: 'Кардио тренировка', duration: '35 мин', intensity: 'Средняя' }
+  ];
+  
+  // Selected training - for displaying the selected training panel
+  let selectedTraining = trainingOptions[0];
+  
   // Добавим состояние для управления меню
   let isMenuOpen = false;
   let menuContainer: HTMLDivElement | null = null;
@@ -607,6 +619,25 @@
       </div>
     {/if}
     
+    <!-- Selected training panel -->
+    <div class="selected-training-panel">
+      <h3 class="selected-training-title">Выбранная тренировка</h3>
+      <div class="selected-training-details">
+        <div class="training-detail-item">
+          <span class="training-detail-label">Название</span>
+          <span class="training-detail-value">{selectedTraining.title}</span>
+        </div>
+        <div class="training-detail-item">
+          <span class="training-detail-label">Длительность</span>
+          <span class="training-detail-value">{selectedTraining.duration}</span>
+        </div>
+        <div class="training-detail-item">
+          <span class="training-detail-label">Интенсивность</span>
+          <span class="training-detail-value">{selectedTraining.intensity}</span>
+        </div>
+      </div>
+    </div>
+    
     <!-- Training content -->
     <div class="dashboard-main">
       <!-- Container for map and training stats to eliminate gap -->
@@ -631,43 +662,46 @@
           <!-- Map will be initialized here by Mapbox GL JS -->
         </div>
         
-        <!-- Training stats panel positioned below the map -->
-        <div class="training-stats s-nHmVefn3S3wX">
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Время</h4>
-            <p class="stat-value s-nHmVefn3S3wX">00:00:00</p>
+        <!-- Container for both training stats panels -->
+        <div class="training-stats-container">
+          <!-- Training stats panel positioned below the map -->
+          <div class="training-stats s-nHmVefn3S3wX">
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Время</h4>
+              <p class="stat-value s-nHmVefn3S3wX">00:00:00</p>
+            </div>
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Дистанция</h4>
+              <p class="stat-value s-nHmVefn3S3wX">{formatDistance(totalDistance)} км</p>
+            </div>
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Скорость</h4>
+              <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(currentSpeed)} км/ч</p>
+            </div>
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Максимум</h4>
+              <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(maxSpeed)} км/ч</p>
+            </div>
           </div>
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Дистанция</h4>
-            <p class="stat-value s-nHmVefn3S3wX">{formatDistance(totalDistance)} км</p>
-          </div>
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Скорость</h4>
-            <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(currentSpeed)} км/ч</p>
-          </div>
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Максимум</h4>
-            <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(maxSpeed)} км/ч</p>
-          </div>
-        </div>
-        
-        <!-- Additional training stats panel -->
-        <div class="training-stats s-nHmVefn3S3wX">
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Средняя</h4>
-            <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(averageSpeed)} км/ч</p>
-          </div>
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Темп</h4>
-            <p class="stat-value s-nHmVefn3S3wX">00:00</p>
-          </div>
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Калории</h4>
-            <p class="stat-value s-nHmVefn3S3wX">0 ккал</p>
-          </div>
-          <div class="stat-card s-nHmVefn3S3wX">
-            <h4 class="s-nHmVefn3S3wX">Высота</h4>
-            <p class="stat-value s-nHmVefn3S3wX">0 м</p>
+          
+          <!-- Additional training stats panel -->
+          <div class="training-stats s-nHmVefn3S3wX">
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Средняя</h4>
+              <p class="stat-value s-nHmVefn3S3wX">{formatSpeed(averageSpeed)} км/ч</p>
+            </div>
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Темп</h4>
+              <p class="stat-value s-nHmVefn3S3wX">00:00</p>
+            </div>
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Калории</h4>
+              <p class="stat-value s-nHmVefn3S3wX">0 ккал</p>
+            </div>
+            <div class="stat-card s-nHmVefn3S3wX">
+              <h4 class="s-nHmVefn3S3wX">Высота</h4>
+              <p class="stat-value s-nHmVefn3S3wX">0 м</p>
+            </div>
           </div>
         </div>
       </div>
@@ -690,6 +724,60 @@
   /* Import Mapbox CSS */
   @import 'mapbox-gl/dist/mapbox-gl.css';
   
+  /* Selected training panel */
+  .selected-training-panel {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(51, 51, 51, 0.3));
+    backdrop-filter: blur(5px);
+    border-radius: var(--border-radius);
+    padding: clamp(15px, 3vw, 25px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--glass-shadow);
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: clamp(15px, 2vw, 30px);
+    text-align: center;
+  }
+  
+  /* Selected training title */
+  .selected-training-title {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 600;
+    color: var(--white);
+    margin: 0 0 clamp(10px, 2vw, 15px) 0;
+  }
+  
+  /* Selected training details */
+  .selected-training-details {
+    display: flex;
+    justify-content: center;
+    gap: clamp(15px, 3vw, 25px);
+    flex-wrap: wrap;
+  }
+  
+  /* Training detail item */
+  .training-detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Training detail label */
+  .training-detail-label {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    color: var(--light-gray);
+    margin-bottom: clamp(3px, 0.5vw, 5px);
+  }
+  
+  /* Training detail value */
+  .training-detail-value {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-weight: 600;
+    color: var(--white);
+    background: rgba(0, 191, 255, 0.2);
+    padding: clamp(3px, 0.5vw, 6px) clamp(8px, 1.5vw, 12px);
+    border-radius: clamp(5px, 1vw, 10px);
+  }
+  
   /* Map container styles */
   .shield-content {
     width: 100%;
@@ -709,11 +797,51 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     will-change: transform;
+    
+    /* Добавим свойства для правильного масштабирования */
+    height: clamp(200px, 40vh, 500px);
+    width: 100%;
+    box-sizing: border-box;
+    
+    /* Добавим плавное изменение размеров */
+    transition: all 0.3s ease-in-out;
+    
+    /* Ensure the map container has the same width as other panels */
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Specific styles for the shield-content with class s-nHmVefn3S3wX */
+  .shield-content.s-nHmVefn3S3wX {
+    width: 100%;
+    height: 40vh;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 200px;
+    max-height: 500px;
+    box-sizing: border-box;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    height: clamp(200px, 40vh, 500px);
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+    max-width: 100%;
+    margin: 0 auto;
   }
   
   /* Responsive map height adjustments */
   @media (min-width: 768px) {
     .shield-content {
+      height: 45vh;
+      max-height: 550px;
+    }
+    
+    .shield-content.s-nHmVefn3S3wX {
       height: 45vh;
       max-height: 550px;
     }
@@ -724,6 +852,11 @@
       height: 50vh;
       max-height: 600px;
     }
+    
+    .shield-content.s-nHmVefn3S3wX {
+      height: 50vh;
+      max-height: 600px;
+    }
   }
   
   @media (min-width: 1440px) {
@@ -731,10 +864,20 @@
       height: 55vh;
       max-height: 650px;
     }
+    
+    .shield-content.s-nHmVefn3S3wX {
+      height: 55vh;
+      max-height: 650px;
+    }
   }
   
   @media (min-width: 1920px) {
     .shield-content {
+      height: 60vh;
+      max-height: 700px;
+    }
+    
+    .shield-content.s-nHmVefn3S3wX {
       height: 60vh;
       max-height: 700px;
     }
@@ -792,8 +935,17 @@
     gap: 16px;
     width: 100%;
     box-sizing: border-box;
-    /* Добавим минимальную высоту для контейнера */
     min-height: 150px;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: clamp(150px, 25vh, 400px);
+    transition: all 0.3s ease-in-out;
+    flex: 1 1 auto;
+    /* Prevent scrolling in container */
+    overflow: hidden;
+    /* Ensure the container has the same width as the map */
+    max-width: 100%;
+    margin: 0 auto;
   }
   
   /* Container for both stats panels */
@@ -802,6 +954,13 @@
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    /* Prevent scrolling in container */
+    overflow: hidden;
+    /* Ensure the container has the same width as the map */
+    max-width: 100%;
+    margin: 0 auto;
   }
   
   /* Runner marker styles */
@@ -832,5 +991,29 @@
   .stat-value {
     min-width: 0;
     box-sizing: border-box;
+  }
+  
+  /* Ensure dashboard header container maintains consistent width */
+  .dashboard-header-container {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure dashboard header maintains consistent width */
+  .dashboard-header {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Ensure dashboard main maintains consistent width */
+  .dashboard-main {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 </style>
