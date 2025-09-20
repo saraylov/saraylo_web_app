@@ -32,14 +32,14 @@
   /** @type {boolean} */
   let showTelegramWidget = false;
   
-  // Activity rings data - updated to use real user data
+  // Activity rings data - initialized to 0 to avoid simulation
   let activityData = {
     move: { value: 0, goal: 500, color: '#00BFFF' }, // calories
     exercise: { value: 0, goal: 60, color: '#FF1493' }, // exercise minutes
     stand: { value: 0, goal: 12, color: '#00FF00' } // sleep hours
   };
   
-  // Steps data for progress bar
+  // Steps data for progress bar - initialized to 0 to avoid simulation
   let stepsData = {
     value: 0,
     goal: 50000
@@ -67,38 +67,18 @@
   }
   
   // Function to get real user data
-  async function getRealUserData() {
-    const now = new Date();
-    const currentDate = getToday();
+  function getRealUserData() {
+    // In a real implementation, this would fetch actual user data from sensors or API
+    // For now, we'll set all values to 0 as there's no real data source
+    // This ensures we're not showing any simulated/emulated data
     
-    // Check if the day has changed
-    if (currentDate !== today) {
-      // Save yesterday's data before updating
-      saveTodaysData();
-      // Update today's date
-      today = currentDate;
-    }
+    // Reset all activity data to 0 since we don't have real data sources
+    activityData.move.value = 0;
+    activityData.exercise.value = 0;
+    activityData.stand.value = 0;
     
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    const hoursSinceMidnight = (now.getTime() - startOfDay.getTime()) / (1000 * 60 * 60);
-    
-    // Simulate calories burned (average 2000-2500 calories per day)
-    const caloriesBurned = Math.min(500, Math.floor(hoursSinceMidnight * 200));
-    
-    // Simulate exercise minutes (average 30-60 minutes per day)
-    const exerciseMinutes = Math.min(60, Math.floor(hoursSinceMidnight * 2.5));
-    
-    // Simulate sleep hours (typically 7-9 hours per night)
-    // For simulation, we'll assume sleep started 8 hours ago
-    const sleepHours = Math.min(12, Math.max(0, 8 - (hoursSinceMidnight > 8 ? hoursSinceMidnight - 8 : 0)));
-    
-    // Update activity data
-    activityData.move.value = caloriesBurned;
-    activityData.exercise.value = exerciseMinutes;
-    activityData.stand.value = sleepHours;
-    
-    // Update steps data with simulated step count
-    stepsData.value = Math.floor(hoursSinceMidnight * 2000); // Simulate 2000 steps per hour
+    // Reset steps data to 0
+    stepsData.value = 0;
   }
   
   // Handle logout
@@ -127,7 +107,7 @@
   }
   
   // Initialize
-  onMount(async () => {
+  onMount(() => {
     // Add event listener for browser navigation (back/forward buttons)
     window.addEventListener('popstate', handlePopState);
   
@@ -143,9 +123,9 @@
     });
     
     // Initialize with real user data
-    await getRealUserData();
+    getRealUserData();
     
-    // Update data every minute to simulate real-time updates
+    // Update data every minute to ensure it stays at 0 (no simulation)
     setInterval(getRealUserData, 60000);
   
     // Cleanup event listeners
@@ -262,7 +242,7 @@
 </svelte:head>
 
 {#if currentView === 'login'}
-  <Login {isAuthorized} {authStatus} {isLoading} {handleTelegramAuth} {setCurrentView} />
+  <Login {setCurrentView} />
 {:else if currentView === 'dashboard'}
   <Dashboard 
     {activityData}
