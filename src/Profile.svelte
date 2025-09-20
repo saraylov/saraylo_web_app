@@ -26,7 +26,7 @@
   export let handleSettingsClick: () => void;
 
   
-  // Total calories burned across all trainings
+  // Total calories burned across all trainings - set to 0 as no real data source
   let totalCalories = 0;
   let caloriesInterval: number | undefined;
   
@@ -46,17 +46,10 @@
     // In a real app, you would implement data export functionality
   }
   
-  // Function to simulate getting total calories from fitness tracker
+  // Function to get total calories from fitness tracker - returns 0 as no real data source
   function getTotalCaloriesFromFitnessTracker(): number {
-    // In a real implementation, this would connect to the fitness tracker API
-    // For now, we'll simulate with a random value that increases over time
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    const secondsSinceMidnight = (now.getTime() - startOfDay.getTime()) / 1000;
-    
-    // Simulate burning 0.5 calories per second (about 43,200 calories per day max in this simulation)
-    // In a real app, this would come from the fitness tracker and represent total calories burned
-    return Math.floor(secondsSinceMidnight * 0.5);
+    // No real data source available, return 0
+    return 0;
   }
   
   // Function to update calorie display
@@ -152,11 +145,11 @@
         
         <div class="profile-stats">
           <div class="stat-item">
-            <p class="stat-value">12</p>
+            <p class="stat-value">0</p>
             <p class="stat-label">Тренировки</p>
           </div>
           <div class="stat-item">
-            <p class="stat-value">85</p>
+            <p class="stat-value">0</p>
             <p class="stat-label">Км</p>
           </div>
           <div class="stat-item">
