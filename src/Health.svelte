@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { retrieveHealthData } from './utils/healthData';
+  import { initializeStepCounter, startStepTracking, stopStepTracking } from './utils/stepCounter';
   
   // Handle back to dashboard
   export let handleBackToDashboard: () => void;
@@ -58,6 +59,11 @@
   }
   
   onMount(() => {
+    // Initialize the step counter
+    initializeStepCounter().catch(error => {
+      console.error('Error initializing step counter:', error);
+    });
+    
     // Retrieve initial health data
     refreshHealthData();
     
@@ -70,6 +76,11 @@
     if (dataRefreshInterval) {
       clearInterval(dataRefreshInterval);
     }
+    
+    // Stop step tracking
+    stopStepTracking().catch(error => {
+      console.error('Error stopping step tracking:', error);
+    });
   });
 </script>
 

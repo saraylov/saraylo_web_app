@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Create directories if they don't exist
-const dirs = ['dist', 'dist/esm'];
+const dirs = ['dist'];
 dirs.forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -13,7 +13,9 @@ dirs.forEach(dir => {
 // Compile TypeScript to JavaScript
 console.log('Building plugin...');
 try {
-  execSync('npx tsc', { stdio: 'inherit' });
+  // Try to compile with TypeScript first
+  execSync('npx tsc --outDir dist --declaration --declarationDir dist', { stdio: 'inherit' });
+  console.log('TypeScript compilation successful');
 } catch (error) {
   console.log('TypeScript compilation failed, creating files manually...');
   
@@ -28,26 +30,6 @@ export * from './definitions';
 export { StepCounter };`;
   
   fs.writeFileSync('dist/plugin.js', pluginJs);
-  
-  // Create definitions.js
-  const definitionsJs = `export class StepCounterWeb {
-  async getStepCount() {
-    // В веб-версии возвращаем 0 шагов
-    return { steps: 0 };
-  }
-
-  async startTracking() {
-    // В веб-версии ничего не делаем
-    return;
-  }
-
-  async stopTracking() {
-    // В веб-версии ничего не делаем
-    return;
-  }
-}`;
-  
-  fs.writeFileSync('dist/definitions.js', definitionsJs);
   
   // Create web.js
   const webJs = `import { WebPlugin } from '@capacitor/core';
@@ -70,6 +52,26 @@ export class StepCounterWeb extends WebPlugin {
 }`;
   
   fs.writeFileSync('dist/web.js', webJs);
+  
+  // Create definitions.js
+  const definitionsJs = `export class StepCounterWeb {
+  async getStepCount() {
+    // В веб-версии возвращаем 0 шагов
+    return { steps: 0 };
+  }
+
+  async startTracking() {
+    // В веб-версии ничего не делаем
+    return;
+  }
+
+  async stopTracking() {
+    // В веб-версии ничего не делаем
+    return;
+  }
+}`;
+  
+  fs.writeFileSync('dist/definitions.js', definitionsJs);
   
   // Create type definition files
   const pluginDts = `import type { StepCounterPlugin } from './definitions';

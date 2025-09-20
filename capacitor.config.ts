@@ -7,6 +7,9 @@ const config: CapacitorConfig = {
   plugins: {
     Geolocation: {
       backgroundLocation: true
+    },
+    StepCounter: {
+      // Configuration for the step counter plugin
     }
   }
 };

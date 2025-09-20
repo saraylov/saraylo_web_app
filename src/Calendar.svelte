@@ -147,6 +147,16 @@
   function getMonthYearString() {
     return currentDate.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
   }
+  
+  // Functions to format values with fixed decimal places
+  $: formatValue = (value: number) => {
+    // If value is integer, don't add decimal places
+    if (Number.isInteger(value)) {
+      return value.toString();
+    }
+    // For fractional values, round to 1 decimal place
+    return value.toFixed(1);
+  };
 </script>
 
 <div class="background-animation">
@@ -288,7 +298,7 @@
               />
             </svg>
             <div class="ring-label">
-              <span class="ring-value">{selectedActivityData.move.value}</span>
+              <span class="ring-value">{formatValue(selectedActivityData.move.value)}</span>
               <span class="ring-unit">ккал</span>
             </div>
           </div>
@@ -319,7 +329,7 @@
               />
             </svg>
             <div class="ring-label">
-              <span class="ring-value">{selectedActivityData.exercise.value}</span>
+              <span class="ring-value">{formatValue(selectedActivityData.exercise.value)}</span>
               <span class="ring-unit">мин</span>
             </div>
           </div>
@@ -350,7 +360,7 @@
               />
             </svg>
             <div class="ring-label">
-              <span class="ring-value">{selectedActivityData.stand.value}</span>
+              <span class="ring-value">{formatValue(selectedActivityData.stand.value)}</span>
               <span class="ring-unit">ч</span>
             </div>
           </div>
