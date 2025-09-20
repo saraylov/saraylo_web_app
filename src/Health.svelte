@@ -119,14 +119,14 @@
     <!-- Health content -->
     <div class="dashboard-main">
       <div class="health-grid">
-        <!-- First column of panels -->
-        <div class="health-column">
+        <!-- First row of panels -->
+        <div class="health-row">
           <!-- Heart Rate Panel -->
           <div class="health-panel">
             <div class="panel-header">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 11L11 13L15 9L11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               <h3>Пульс</h3>
             </div>
@@ -134,6 +134,25 @@
               <div class="heart-rate-value">{heartRate} <span>уд/мин</span></div>
               <div class="chart-placeholder">
                 <!-- Heart rate chart would go here -->
+                <div class="chart-line"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Steps Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 11L15 9L19 13L21 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 11L5 13L9 9L11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 17L9 15L13 19L15 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h3>Шаги</h3>
+            </div>
+            <div class="panel-content">
+              <div class="steps-value">{steps.toLocaleString()} <span>шагов</span></div>
+              <div class="chart-placeholder">
+                <!-- Steps chart would go here -->
                 <div class="chart-line"></div>
               </div>
             </div>
@@ -217,26 +236,72 @@
   /* Health grid with two columns */
   .health-grid {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  
-  .health-column {
-    flex: 1;
-    min-width: 300px;
-    display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 100%;
   }
   
-  /* Адаптивный дизайн */
+  .health-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: nowrap; /* Prevent wrapping to new lines */
+  }
+  
+  .health-panel {
+    flex: 1 1 50%; /* Each panel takes exactly 50% of the row */
+    min-width: 200px; /* Minimum width but still allow shrinking */
+    box-sizing: border-box;
+  }
+  
+  /* Heart rate value styling */
+  .heart-rate-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .heart-rate-value span {
+    font-size: 1rem;
+    color: var(--light-gray);
+  }
+  
+  /* Steps value styling */
+  .steps-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .steps-value span {
+    font-size: 1rem;
+    color: var(--light-gray);
+  }
+  
+  /* Адаптивный дизайн - Keep panels side by side on all screen sizes */
   @media (max-width: 768px) {
     .health-grid {
       flex-direction: column;
     }
     
-    .health-column {
-      min-width: 100%;
+    .health-row {
+      flex-direction: row; /* Keep panels side by side */
+      flex-wrap: nowrap; /* Prevent wrapping */
+    }
+    
+    .health-panel {
+      min-width: 150px;
+      flex: 1 1 50%; /* Each panel still takes 50% */
+    }
+    
+    /* Adjust font sizes for smaller screens */
+    .heart-rate-value,
+    .steps-value {
+      font-size: 2rem;
     }
     
     .rings-wrapper {
@@ -249,6 +314,28 @@
   }
   
   @media (max-width: 480px) {
+    .health-row {
+      flex-direction: row; /* Keep panels side by side */
+      flex-wrap: nowrap; /* Prevent wrapping */
+      gap: 10px; /* Reduce gap on very small screens */
+    }
+    
+    .health-panel {
+      min-width: 120px;
+      flex: 1 1 50%; /* Each panel still takes 50% */
+    }
+    
+    /* Further adjust font sizes for very small screens */
+    .heart-rate-value,
+    .steps-value {
+      font-size: 1.5rem;
+    }
+    
+    .heart-rate-value span,
+    .steps-value span {
+      font-size: 0.8rem;
+    }
+    
     .activity-rings-container {
       padding: 15px;
     }

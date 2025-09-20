@@ -7,7 +7,8 @@
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   padding: clamp(20px, 4vw, 40px);
-  width: min(100%, clamp(300px, 90vw, 800px));
+  width: 100%;
+  max-width: 100%;
   text-align: center;
   animation: fadeIn 0.8s ease-out;
   position: relative;
@@ -18,20 +19,22 @@
   
   /* Ensure proper sizing on all devices */
   box-sizing: border-box;
-  min-height: calc(100vh - (var(--container-padding) * 2) - var(--header-height));
   
-  /* Ensure content fits without scrolling */
-  min-height: 0; /* Allow flex children to shrink below their content size */
+  /* Modified to ensure the panel displays fully on screen regardless of size */
+  min-height: calc(100vh - (var(--container-padding) * 2) - var(--header-height) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  
+  /* Allow content to fit without unnecessary scrolling */
+  min-height: 0;
   
   /* Improve performance on mobile devices */
   will-change: transform;
   
-  /* Ensure proportional scaling on all screen sizes */
-  max-width: 95vw;
-  max-height: 95vh;
+  /* Ensure panel fits within viewport */
+  max-width: 100vw;
+  max-height: 100vh;
   
   /* Center the panel */
-  margin: auto;
+  margin: 0 auto;
 }
 
 .glass-panel::before {
