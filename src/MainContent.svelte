@@ -63,6 +63,17 @@
     // For fractional values, round to 1 decimal place
     return value.toFixed(1);
   };
+  
+  // Function to format sleep time in H:MM format
+  $: formatSleepTime = (hours: number) => {
+    // Convert decimal hours to hours and minutes
+    const totalMinutes = Math.floor(hours * 60);
+    const displayHours = Math.floor(totalMinutes / 60);
+    const displayMinutes = totalMinutes % 60;
+    
+    // Format as H:MM
+    return `${displayHours}:${displayMinutes.toString().padStart(2, '0')}`;
+  };
 </script>
 
 <!-- Main content -->
@@ -170,8 +181,8 @@
           />
         </svg>
         <div class="ring-label">
-          <span class="ring-value">{formatValue(activityData.stand.value)}</span>
-          <span class="ring-unit">ч</span>
+          <span class="ring-value">{formatSleepTime(activityData.stand.value)}</span>
+          <span class="ring-unit">Время</span>
         </div>
       </div>
     </div>

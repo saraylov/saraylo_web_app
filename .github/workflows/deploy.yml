@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build step counter plugin
-        run: cd custom-plugins/step-counter && npm run build
-
       - name: Build
         run: npm run build:webauth
 
