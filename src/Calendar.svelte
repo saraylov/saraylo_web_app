@@ -109,28 +109,27 @@
       selectedActivityData = savedData.activity;
       selectedStepsData = savedData.steps;
     } else {
-      // Generate mock data for the selected date if no saved data exists
-      const dayOfMonth = date.getDate();
+      // If no saved data exists, show empty/default values instead of mock data
       selectedActivityData = {
         move: { 
-          value: Math.min(500, Math.floor(dayOfMonth * 15)), 
+          value: 0, 
           goal: 500, 
           color: '#00BFFF' 
         },
         exercise: { 
-          value: Math.min(60, Math.floor(dayOfMonth * 2)), 
+          value: 0, 
           goal: 60, 
           color: '#FF1493' 
         },
         stand: { 
-          value: Math.min(12, Math.floor(dayOfMonth * 0.4)), 
+          value: 0, 
           goal: 12, 
           color: '#00FF00' 
         }
       };
       
       selectedStepsData = {
-        value: Math.min(50000, Math.floor(dayOfMonth * 300)),
+        value: 0,
         goal: 50000
       };
     }

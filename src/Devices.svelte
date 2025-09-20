@@ -8,19 +8,25 @@
   export let handleDevicesClick: () => void;
   export let handleProfileClick: () => void;
   
-  // Device data
-  let devices = [
-    { id: 1, name: 'Xiaomi Mi Band 7', type: 'fitness-tracker', connected: true, battery: 85 },
-    { id: 2, name: 'Apple Watch Series 8', type: 'smartwatch', connected: true, battery: 60 },
-    { id: 3, name: 'Samsung Galaxy Watch 5', type: 'smartwatch', connected: true, battery: 45 },
-    { id: 4, name: 'Fitbit Versa 4', type: 'fitness-tracker', connected: true, battery: 90 },
-    { id: 5, name: 'Garmin Forerunner 255', type: 'smartwatch', connected: true, battery: 70 }
-  ];
+  // Device data - in a real implementation, this would come from actual device discovery
+  // For now, we'll initialize with an empty array to show only real devices
+  let devices = [];
   
-  // Filter to show only fitness trackers and smartwatches
+  // Filter to show only fitness trackers and smartwatches that are actually connected
   $: connectedDevices = devices.filter(device => 
     device.connected && (device.type === 'fitness-tracker' || device.type === 'smartwatch')
   );
+  
+  // Function to discover real devices
+  function discoverDevices(): void {
+    // In a real implementation, this would use Bluetooth APIs or other device discovery methods
+    // to find actual connected devices
+    console.log('Discovering real devices...');
+    
+    // For demonstration purposes, we'll simulate finding no devices
+    // In a real app, this would populate the devices array with actual discovered devices
+    devices = [];
+  }
   
   // Function to disconnect a device
   function disconnectDevice(deviceId: number): void {
@@ -40,6 +46,12 @@
   function isInTrainingMode() {
     return false;
   }
+  
+  // On component mount, discover real devices
+  import { onMount } from 'svelte';
+  onMount(() => {
+    discoverDevices();
+  });
 </script>
 
 <div class="background-animation">
@@ -128,12 +140,18 @@
         {#if connectedDevices.length === 0}
           <div class="no-devices">
             <p>Нет подключенных устройств</p>
+            <button class="scan-button" on:click={discoverDevices}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12C21 12.5304 20.7893 13.0391 20.4142 13.4142C20.0391 13.7893 19.5304 14 19 14M21 12C21 11.4696 20.7893 10.9609 20.4142 10.5858C20.0391 10.2107 19.5304 10 19 10M21 12H17M3 12C3 12.5304 3.21071 13.0391 3.58579 13.4142C3.96086 13.7893 4.46957 14 5 14M3 12C3 11.4696 3.21071 10.9609 3.58579 10.5858C3.96086 10.2107 4.46957 10 5 10M3 12H7M12 3C12.5304 3 13.0391 3.21071 13.4142 3.58579C13.7893 3.96086 14 4.46957 14 5M12 3C11.4696 3 10.9609 3.21071 10.5858 3.58579C10.2107 3.96086 10 4.46957 10 5M12 3V7M12 21C12.5304 21 13.0391 20.7893 13.4142 20.4142C13.7893 20.0391 14 19.5304 14 19M12 21C11.4696 21 10.9609 20.7893 10.5858 20.4142C10.2107 20.0391 10 19.5304 10 19M12 21V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span>Поиск устройств</span>
+            </button>
           </div>
         {/if}
       </div>
       
       <!-- Scan for devices button -->
-      <button class="scan-button">
+      <button class="scan-button" on:click={discoverDevices}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 12C21 12.5304 20.7893 13.0391 20.4142 13.4142C20.0391 13.7893 19.5304 14 19 14M21 12C21 11.4696 20.7893 10.9609 20.4142 10.5858C20.0391 10.2107 19.5304 10 19 10M21 12H17M3 12C3 12.5304 3.21071 13.0391 3.58579 13.4142C3.96086 13.7893 4.46957 14 5 14M3 12C3 11.4696 3.21071 10.9609 3.58579 10.5858C3.96086 10.2107 4.46957 10 5 10M3 12H7M12 3C12.5304 3 13.0391 3.21071 13.4142 3.58579C13.7893 3.96086 14 4.46957 14 5M12 3C11.4696 3 10.9609 3.21071 10.5858 3.58579C10.2107 3.96086 10 4.46957 10 5M12 3V7M12 21C12.5304 21 13.0391 20.7893 13.4142 20.4142C13.7893 20.0391 14 19.5304 14 19M12 21C11.4696 21 10.9609 20.7893 10.5858 20.4142C10.2107 20.0391 10 19.5304 10 19M12 21V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>

@@ -34,9 +34,10 @@
   }
   
   // Function to retrieve health data
-  function refreshHealthData() {
+  async function refreshHealthData() {
     try {
-      const healthData = retrieveHealthData();
+      // Get real data from Android device instead of emulation
+      const healthData = await retrieveHealthData();
       
       // Update all health data state variables
       heartRate = healthData.heartRate;
@@ -121,182 +122,188 @@
     <!-- Health content -->
     <div class="dashboard-main">
       <div class="health-grid">
-        <!-- Heart Rate Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Пульс</h3>
+        <!-- First column of 5 panels -->
+        <div class="health-column">
+          <!-- Heart Rate Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.35 7.17C5.05 5.07 7.28 3.5 9.95 3.5H14.05C16.72 3.5 18.95 5.07 19.65 7.17L21.28 12.07C21.66 13.22 21.85 13.8 21.71 14.29C21.57 14.77 21.13 15.11 20.25 15.79L18.5 17.15C16.5 18.7 15.5 19.47 14.36 19.73C13.22 19.99 12.08 19.99 10.94 19.73C9.8 19.47 8.8 18.7 6.8 17.15L5.05 15.79C4.17 15.11 3.73 14.77 3.59 14.29C3.45 13.8 3.64 13.22 4.02 12.07L4.35 7.17Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M9 11L11 13L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h3>Пульс</h3>
+            </div>
+            <div class="panel-content">
+              <div class="heart-rate-value">{heartRate} <span>уд/мин</span></div>
+              <div class="chart-placeholder">
+                <!-- Heart rate chart would go here -->
+                <div class="chart-line"></div>
+              </div>
+            </div>
           </div>
-          <div class="panel-content">
-            <div class="heart-rate-value">{heartRate} <span>уд/мин</span></div>
-            <div class="chart-placeholder">
-              <!-- Heart rate chart would go here -->
-              <div class="chart-line"></div>
+          
+          <!-- Blood Pressure Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <h3>Давление</h3>
+            </div>
+            <div class="panel-content">
+              <div class="bp-value">{systolicBP}/{diastolicBP} <span>мм рт. ст.</span></div>
+              <div class="chart-placeholder">
+                <!-- Blood pressure chart would go here -->
+                <div class="chart-line"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Sleep Quality Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h3>Сон</h3>
+            </div>
+            <div class="panel-content">
+              <div class="sleep-value">{sleepHours.toFixed(1)} <span>часов</span></div>
+              <div class="chart-placeholder">
+                <!-- Sleep quality chart would go here -->
+                <div class="chart-line"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Steps Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <h3>Шаги</h3>
+            </div>
+            <div class="panel-content">
+              <div class="steps-value">{steps.toLocaleString()}</div>
+              <div class="chart-placeholder">
+                <!-- Steps chart would go here -->
+                <div class="chart-line"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Calories Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M10 20C10 18.9 10.9 18 12 18C13.1 18 14 18.9 14 20C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 12C4 10.9 4.9 10 6 10C7.1 10 8 10.9 8 12C8 13.1 7.1 14 6 14C4.9 14 4 13.1 4 12Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 12C16 10.9 16.9 10 18 10C19.1 10 20 10.9 20 12C20 13.1 19.1 14 18 14C16.9 14 16 13.1 16 12Z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <h3>Калории</h3>
+            </div>
+            <div class="panel-content">
+              <div class="calories-value">{calories.toLocaleString()} <span>ккал</span></div>
+              <div class="chart-placeholder">
+                <!-- Calories chart would go here -->
+                <div class="chart-line"></div>
+              </div>
             </div>
           </div>
         </div>
         
-        <!-- Blood Pressure Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h3>Давление</h3>
-          </div>
-          <div class="panel-content">
-            <div class="bp-value">{systolicBP}/{diastolicBP} <span>мм рт. ст.</span></div>
-            <div class="chart-placeholder">
-              <!-- Blood pressure chart would go here -->
-              <div class="chart-line"></div>
+        <!-- Second column of 5 panels -->
+        <div class="health-column">
+          <!-- Hydration Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <h3>Вода</h3>
+            </div>
+            <div class="panel-content">
+              <div class="hydration-value">{hydration.toFixed(1)} <span>л</span></div>
+              <div class="chart-placeholder">
+                <!-- Hydration chart would go here -->
+                <div class="chart-line"></div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Sleep Quality Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Сон</h3>
-          </div>
-          <div class="panel-content">
-            <div class="sleep-value">{sleepHours.toFixed(1)} <span>часов</span></div>
-            <div class="chart-placeholder">
-              <!-- Sleep quality chart would go here -->
-              <div class="chart-line"></div>
+          
+          <!-- Stress Level Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M9 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M15 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <h3>Стресс</h3>
+            </div>
+            <div class="panel-content">
+              <div class="stress-value">{stressLevel}</div>
+              <div class="chart-placeholder">
+                <!-- Stress level chart would go here -->
+                <div class="chart-line"></div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Steps Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h3>Шаги</h3>
-          </div>
-          <div class="panel-content">
-            <div class="steps-value">{steps.toLocaleString()}</div>
-            <div class="chart-placeholder">
-              <!-- Steps chart would go here -->
-              <div class="chart-line"></div>
+          
+          <!-- Body Temperature Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <h3>Температура</h3>
+            </div>
+            <div class="panel-content">
+              <div class="temp-value">{bodyTemp.toFixed(1)} <span>°C</span></div>
+              <div class="chart-placeholder">
+                <!-- Temperature chart would go here -->
+                <div class="chart-line"></div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Calories Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M10 20C10 18.9 10.9 18 12 18C13.1 18 14 18.9 14 20C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 12C4 10.9 4.9 10 6 10C7.1 10 8 10.9 8 12C8 13.1 7.1 14 6 14C4.9 14 4 13.1 4 12Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M16 12C16 10.9 16.9 10 18 10C19.1 10 20 10.9 20 12C20 13.1 19.1 14 18 14C16.9 14 16 13.1 16 12Z" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <h3>Калории</h3>
-          </div>
-          <div class="panel-content">
-            <div class="calories-value">{calories.toLocaleString()} <span>ккал</span></div>
-            <div class="chart-placeholder">
-              <!-- Calories chart would go here -->
-              <div class="chart-line"></div>
+          
+          <!-- Oxygen Saturation Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 12H22M2 12H7M12 2V7M12 17V22M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <h3>Кислород</h3>
+            </div>
+            <div class="panel-content">
+              <div class="oxygen-value">{oxygenSat} <span>%</span></div>
+              <div class="chart-placeholder">
+                <!-- Oxygen saturation chart would go here -->
+                <div class="chart-line"></div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Hydration Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h3>Вода</h3>
-          </div>
-          <div class="panel-content">
-            <div class="hydration-value">{hydration.toFixed(1)} <span>л</span></div>
-            <div class="chart-placeholder">
-              <!-- Hydration chart would go here -->
-              <div class="chart-line"></div>
+          
+          <!-- Activity Level Panel -->
+          <div class="health-panel">
+            <div class="panel-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h3>Активность</h3>
             </div>
-          </div>
-        </div>
-        
-        <!-- Stress Level Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M9 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M15 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h3>Стресс</h3>
-          </div>
-          <div class="panel-content">
-            <div class="stress-value">{stressLevel}</div>
-            <div class="chart-placeholder">
-              <!-- Stress level chart would go here -->
-              <div class="chart-line"></div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Body Temperature Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <h3>Температура</h3>
-          </div>
-          <div class="panel-content">
-            <div class="temp-value">{bodyTemp.toFixed(1)} <span>°C</span></div>
-            <div class="chart-placeholder">
-              <!-- Temperature chart would go here -->
-              <div class="chart-line"></div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Oxygen Saturation Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 12H22M2 12H7M12 2V7M12 17V22M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h3>Кислород</h3>
-          </div>
-          <div class="panel-content">
-            <div class="oxygen-value">{oxygenSat} <span>%</span></div>
-            <div class="chart-placeholder">
-              <!-- Oxygen saturation chart would go here -->
-              <div class="chart-line"></div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Activity Level Panel -->
-        <div class="health-panel">
-          <div class="panel-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Активность</h3>
-          </div>
-          <div class="panel-content">
-            <div class="activity-value">{activityLevel}</div>
-            <div class="chart-placeholder">
-              <!-- Activity level chart would go here -->
-              <div class="chart-line"></div>
+            <div class="panel-content">
+              <div class="activity-value">{activityLevel}</div>
+              <div class="chart-placeholder">
+                <!-- Activity level chart would go here -->
+                <div class="chart-line"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -375,8 +382,31 @@
   /* Import global styles */
   @import './app.css';
   
+  /* Health grid with two columns */
+  .health-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .health-column {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
   /* Адаптивный дизайн */
   @media (max-width: 768px) {
+    .health-grid {
+      flex-direction: column;
+    }
+    
+    .health-column {
+      min-width: 100%;
+    }
+    
     .rings-wrapper {
       gap: 15px;
     }
