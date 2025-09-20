@@ -55,4 +55,7 @@
     <!-- Сеть и подключение -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
+    <!-- Разрешение на доступ к физической активности (для шагов) -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    
 </manifest>

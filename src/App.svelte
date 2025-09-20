@@ -12,7 +12,8 @@
   import Login from './Login.svelte';
   import Calendar from './Calendar.svelte';
   import { saveDailyData, loadDailyData, getToday, formatDate } from './utils/dataStorage';
-  import { requestAllPermissions } from './permissions'; // Restore permission functions
+  import { requestAllPermissions } from './permissions';
+  import { initializeStepCounter, getStepCount } from './utils/stepCounter'; // Добавляем импорт для работы с шагами
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -66,8 +67,19 @@
     console.log(`Saved data for ${todayDate}`);
   }
   
-  // Function to simulate getting real user data
-  function getRealUserData() {
+  // Function to get real step count from device
+  async function getRealStepCount() {
+    try {
+      const steps = await getStepCount();
+      return steps;
+    } catch (error) {
+      console.error('Ошибка при получении реальных шагов:', error);
+      return 0;
+    }
+  }
+  
+  // Function to get real user data including steps
+  async function getRealUserData() {
     const now = new Date();
     const currentDate = getToday();
     
@@ -82,6 +94,9 @@
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
     const hoursSinceMidnight = (now.getTime() - startOfDay.getTime()) / (1000 * 60 * 60);
     
+    // Получаем реальные шаги с устройства
+    const realSteps = await getRealStepCount();
+    
     // Simulate calories burned (average 2000-2500 calories per day)
     const caloriesBurned = Math.min(500, Math.floor(hoursSinceMidnight * 200));
     
@@ -92,16 +107,13 @@
     // For simulation, we'll assume sleep started 8 hours ago
     const sleepHours = Math.min(12, Math.max(0, 8 - (hoursSinceMidnight > 8 ? hoursSinceMidnight - 8 : 0)));
     
-    // Simulate steps (average 8000-10000 steps per day)
-    const steps = Math.min(50000, Math.floor(hoursSinceMidnight * 400));
-    
     // Update activity data
     activityData.move.value = caloriesBurned;
     activityData.exercise.value = exerciseMinutes;
     activityData.stand.value = sleepHours;
     
-    // Update steps data
-    stepsData.value = steps;
+    // Update steps data with real step count
+    stepsData.value = realSteps;
   }
   
   // Handle logout
@@ -130,7 +142,7 @@
   }
   
   // Initialize
-  onMount(() => {
+  onMount(async () => {
     // Add event listener for browser navigation (back/forward buttons)
     window.addEventListener('popstate', handlePopState);
   
@@ -145,8 +157,16 @@
       console.error('Error requesting permissions:', error);
     });
     
+    // Initialize step counter
+    try {
+      await initializeStepCounter();
+      console.log('Step counter initialized');
+    } catch (error) {
+      console.error('Error initializing step counter:', error);
+    }
+    
     // Initialize with real user data
-    getRealUserData();
+    await getRealUserData();
     
     // Update data every minute to simulate real-time updates
     setInterval(getRealUserData, 60000);

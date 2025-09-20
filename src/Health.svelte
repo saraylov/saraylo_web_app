@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
+  import { retrieveHealthData } from './utils/healthData';
+  
   // Handle back to dashboard
   export let handleBackToDashboard: () => void;
   
@@ -8,45 +11,63 @@
   export let handleDevicesClick: () => void;
   export let handleProfileClick: () => void;
   
-  // Total calories burned across all trainings
-  let totalCalories = 0;
-  let caloriesInterval: ReturnType<typeof setInterval> | undefined;
+  // Health data state
+  let heartRate = 0;
+  let systolicBP = 0;
+  let diastolicBP = 0;
+  let sleepHours = 0;
+  let steps = 0;
+  let stepsGoal = 0;
+  let calories = 0;
+  let hydration = 0;
+  let stressLevel = '';
+  let bodyTemp = 0;
+  let oxygenSat = 0;
+  let activityLevel = '';
+  
+  // Data refresh interval
+  let dataRefreshInterval: ReturnType<typeof setInterval> | undefined;
   
   // Helper function to check if in training mode
   function isInTrainingMode() {
     return false;
   }
   
-  // Function to simulate getting total calories from fitness tracker
-  function getTotalCaloriesFromFitnessTracker(): number {
-    // In a real implementation, this would connect to the fitness tracker API
-    // For now, we'll simulate with a random value that increases over time
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    const secondsSinceMidnight = (now.getTime() - startOfDay.getTime()) / 1000;
-    
-    // Simulate burning 0.5 calories per second (about 43,200 calories per day max in this simulation)
-    // In a real app, this would come from the fitness tracker and represent total calories burned
-    return Math.floor(secondsSinceMidnight * 0.5);
+  // Function to retrieve health data
+  function refreshHealthData() {
+    try {
+      const healthData = retrieveHealthData();
+      
+      // Update all health data state variables
+      heartRate = healthData.heartRate;
+      systolicBP = healthData.systolicBP;
+      diastolicBP = healthData.diastolicBP;
+      sleepHours = healthData.sleepHours;
+      steps = healthData.steps;
+      stepsGoal = healthData.stepsGoal;
+      calories = healthData.calories;
+      hydration = healthData.hydration;
+      stressLevel = healthData.stressLevel;
+      bodyTemp = healthData.bodyTemp;
+      oxygenSat = healthData.oxygenSat;
+      activityLevel = healthData.activityLevel;
+    } catch (error) {
+      console.error('Error refreshing health data:', error);
+    }
   }
-  
-  // Function to update calorie display
-  function updateCalories() {
-    totalCalories = getTotalCaloriesFromFitnessTracker();
-  }
-  
-  import { onMount, onDestroy } from 'svelte';
   
   onMount(() => {
-    // Start updating calories
-    updateCalories();
-    caloriesInterval = setInterval(updateCalories, 60000); // Update every minute
+    // Retrieve initial health data
+    refreshHealthData();
+    
+    // Set up interval to refresh data every minute
+    dataRefreshInterval = setInterval(refreshHealthData, 60000);
   });
   
   onDestroy(() => {
     // Clean up the interval when component is destroyed
-    if (caloriesInterval) {
-      clearInterval(caloriesInterval);
+    if (dataRefreshInterval) {
+      clearInterval(dataRefreshInterval);
     }
   });
 </script>
@@ -82,8 +103,8 @@
       <h1 class="dashboard-title">Здоровье</h1>
       <div 
         class="header-icon"
-        on:click={() => console.log('Refresh health data')}
-        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') console.log('Refresh health data'); }}
+        on:click={refreshHealthData}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') refreshHealthData(); }}
         role="button"
         tabindex="0"
         aria-label="Обновить"
@@ -110,7 +131,7 @@
             <h3>Пульс</h3>
           </div>
           <div class="panel-content">
-            <div class="heart-rate-value">80 <span>уд/мин</span></div>
+            <div class="heart-rate-value">{heartRate} <span>уд/мин</span></div>
             <div class="chart-placeholder">
               <!-- Heart rate chart would go here -->
               <div class="chart-line"></div>
@@ -129,7 +150,7 @@
             <h3>Давление</h3>
           </div>
           <div class="panel-content">
-            <div class="bp-value">120/80 <span>мм рт. ст.</span></div>
+            <div class="bp-value">{systolicBP}/{diastolicBP} <span>мм рт. ст.</span></div>
             <div class="chart-placeholder">
               <!-- Blood pressure chart would go here -->
               <div class="chart-line"></div>
@@ -146,7 +167,7 @@
             <h3>Сон</h3>
           </div>
           <div class="panel-content">
-            <div class="sleep-value">7.5 <span>часов</span></div>
+            <div class="sleep-value">{sleepHours.toFixed(1)} <span>часов</span></div>
             <div class="chart-placeholder">
               <!-- Sleep quality chart would go here -->
               <div class="chart-line"></div>
@@ -163,7 +184,7 @@
             <h3>Шаги</h3>
           </div>
           <div class="panel-content">
-            <div class="steps-value">8,500</div>
+            <div class="steps-value">{steps.toLocaleString()}</div>
             <div class="chart-placeholder">
               <!-- Steps chart would go here -->
               <div class="chart-line"></div>
@@ -178,12 +199,12 @@
               <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z" stroke="currentColor" stroke-width="2"/>
               <path d="M10 20C10 18.9 10.9 18 12 18C13.1 18 14 18.9 14 20C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20Z" stroke="currentColor" stroke-width="2"/>
               <path d="M4 12C4 10.9 4.9 10 6 10C7.1 10 8 10.9 8 12C8 13.1 7.1 14 6 14C4.9 14 4 13.1 4 12Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M16 12C16 10.9 16.9 10 18 10C19.1 10 20 10.9 20 12C20 13.1 19.1 22 18 22C16.9 22 16 21.1 16 20Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 12C16 10.9 16.9 10 18 10C19.1 10 20 10.9 20 12C20 13.1 19.1 14 18 14C16.9 14 16 13.1 16 12Z" stroke="currentColor" stroke-width="2"/>
             </svg>
             <h3>Калории</h3>
           </div>
           <div class="panel-content">
-            <div class="calories-value">{totalCalories.toLocaleString()} <span>ккал</span></div>
+            <div class="calories-value">{calories.toLocaleString()} <span>ккал</span></div>
             <div class="chart-placeholder">
               <!-- Calories chart would go here -->
               <div class="chart-line"></div>
@@ -196,12 +217,12 @@
           <div class="panel-header">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
             <h3>Вода</h3>
           </div>
           <div class="panel-content">
-            <div class="hydration-value">1.8 <span>л</span></div>
+            <div class="hydration-value">{hydration.toFixed(1)} <span>л</span></div>
             <div class="chart-placeholder">
               <!-- Hydration chart would go here -->
               <div class="chart-line"></div>
@@ -221,7 +242,7 @@
             <h3>Стресс</h3>
           </div>
           <div class="panel-content">
-            <div class="stress-value">Низкий</div>
+            <div class="stress-value">{stressLevel}</div>
             <div class="chart-placeholder">
               <!-- Stress level chart would go here -->
               <div class="chart-line"></div>
@@ -238,7 +259,7 @@
             <h3>Температура</h3>
           </div>
           <div class="panel-content">
-            <div class="temp-value">36.6 <span>°C</span></div>
+            <div class="temp-value">{bodyTemp.toFixed(1)} <span>°C</span></div>
             <div class="chart-placeholder">
               <!-- Temperature chart would go here -->
               <div class="chart-line"></div>
@@ -255,7 +276,7 @@
             <h3>Кислород</h3>
           </div>
           <div class="panel-content">
-            <div class="oxygen-value">98 <span>%</span></div>
+            <div class="oxygen-value">{oxygenSat} <span>%</span></div>
             <div class="chart-placeholder">
               <!-- Oxygen saturation chart would go here -->
               <div class="chart-line"></div>
@@ -272,7 +293,7 @@
             <h3>Активность</h3>
           </div>
           <div class="panel-content">
-            <div class="activity-value">Высокая</div>
+            <div class="activity-value">{activityLevel}</div>
             <div class="chart-placeholder">
               <!-- Activity level chart would go here -->
               <div class="chart-line"></div>

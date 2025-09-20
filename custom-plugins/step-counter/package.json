@@ -1,0 +1,44 @@
+{
+  "name": "@saraylo/step-counter",
+  "version": "1.0.0",
+  "description": "Capacitor plugin for accessing step counter sensor on Android",
+  "main": "dist/plugin.js",
+  "module": "dist/plugin.js",
+  "types": "dist/esm/index.d.ts",
+  "scripts": {
+    "build": "node build-plugin.js",
+    "clean": "rimraf ./dist",
+    "watch": "tsc --watch"
+  },
+  "author": "Saraylo",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/core": "^6.2.1"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^5.2.2"
+  },
+  "files": [
+    "dist/",
+    "android/",
+    "ios/",
+    "src/"
+  ],
+  "keywords": [
+    "capacitor",
+    "plugin",
+    "steps",
+    "pedometer",
+    "android",
+    "ios"
+  ],
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    },
+    "android": {
+      "src": "android"
+    }
+  }
+}

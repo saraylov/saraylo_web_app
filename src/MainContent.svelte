@@ -194,7 +194,7 @@
     <!-- Step count display -->
     <div class="steps-count-display">
       <p class="steps-count">{stepsData.value.toLocaleString()}</p>
-      <p class="steps-label">{getStepsWord(stepsData.value)} пройдено сегодня</p>
+      <p class="steps-label">{getStepsWord(stepsData.value)}</p>
     </div>
 
   </div>

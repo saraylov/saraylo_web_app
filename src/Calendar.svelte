@@ -405,14 +405,17 @@
     border-radius: 50%;
     width: clamp(36px, 6vw, 50px);
     height: clamp(36px, 6vw, 50px);
+    min-width: clamp(36px, 6vw, 50px);
+    min-height: clamp(36px, 6vw, 50px);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 0;
-    min-width: var(--touch-target-min);
-    min-height: var(--touch-target-min);
+    aspect-ratio: 1;
+    box-sizing: border-box;
+    flex-shrink: 0; /* Prevent shrinking */
   }
   
   .calendar-nav-button:hover {
@@ -462,6 +465,8 @@
     
     /* Ensure proper scaling on all screen sizes */
     width: 100%;
+    /* Center the header items to align with calendar days */
+    justify-items: center;
   }
   
   .calendar-day-header {
@@ -472,8 +477,9 @@
     padding: clamp(8px, 1.5vw, 12px) 0;
     
     /* Ensure proper scaling on all screen sizes */
-    min-width: 0;
-    width: 100%;
+    min-width: 50px;
+    width: 50px;
+    text-align: center;
   }
   
   .calendar-days-grid {
@@ -486,13 +492,20 @@
     /* Ensure proper scaling on all screen sizes */
     width: 100%;
     max-height: 100%;
+    /* Center the grid items */
+    justify-items: center;
   }
   
   .calendar-day {
     text-align: center;
     font-size: clamp(0.9rem, 2vw, 1.1rem);
-    /* Changed padding to fixed aspect ratio for perfect circles */
-    aspect-ratio: 1 / 1;
+    /* Fixed size for perfect circles - 50x50 pixels */
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -501,12 +514,7 @@
     transition: all 0.3s ease;
     color: var(--white);
     font-weight: 500;
-    
-    /* Ensure proper scaling on all screen sizes */
-    min-width: 0;
-    min-height: 0;
-    width: 100%;
-    height: 100%;
+    /* Remove responsive sizing that was causing issues */
   }
   
   .calendar-day:hover {

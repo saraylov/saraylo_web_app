@@ -41,6 +41,7 @@
     "@capacitor/geolocation": "^7.1.5",
     "@capacitor/ios": "^6.2.1",
     "@capacitor/push-notifications": "^7.0.3",
+    "@saraylo/step-counter": "file:custom-plugins/step-counter",
     "@types/node": "^20.14.11",
     "express": "^5.1.0",
     "mapbox-gl": "^3.15.0",
