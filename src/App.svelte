@@ -13,7 +13,6 @@
   import Calendar from './Calendar.svelte';
   import { saveDailyData, loadDailyData, getToday, formatDate } from './utils/dataStorage';
   import { requestAllPermissions } from './permissions';
-  import { initializeStepCounter, getStepCount } from './utils/stepCounter'; // Добавляем импорт для работы с шагами
   
   /** @type {boolean} */
   let isAuthorized = true; // Временно установим в true для обхода авторизации
@@ -67,18 +66,7 @@
     console.log(`Saved data for ${todayDate}`);
   }
   
-  // Function to get real step count from device
-  async function getRealStepCount() {
-    try {
-      const steps = await getStepCount();
-      return steps;
-    } catch (error) {
-      console.error('Ошибка при получении реальных шагов:', error);
-      return 0;
-    }
-  }
-  
-  // Function to get real user data including steps
+  // Function to get real user data
   async function getRealUserData() {
     const now = new Date();
     const currentDate = getToday();
@@ -93,9 +81,6 @@
     
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
     const hoursSinceMidnight = (now.getTime() - startOfDay.getTime()) / (1000 * 60 * 60);
-    
-    // Получаем реальные шаги с устройства
-    const realSteps = await getRealStepCount();
     
     // Simulate calories burned (average 2000-2500 calories per day)
     const caloriesBurned = Math.min(500, Math.floor(hoursSinceMidnight * 200));
@@ -112,8 +97,8 @@
     activityData.exercise.value = exerciseMinutes;
     activityData.stand.value = sleepHours;
     
-    // Update steps data with real step count
-    stepsData.value = realSteps;
+    // Update steps data with simulated step count
+    stepsData.value = Math.floor(hoursSinceMidnight * 2000); // Simulate 2000 steps per hour
   }
   
   // Handle logout
@@ -156,14 +141,6 @@
     }).catch((error) => {
       console.error('Error requesting permissions:', error);
     });
-    
-    // Initialize step counter
-    try {
-      await initializeStepCounter();
-      console.log('Step counter initialized');
-    } catch (error) {
-      console.error('Error initializing step counter:', error);
-    }
     
     // Initialize with real user data
     await getRealUserData();
@@ -284,8 +261,6 @@
   </script>
 </svelte:head>
 
-{#if currentView === 'login'}
-  <Login {setCurrentView} />
 {:else if currentView === 'dashboard'}
   <Dashboard 
     {activityData}
@@ -398,286 +373,209 @@
     background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
     border: none;
     border-radius: clamp(8px, 2vw, 15px);
-    padding: clamp(12px, 2.5vw, 20px) clamp(25px, 4vw, 40px);
+    padding: clamp(12px, 2vw, 18px) clamp(25px, 4vw, 40px);
     color: white;
-    font-weight: 700;
     font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 16px) rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: clamp(250px, 50vw, 350px);
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 12px);
+    box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
   }
   
   .telegram-auth-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 20px) rgba(0, 0, 0, 0.4);
-    background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
   }
   
   .telegram-auth-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 clamp(3px, 0.8vw, 6px) clamp(6px, 1.5vw, 12px) rgba(0, 0, 0, 0.3);
+    transform: translateY(0);
   }
   
-  .auth-status {
-    font-size: clamp(0.8rem, 2vw, 1.1rem);
-    color: var(--light-gray);
-    text-align: center;
-  }
-  
-  /* Dashboard styles */
-  .dashboard-header {
+  /* Loading spinner */
+  .loading {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: clamp(12px, 2vw, 20px) 0;
-    margin-bottom: clamp(15px, 2vw, 30px);
-    /* Updated to use Miami Hit color scheme */
+    height: 100vh;
+  }
+  
+  .spinner {
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid var(--primary-blue);
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Auth error message */
+  .auth-error {
+    color: #ff6b6b;
+    text-align: center;
+    margin-top: clamp(15px, 2vw, 25px);
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+  }
+  
+  /* App container */
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, var(--background-dark), var(--background-light));
+    padding: clamp(10px, 2vw, 20px);
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  /* Glass panel */
+  .glass-panel {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
-    border-radius: clamp(10px, 2vw, 20px);
-    padding: clamp(10px, 1.5vw, 15px) clamp(15px, 2vw, 25px);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
     border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .dashboard-title {
-    font-size: clamp(1.3rem, 4vw, 2rem);
-    font-weight: 800;
-    background: var(--gradient-border);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 clamp(5px, 1vw, 12px) rgba(0, 191, 255, 0.3);
-  }
-  
-  .header-icon {
-    cursor: pointer;
-    padding: clamp(8px, 2vw, 16px);
-    /* Ensure perfect circle shape */
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
-    /* Make sure the element is perfectly square */
-    width: clamp(36px, 6vw, 50px);
-    height: clamp(36px, 6vw, 50px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: var(--touch-target-min);
-    min-height: var(--touch-target-min);
-  }
-
-  .header-icon:hover {
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
-    transform: scale(1.1);
-  }
-  
-  /* Circle button styles */
-  .circle-button {
-    width: clamp(50px, 10vw, 80px);
-    height: clamp(50px, 10vw, 80px);
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(10px, 2vw, 20px) rgba(0, 191, 255, 0.4);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    min-width: var(--touch-target-min);
-    min-height: var(--touch-target-min);
-  }
-  
-  .circle-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(15px, 3vw, 25px) rgba(255, 20, 147, 0.6);
-  }
-  
-  /* Coffee button */
-  .coffee-button {
-    display: flex;
-    align-items: center;
-    gap: clamp(8px, 2vw, 15px);
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(135deg, var(--deep-black), #333333);
-    border: clamp(1.5px, 0.2vw, 3px) solid var(--primary-pink);
-    border-radius: clamp(10px, 2vw, 20px);
-    padding: clamp(12px, 2.5vw, 20px) clamp(20px, 4vw, 40px);
-    color: #FFFFFF;
-    font-weight: 700;
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 16px) rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: clamp(250px, 50vw, 400px);
-    margin: 0 auto;
-  }
-  
-  .coffee-button:hover {
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(135deg, #333333, var(--deep-black));
-    transform: translateY(-3px);
-    box-shadow: 0 clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 20px) rgba(0, 0, 0, 0.4);
-    border-color: var(--primary-blue);
-  }
-  
-  .coffee-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 8px) rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Training date */
-  .training-date {
+    padding: clamp(15px, 3vw, 30px);
+    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.2);
+    margin-bottom: clamp(70px, 10vw, 90px);
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: clamp(8px, 1.5vw, 15px);
-    /* Updated to use Miami Hit color scheme */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.1));
-    padding: clamp(12px, 2vw, 20px) clamp(20px, 3vw, 30px);
-    border-radius: clamp(10px, 2vw, 20px);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Background animation */
+  .background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: clamp(280px, 60vw, 500px);
-    margin: 0 auto;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
   }
   
-  .training-date p {
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-    color: var(--light-gray);
-    font-weight: 500;
+  .sports-item {
+    position: absolute;
+    opacity: 0.05;
+    animation: float 20s infinite linear;
   }
   
-  .details-button {
+  .football {
+    width: clamp(30px, 5vw, 60px);
+    height: clamp(30px, 5vw, 60px);
+    background: radial-gradient(circle, var(--primary-blue) 30%, transparent 70%);
+    border-radius: 50%;
+    top: 10%;
+    left: 5%;
+    animation-duration: 25s;
+  }
+  
+  .basketball {
+    width: clamp(25px, 4vw, 50px);
+    height: clamp(25px, 4vw, 50px);
+    background: radial-gradient(circle, var(--primary-pink) 30%, transparent 70%);
+    border-radius: 50%;
+    top: 20%;
+    right: 10%;
+    animation-duration: 30s;
+  }
+  
+  .sneakers {
+    width: clamp(40px, 6vw, 80px);
+    height: clamp(20px, 3vw, 40px);
+    background: linear-gradient(45deg, var(--primary-blue), var(--primary-pink));
+    border-radius: 30% 30% 50% 50%;
+    bottom: 15%;
+    left: 15%;
+    animation-duration: 35s;
+  }
+  
+  .shorts {
+    width: clamp(30px, 5vw, 60px);
+    height: clamp(15px, 2.5vw, 30px);
+    background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+    border-radius: 10%;
+    top: 40%;
+    right: 20%;
+    animation-duration: 28s;
+  }
+  
+  .tshirt {
+    width: clamp(35px, 5.5vw, 70px);
+    height: clamp(35px, 5.5vw, 70px);
     background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink));
-    border: none;
-    border-radius: clamp(8px, 1.5vw, 15px);
-    padding: clamp(8px, 1.5vw, 15px) clamp(15px, 2.5vw, 25px);
-    color: white;
-    font-weight: 700;
-    font-size: clamp(0.8rem, 2vw, 1rem);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 clamp(3px, 0.8vw, 6px) clamp(6px, 1.5vw, 10px) rgba(0, 0, 0, 0.2);
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 100%, 0% 100%, 0% 30%);
+    bottom: 25%;
+    right: 25%;
+    animation-duration: 32s;
   }
   
-  .details-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 clamp(4px, 1vw, 8px) clamp(8px, 2vw, 15px) rgba(0, 0, 0, 0.3);
-    background: linear-gradient(90deg, var(--primary-pink), var(--primary-blue));
+  @keyframes float {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate(100px, 50px) rotate(90deg);
+    }
+    50% {
+      transform: translate(200px, 100px) rotate(180deg);
+    }
+    75% {
+      transform: translate(100px, 150px) rotate(270deg);
+    }
+    100% {
+      transform: translate(0, 0) rotate(360deg);
+    }
   }
   
-  .details-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 clamp(1.5px, 0.4vw, 3px) clamp(3px, 0.8vw, 6px) rgba(0, 0, 0, 0.2);
+  @keyframes shimmer {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
   
-  /* Component-specific styles */
-  .dashboard-actions {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(10px, 2vw, 20px);
-    width: 100%;
-    max-width: clamp(250px, 50vw, 350px);
-    margin: 0 auto;
-    align-items: center;
-  }
-  
-  /* Rings title */
-  .rings-title {
-    text-align: center;
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 700;
-    margin-bottom: clamp(15px, 2vw, 30px);
-    color: var(--white);
-    background: var(--gradient-border);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  /* Адаптивный дизайн */
+  /* Responsive design */
   @media (max-width: 768px) {
-    .dashboard-header {
-      padding: clamp(8px, 2vw, 15px) 0;
+    .glass-panel {
+      padding: clamp(10px, 2vw, 20px);
+      margin-bottom: 80px;
     }
     
-    .dashboard-title {
-      font-size: clamp(1.1rem, 4vw, 1.5rem);
+    .main-title {
+      font-size: clamp(1.8rem, 10vw, 3rem);
     }
     
-    .nav-item span {
-      font-size: clamp(0.6rem, 2vw, 0.9rem);
-    }
-    
-    .circle-button {
-      width: clamp(45px, 12vw, 65px);
-      height: clamp(45px, 12vw, 65px);
-    }
-    
-    .rings-wrapper {
-      gap: clamp(10px, 2vw, 20px);
-    }
-    
-    .ring-container {
-      width: clamp(70px, 18vw, 100px);
-      height: clamp(70px, 18vw, 100px);
+    .subtitle {
+      font-size: clamp(1rem, 4vw, 1.5rem);
     }
   }
   
   @media (max-width: 480px) {
     .app-container {
-      padding: clamp(8px, 3vw, 15px);
-      padding-bottom: clamp(80px, 14vw, 140px); /* Increased padding for fixed bottom panel */
+      padding: 10px;
     }
     
     .glass-panel {
-      width: min(100%, clamp(280px, 95vw, 500px));
-      padding: clamp(20px, 5vw, 30px) clamp(12px, 3vw, 20px);
+      padding: 15px;
+      margin-bottom: 70px;
     }
     
-    .dashboard-header {
-      padding: clamp(6px, 1.5vw, 12px) 0;
-    }
-    
-    .dashboard-title {
-      font-size: clamp(1rem, 4vw, 1.3rem);
-    }
-    
-    .activity-rings-container {
-      padding: clamp(12px, 3vw, 20px);
-      margin-bottom: clamp(15px, 2vw, 25px); /* Ensure spacing from other elements */
-    }
-    
-    .rings-title {
-      font-size: clamp(1rem, 3vw, 1.5rem);
-      margin-bottom: clamp(12px, 1.5vw, 20px);
-    }
-    
-    .rings-wrapper {
-      gap: clamp(8px, 2vw, 15px);
-    }
-    
-    .ring-container {
-      width: clamp(60px, 16vw, 85px);
-      height: clamp(60px, 16vw, 85px);
-    }
-    
-    .ring-value {
-      font-size: clamp(0.9rem, 3vw, 1.3rem);
-    }
-    
-    .legend-text {
-      font-size: clamp(0.7rem, 2vw, 0.9rem);
-    }
-    
-    /* Ensure bottom panel is properly positioned on small screens */
-    .bottom-panel.s-XsEmFtvddWTw {
-      padding-bottom: max(clamp(8px, 3vw, 15px), calc(clamp(8px, 3vw, 15px) + var(--safe-area-inset-bottom)));
+    .telegram-auth-button {
+      padding: 12px 25px;
+      font-size: 1rem;
     }
   }
 </style>

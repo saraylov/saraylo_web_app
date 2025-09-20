@@ -22,9 +22,7 @@
     "cap:open:android": "npx cap open android",
     "cap:open:ios": "npx cap open ios",
     "cap:run:android": "npx cap run android",
-    "cap:build:android": "npx cap build android",
-    "prebuild": "cd custom-plugins/step-counter && npm run build",
-    "prepare": "cd custom-plugins/step-counter && npm run build"
+    "cap:build:android": "npx cap build android"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
@@ -43,7 +41,6 @@
     "@capacitor/geolocation": "^6.0.0",
     "@capacitor/ios": "^6.2.1",
     "@capacitor/push-notifications": "^6.0.0",
-    "@saraylo/step-counter": "file:custom-plugins/step-counter",
     "@types/node": "^20.14.11",
     "express": "^5.1.0",
     "mapbox-gl": "^3.15.0",
