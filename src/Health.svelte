@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { retrieveHealthData } from './utils/healthData';
-  import { initializeStepCounter, startStepTracking, stopStepTracking } from './utils/stepCounter';
+  import { getToday } from './utils/dataStorage';
   
   // Handle back to dashboard
   export let handleBackToDashboard: () => void;
@@ -37,33 +36,49 @@
   // Function to retrieve health data
   async function refreshHealthData() {
     try {
-      // Get real data from Android device instead of emulation
-      const healthData = await retrieveHealthData();
+      // Simulate health data instead of retrieving from device
+      const now = new Date();
+      const hoursSinceMidnight = (now.getTime() - new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime()) / (1000 * 60 * 60);
       
-      // Update all health data state variables
-      heartRate = healthData.heartRate;
-      systolicBP = healthData.systolicBP;
-      diastolicBP = healthData.diastolicBP;
-      sleepHours = healthData.sleepHours;
-      steps = healthData.steps;
-      stepsGoal = healthData.stepsGoal;
-      calories = healthData.calories;
-      hydration = healthData.hydration;
-      stressLevel = healthData.stressLevel;
-      bodyTemp = healthData.bodyTemp;
-      oxygenSat = healthData.oxygenSat;
-      activityLevel = healthData.activityLevel;
-    } catch (error) {
+      // Simulate heart rate (60-100 bpm at rest, can go higher during activity)
+      heartRate = Math.floor(60 + Math.random() * 40);
+      
+      // Simulate blood pressure (normal range 90/60 to 120/80)
+      systolicBP = Math.floor(110 + Math.random() * 20);
+      diastolicBP = Math.floor(70 + Math.random() * 10);
+      
+      // Simulate sleep hours (7-9 hours is recommended)
+      sleepHours = 7 + Math.random() * 2;
+      
+      // Simulate steps (using the same logic as in App.svelte)
+      steps = Math.floor(hoursSinceMidnight * 2000);
+      stepsGoal = 50000;
+      
+      // Simulate calories (2000-2500 per day)
+      calories = Math.floor(hoursSinceMidnight * 100);
+      
+      // Simulate hydration (0-100%)
+      hydration = Math.floor(50 + Math.random() * 50);
+      
+      // Simulate stress level
+      const stressLevels = ['Низкий', 'Средний', 'Высокий'];
+      stressLevel = stressLevels[Math.floor(Math.random() * stressLevels.length)];
+      
+      // Simulate body temperature (normal range 36.1-37.2°C)
+      bodyTemp = 36.1 + Math.random() * 1.1;
+      
+      // Simulate oxygen saturation (normal range 95-100%)
+      oxygenSat = 95 + Math.random() * 5;
+      
+      // Simulate activity level
+      const activityLevels = ['Низкая', 'Средняя', 'Высокая'];
+      activityLevel = activityLevels[Math.floor(Math.random() * activityLevels.length)];
+    } catch (error: any) {
       console.error('Error refreshing health data:', error);
     }
   }
   
   onMount(() => {
-    // Initialize the step counter
-    initializeStepCounter().catch(error => {
-      console.error('Error initializing step counter:', error);
-    });
-    
     // Retrieve initial health data
     refreshHealthData();
     
@@ -76,11 +91,6 @@
     if (dataRefreshInterval) {
       clearInterval(dataRefreshInterval);
     }
-    
-    // Stop step tracking
-    stopStepTracking().catch(error => {
-      console.error('Error stopping step tracking:', error);
-    });
   });
 </script>
 

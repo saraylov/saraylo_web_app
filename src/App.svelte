@@ -261,6 +261,8 @@
   </script>
 </svelte:head>
 
+{#if currentView === 'login'}
+  <Login {isAuthorized} {authStatus} {isLoading} {handleTelegramAuth} {setCurrentView} />
 {:else if currentView === 'dashboard'}
   <Dashboard 
     {activityData}
