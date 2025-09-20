@@ -586,12 +586,6 @@
     background: rgba(255, 255, 255, 0.1);
   }
   
-  /* Selected date info */
-  .selected-date-info {
-    margin-bottom: clamp(20px, 3vw, 30px);
-    text-align: center;
-  }
-  
   .selected-date-title {
     font-size: clamp(1.2rem, 3vw, 1.6rem);
     font-weight: 700;
