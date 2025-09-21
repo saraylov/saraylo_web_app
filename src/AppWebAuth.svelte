@@ -6,7 +6,8 @@
   let isAuthorized = false;
   let authStatus = '';
   let isLoading = false;
-  let userData = null;
+  /** @type {{id?: number, first_name: string, last_name?: string, username?: string} | null} */
+  let userData = /** @type {{id?: number, first_name: string, last_name?: string, username?: string} | null} */ (null);
   let isTelegramAvailable = false;
   let showLoginOptions = true;
   
@@ -66,7 +67,7 @@
         last_name: 'Пользователь',
         username: 'demo_user'
       };
-      authStatus = `Добро пожаловать, ${userData.first_name} ${userData.last_name}!`;
+      authStatus = `Добро пожаловать, ${userData.first_name} ${userData.last_name || ''}!`;
       showLoginOptions = false;
       isLoading = false;
     }, 1000);
@@ -184,8 +185,8 @@
       <div class="auth-section">
         <div class="user-info">
           <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Вы успешно вошли в систему!</h3>
-          <p>Вы вошли как: {userData.first_name} {userData.last_name || ''}</p>
-          {#if userData.username}
+          <p>Вы вошли как: {userData ? userData.first_name : ''} {userData && userData.last_name ? userData.last_name : ''}</p>
+          {#if userData && userData.username}
             <p>Username: @{userData.username}</p>
           {/if}
           

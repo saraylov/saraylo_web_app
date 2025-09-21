@@ -11,5 +11,6 @@
     "moduleDetection": "force"
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+  "exclude": ["node_modules", "src/AppWebAuth.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

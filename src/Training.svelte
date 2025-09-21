@@ -11,6 +11,12 @@
   export let handleHistoryClick: (() => void) | null = null;
   export let handleAssessmentTrainingClick: (() => void) | null = null;
   
+  // Workout handlers
+  export let onStartWorkoutProp: () => void;
+  export let onStopWorkoutProp: () => void;
+  export let onPauseWorkoutProp: () => void;
+  export let onResumeWorkoutProp: () => void;
+  
   // Training options - adding this data structure for the selected training panel
   const trainingOptions = [
     { id: 1, title: 'Оценочная тренировка', duration: '15 мин', intensity: 'Низкая' },
@@ -76,6 +82,31 @@
   import Button from './Button.svelte'; // Импортируем универсальный компонент Button
   import BottomNav from './BottomNav.svelte'; // Импортируем нижнюю панель навигации
   
+  // Route tracking variables
+  let routeCoordinates: [number, number][] = [];
+  let routeLine: mapboxgl.MapboxGeoJSONFeature | null = null;
+  let lastRouteUpdate: number = 0;
+  const ROUTE_UPDATE_INTERVAL = 1000; // Update route every 1 second
+  
+  // Import workout store and components
+  import { 
+    workoutStore,
+    startWorkout as startWorkoutStore, 
+    pauseWorkout as pauseWorkoutStore, 
+    resumeWorkout as resumeWorkoutStore, 
+    stopWorkout as stopWorkoutStore, 
+    updateWorkoutStats,
+    updateCurrentPosition,
+    setLocationError,
+    setLocating,
+    setWatchId,
+    calculateDistance,
+    calculateSpeed
+  } from './utils/workoutStore';
+  
+  // Import audio assistant
+  import { audioAssistant } from './utils/audioAssistant';
+  
   let mapContainer: HTMLElement | undefined;
   let map: mapboxgl.Map | undefined;
   let marker: mapboxgl.Marker | undefined;
@@ -86,93 +117,412 @@
   let watchId: number | null = null; // ID для отслеживания геолокации
   let initialLocationSet = false; // Флаг для отслеживания установки начального местоположения
   
-  // Ключ для хранения последней позиции в localStorage
-  const LAST_POSITION_KEY = 'lastUserPosition';
-  const POSITION_VALIDITY_DURATION = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
+  // Subscribe to workout store to update UI
+  let unsubscribe: (() => void) | null = null;
   
-  // Функция для очистки сохраненной позиции (для отладки)
-  function clearSavedPosition() {
-    console.log('Clearing saved position from localStorage');
-    localStorage.removeItem(LAST_POSITION_KEY);
-  }
-  
-  // Функция для получения последней сохраненной позиции
-  function getLastSavedPosition(): {lng: number, lat: number, timestamp: number} | null {
-    try {
-      const savedPosition = localStorage.getItem(LAST_POSITION_KEY);
-      console.log('Raw saved position from localStorage:', savedPosition);
-      if (savedPosition) {
-        const position = JSON.parse(savedPosition);
-        console.log('Parsed saved position:', position);
-        return position;
+  onMount(() => {
+    // Subscribe to workout store changes
+    unsubscribe = workoutStore.subscribe((data) => {
+      // Update local variables with workout data
+      totalDistance = data.totalDistance;
+      currentSpeed = data.currentSpeed;
+      averageSpeed = data.averageSpeed;
+      maxSpeed = data.maxSpeed;
+      
+      // Update elapsed time if needed
+      if (data.startTime && data.workoutState === 'running') {
+        const now = Date.now();
+        const elapsedTime = now - data.startTime;
+        // Update workout stats with elapsed time
+        updateWorkoutStats({ elapsedTime });
       }
+    });
+    
+    try {
+      console.log('Training component mounted');
+      
+      // Проверим сохраненную позицию до инициализации карты
+      console.log('Checking for saved position before map initialization...');
+      const savedPosition = getLastValidPosition();
+      console.log('Saved position before map init:', savedPosition);
+      
+      // Проверим содержимое localStorage напрямую
+      try {
+        const rawPosition = localStorage.getItem(LAST_POSITION_KEY);
+        console.log('Raw position from localStorage:', rawPosition);
+      } catch (e) {
+        console.error('Error reading raw position from localStorage:', e);
+      }
+      
+      // Initialize the map
+      initializeMap();
     } catch (error) {
-      console.error('Error reading last position from localStorage:', error);
+      console.error('Error initializing Mapbox map:', error);
     }
-    return null;
+  });
+  
+  onDestroy(() => {
+    console.log('Training component destroying');
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+    }
+    
+    // Unsubscribe from the store
+    if (unsubscribe) {
+      unsubscribe();
+    }
+    
+    // Сохраняем последнюю позицию перед уничтожением компонента
+    if (map && userLocation) {
+      const center = map.getCenter();
+      console.log('Saving final position before destroy:', center.lng, center.lat);
+      saveCurrentPosition(center.lng, center.lat);
+    }
+    
+    // Удалим обработчик кликов
+    document.removeEventListener('click', handleClickOutside);
+  });
+  
+  // Workout handlers
+  function handleStartWorkout() {
+    console.log('Starting workout');
+    startWorkoutStore();
+    // Start geolocation tracking
+    startLocationTracking();
+    
+    // Announce workout start
+    if (audioAssistant.isSupported()) {
+      audioAssistant.speak('Тренировка началась');
+    }
+    
+    // Call the prop function if provided
+    if (onStartWorkoutProp) onStartWorkoutProp();
   }
+  
+  function handleStopWorkout() {
+    console.log('Stopping workout');
+    stopWorkoutStore();
+    // Stop geolocation tracking
+    stopLocationTracking();
+    
+    // Announce workout stop
+    if (audioAssistant.isSupported()) {
+      audioAssistant.speak('Тренировка завершена');
+    }
+    
+    // Call the prop function if provided
+    if (onStopWorkoutProp) onStopWorkoutProp();
+  }
+  
+  function handlePauseWorkout() {
+    console.log('Pausing workout');
+    pauseWorkoutStore();
+    // Pause geolocation tracking
+    pauseLocationTracking();
+    
+    // Announce workout pause
+    if (audioAssistant.isSupported()) {
+      audioAssistant.speak('Тренировка приостановлена');
+    }
+    
+    // Call the prop function if provided
+    if (onPauseWorkoutProp) onPauseWorkoutProp();
+  }
+  
+  function handleResumeWorkout() {
+    console.log('Resuming workout');
+    resumeWorkoutStore();
+    // Resume geolocation tracking
+    resumeLocationTracking();
+    
+    // Announce workout resume
+    if (audioAssistant.isSupported()) {
+      audioAssistant.speak('Тренировка возобновлена');
+    }
+    
+    // Call the prop function if provided
+    if (onResumeWorkoutProp) onResumeWorkoutProp();
+  }
+  
+  // Функция для запуска отслеживания местоположения
+  function startLocationTracking() {
+    console.log('Starting location tracking');
+    if (navigator.geolocation) {
+      // Clear any existing watch
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+      
+      // Start watching position
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          console.log('Position update received:', position);
+          locationError = false;
+          isLocating = false;
+          
+          // Update training stats
+          updateTrainingStats(position);
+          
+          // Update current position with user location
+          if (position && position.coords) {
+            userLocation = [position.coords.longitude, position.coords.latitude];
+            
+            // Сохраняем текущую позицию пользователя
+            saveCurrentPosition(position.coords.longitude, position.coords.latitude);
+            
+            // Update marker position or create new marker
+            if (marker) {
+              marker.setLngLat([position.coords.longitude, position.coords.latitude]);
+            } else {
+              // Создаем маркер в форме бегуна
+              const el = document.createElement('div');
+              el.className = 'runner-marker';
+              marker = new mapboxgl.Marker({ element: el })
+                .setLngLat([position.coords.longitude, position.coords.latitude])
+                .addTo(map!); // Используем оператор ! для утверждения, что map не undefined
+            }
+            
+            // Центрируем карту на пользователе с плавной анимацией только если это первое определение местоположения
+            if (!initialLocationSet) {
+              console.log('Setting initial map center');
+              if (map) {
+                map.setCenter([position.coords.longitude, position.coords.latitude]);
+                map.setZoom(15); // Set more appropriate zoom level for initial tracking
+              }
+              initialLocationSet = true;
+            } else {
+              // Для последующих обновлений используем плавную анимацию
+              console.log('Animating map to new position');
+              if (map) {
+                map.easeTo({
+                  center: [position.coords.longitude, position.coords.latitude],
+                  zoom: 17,
+                  duration: 1000 // Плавная анимация 1 секунда
+                });
+              }
+            }
+            
+            // Update route tracking
+            updateRouteTracking(position.coords.longitude, position.coords.latitude);
+          }
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          locationError = true;
+          isLocating = false;
+          setLocationError('Geolocation error occurred');
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 30000, // Use cached position up to 30 seconds old
+          timeout: 27000 // Timeout after 27 seconds
+        }
+      );
+      
+      setWatchId(watchId);
+      setLocating(true);
+      setLocationError('');
+    } else {
+      console.error('Geolocation is not supported by this browser');
+      locationError = true;
+      isLocating = false;
+      setLocationError('Geolocation is not supported by this browser');
+    }
+  }
+  
+  // Функция для остановки отслеживания местоположения
+  function stopLocationTracking() {
+    console.log('Stopping location tracking');
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+      setWatchId(null);
+    }
+    setLocating(false);
+  }
+  
+  // Функция для паузы отслеживания местоположения
+  function pauseLocationTracking() {
+    console.log('Pausing location tracking');
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+      setWatchId(null);
+    }
+    setLocating(false);
+  }
+  
+  // Функция для возобновления отслеживания местоположения
+  function resumeLocationTracking() {
+    console.log('Resuming location tracking');
+    startLocationTracking();
+  }
+  
+  // Функция для обновления трекинга маршрута
+  function updateRouteTracking(lng: number, lat: number) {
+    const now = Date.now();
+    // Only update route every second to reduce load
+    if (now - lastRouteUpdate < ROUTE_UPDATE_INTERVAL) {
+      return;
+    }
+    
+    lastRouteUpdate = now;
+    
+    // Add new coordinate to route
+    routeCoordinates.push([lng, lat]);
+    
+    // Update the route line on the map
+    if (map && routeCoordinates.length > 1) {
+      // Remove existing route source if it exists
+      if (map.getSource('route')) {
+        map.removeLayer('route-line');
+        map.removeSource('route');
+      }
+      
+      // Create GeoJSON for the route
+      const geojson = {
+        type: 'Feature' as const,
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: routeCoordinates
+        }
+      };
+      
+      // Add route source and layer
+      map.addSource('route', {
+        type: 'geojson',
+        data: geojson as any
+      });
+      
+      map.addLayer({
+        id: 'route-line',
+        type: 'line',
+        source: 'route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#00BFFF',
+          'line-width': 4,
+          'line-opacity': 0.8
+        }
+      });
+    }
+  }
+  
+  // Функция для обновления статистики тренировки
+  function updateTrainingStats(position: GeolocationPosition) {
+    if (!position || !position.coords) return;
+    
+    const now = Date.now();
+    const coords = position.coords;
+    
+    // If we have a previous position, calculate distance and speed
+    if (previousPosition) {
+      const [prevLng, prevLat, prevTime] = previousPosition;
+      const timeDiff = (now - prevTime) / 1000; // Convert to seconds
+      
+      if (timeDiff > 0) {
+        // Calculate distance between points
+        const distance = calculateDistance(prevLat, prevLng, coords.latitude, coords.longitude);
+        totalDistance += distance;
+        
+        // Calculate current speed (km/h)
+        const speed = calculateSpeed(distance, timeDiff);
+        currentSpeed = speed;
+        
+        // Update max speed if current speed is higher
+        if (speed > maxSpeed) {
+          maxSpeed = speed;
+        }
+        
+        // Update workout store with new stats
+        updateWorkoutStats({
+          totalDistance,
+          currentSpeed,
+          maxSpeed
+        });
+      }
+    }
+    
+    // Update previous position
+    previousPosition = [coords.longitude, coords.latitude, now];
+    
+    // Update current position in store
+    if (coords) {
+      updateCurrentPosition({
+        coords: {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          altitude: coords.altitude || null,
+          accuracy: coords.accuracy || 0,
+          altitudeAccuracy: coords.altitudeAccuracy || null,
+          heading: coords.heading || null,
+          speed: coords.speed || null
+        },
+        timestamp: now
+      });
+    }
+  }
+  
+  // Constants for localStorage
+  const LAST_POSITION_KEY = 'lastUserPosition';
+  const POSITION_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
   
   // Функция для сохранения текущей позиции пользователя
   function saveCurrentPosition(lng: number, lat: number) {
     try {
-      const position = { 
-        lng, 
-        lat, 
-        timestamp: Date.now(),
-        // Добавим дополнительные данные для отладки
-        savedAt: new Date().toISOString()
+      const positionData = {
+        lng,
+        lat,
+        timestamp: Date.now()
       };
-      localStorage.setItem(LAST_POSITION_KEY, JSON.stringify(position));
-      console.log('Position saved to localStorage:', position);
       
-      // Дополнительно проверим, что данные действительно сохранились
-      const saved = localStorage.getItem(LAST_POSITION_KEY);
-      console.log('Verification - data actually saved:', saved);
-      
-      // Проверим, можно ли прочитать сохраненные данные
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          console.log('Verification - parsed saved data:', parsed);
-        } catch (e) {
-          console.error('Verification - error parsing saved data:', e);
-        }
-      }
+      localStorage.setItem(LAST_POSITION_KEY, JSON.stringify(positionData));
+      console.log('Position saved to localStorage:', positionData);
     } catch (error) {
       console.error('Error saving position to localStorage:', error);
     }
   }
   
-  // Функция для проверки, является ли сохраненная позиция актуальной
-  function isSavedPositionValid(savedPosition: {lng: number, lat: number, timestamp: number} | null): boolean {
-    if (!savedPosition || !savedPosition.timestamp) {
-      console.log('No saved position or timestamp');
-      return false;
-    }
-    
-    const now = Date.now();
-    const positionAge = now - savedPosition.timestamp;
-    
-    console.log(`Position age: ${positionAge}ms, validity duration: ${POSITION_VALIDITY_DURATION}ms`);
-    
-    const isValid = positionAge < POSITION_VALIDITY_DURATION;
-    console.log('Is saved position valid:', isValid);
-    
-    return isValid;
-  }
-  
-  // Функция для получения последней сохраненной позиции с проверкой актуальности
-  function getLastValidPosition(): {lng: number, lat: number} | null {
+  // Функция для получения последней сохраненной позиции пользователя
+  function getLastValidPosition() {
     try {
-      const savedPosition = getLastSavedPosition();
+      const savedPosition = localStorage.getItem(LAST_POSITION_KEY);
+      console.log('Raw saved position from localStorage:', savedPosition);
+      
       if (savedPosition) {
-        console.log('Found saved position, checking validity...');
-        if (isSavedPositionValid(savedPosition)) {
-          console.log('Using valid saved position:', savedPosition);
-          return { lng: savedPosition.lng, lat: savedPosition.lat };
+        const positionData = JSON.parse(savedPosition);
+        console.log('Parsed position data:', positionData);
+        
+        // Проверяем, что данные действительны и не истекли
+        if (positionData && 
+            typeof positionData.lng === 'number' && 
+            typeof positionData.lat === 'number' &&
+            typeof positionData.timestamp === 'number') {
+          
+          const now = Date.now();
+          const timeDiff = now - positionData.timestamp;
+          
+          console.log('Time difference since last position:', timeDiff, 'ms');
+          
+          // Проверяем, что позиция не устарела (менее 5 минут)
+          if (timeDiff < POSITION_EXPIRY_TIME) {
+            console.log('Valid saved position found:', positionData);
+            return {
+              lng: positionData.lng,
+              lat: positionData.lat
+            };
+          } else {
+            console.log('Saved position is too old, will use default');
+            // Удаляем устаревшие данные
+            localStorage.removeItem(LAST_POSITION_KEY);
+          }
         } else {
-          console.log('Saved position is outdated, removing it');
-          // Удаляем устаревшую позицию
+          console.log('Invalid position data format, removing');
+          // Удаляем поврежденные данные
           localStorage.removeItem(LAST_POSITION_KEY);
         }
       } else {
@@ -185,63 +535,6 @@
     }
     console.log('No valid saved position found, will use default');
     return null;
-  }
-  
-  // Функция для расчета скорости между двумя точками
-  function calculateSpeed(lat1: number, lon1: number, time1: number, lat2: number, lon2: number, time2: number): number {
-    // Calculate distance in meters
-    const distance = calculateDistance(lat1, lon1, lat2, lon2);
-    
-    // Calculate time difference in hours
-    const timeDiffHours = (time2 - time1) / (1000 * 60 * 60);
-    
-    // Avoid division by zero
-    if (timeDiffHours <= 0) return 0;
-    
-    // Calculate speed in km/h
-    return (distance / 1000) / timeDiffHours;
-  }
-  
-  // Функция для обновления статистики на основе новой позиции
-  function updateTrainingStats(position: GeolocationPosition) {
-    console.log('Updating training stats with position:', position);
-    const now = new Date();
-    const currentTime = now.getTime();
-    
-    // If we have a previous position, calculate distance and speed
-    if (previousPosition && position.coords) {
-      const [prevLng, prevLat, prevTime] = previousPosition;
-      const currentLng = position.coords.longitude;
-      const currentLat = position.coords.latitude;
-      
-      // Calculate distance between points in meters
-      const distance = calculateDistance(prevLat, prevLng, currentLat, currentLng);
-      
-      // Convert to kilometers and add to total distance
-      totalDistance += distance / 1000;
-      
-      // Calculate current speed in km/h
-      currentSpeed = calculateSpeed(prevLat, prevLng, prevTime, currentLat, currentLng, currentTime);
-      
-      // Update maximum speed if current speed is higher
-      if (currentSpeed > maxSpeed) {
-        maxSpeed = currentSpeed;
-      }
-      
-      // Calculate average speed
-      const totalTrainingTimeHours = (currentTime - previousPosition[2]) / (1000 * 60 * 60);
-      if (totalTrainingTimeHours > 0) {
-        averageSpeed = totalDistance / totalTrainingTimeHours;
-      }
-    }
-    
-    // Store current position for next calculation
-    if (position.coords) {
-      previousPosition = [position.coords.longitude, position.coords.latitude, currentTime];
-      
-      // Также сохраняем позицию в localStorage
-      saveCurrentPosition(position.coords.longitude, position.coords.latitude);
-    }
   }
   
   function initializeMap() {
@@ -404,103 +697,6 @@
     }
   }
   
-  // Функция для отслеживания местоположения в реальном времени
-  function startLocationTracking() {
-    if (!('geolocation' in navigator)) {
-      console.error('Geolocation is not supported by this browser');
-      return;
-    }
-    
-    console.log('Starting manual location tracking');
-    
-    // Начинаем отслеживание местоположения с высокой точностью
-    watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        console.log('Manual location tracking update:', position);
-        if (map && position.coords) {
-          const lng = position.coords.longitude;
-          const lat = position.coords.latitude;
-          const currentPosition: [number, number] = [lng, lat];
-          
-          // Update training stats
-          updateTrainingStats(position);
-          
-          // Сохраняем текущую позицию пользователя
-          saveCurrentPosition(lng, lat);
-          
-          // Обновляем позицию маркера
-          if (marker) {
-            marker.setLngLat(currentPosition);
-          } else {
-            // Создаем маркер в форме бегуна
-            const el = document.createElement('div');
-            el.className = 'runner-marker';
-            marker = new mapboxgl.Marker({ element: el })
-              .setLngLat(currentPosition)
-              .addTo(map);
-          }
-          
-          // Плавно центрируем карту на пользователе, если расстояние достаточно большое
-          if (previousPosition) {
-            const distance = calculateDistance(
-              previousPosition[1], previousPosition[0],
-              lat, lng
-            );
-            
-            // Если пользователь переместился более чем на 5 метров, обновляем карту
-            if (distance > 5) {
-              console.log('User moved significantly, updating map position');
-              map.easeTo({
-                center: currentPosition,
-                zoom: 15, // Use more appropriate zoom level for tracking
-                duration: 1000 // Плавная анимация 1 секунда
-              });
-              // Update previous position
-              previousPosition = [lng, lat, Date.now()];
-            }
-          } else {
-            // Первоначальное центрирование
-            console.log('Initial map centering in manual tracking');
-            map.setCenter(currentPosition);
-            map.setZoom(15); // Set more appropriate zoom level for initial tracking
-            initialLocationSet = true;
-            previousPosition = [lng, lat, Date.now()];
-          }
-          
-          // Сохраняем текущее местоположение
-          userLocation = currentPosition;
-          
-          console.log('Position updated via manual tracking:', lng, lat);
-        }
-      },
-      (error) => {
-        console.error('Error watching position:', error);
-        locationError = true;
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 3000, // Используем кэшированное местоположение до 3 секунд
-        timeout: 10000 // Increased timeout to 10 seconds
-      }
-    );
-  }
-  
-  // Вспомогательная функция для расчета расстояния между двумя точками (в метрах)
-  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371e3; // Радиус Земли в метрах
-    const phi1 = lat1 * Math.PI/180;
-    const phi2 = lat2 * Math.PI/180;
-    const deltaPhi = (lat2-lat1) * Math.PI/180;
-    const deltaLambda = (lon2-lon1) * Math.PI/180;
-    
-    const a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
-              Math.cos(phi1) * Math.cos(phi2) *
-              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    
-    return R * c;
-  }
-  
   // Функция для повторного запроса геолокации в случае ошибки
   function retryGeolocation() {
     locationError = false;
@@ -510,47 +706,6 @@
       geolocateControl.trigger();
     }
   }
-  
-  onMount(() => {
-    try {
-      console.log('Training component mounted');
-      
-      // Проверим сохраненную позицию до инициализации карты
-      console.log('Checking for saved position before map initialization...');
-      const savedPosition = getLastValidPosition();
-      console.log('Saved position before map init:', savedPosition);
-      
-      // Проверим содержимое localStorage напрямую
-      try {
-        const rawPosition = localStorage.getItem(LAST_POSITION_KEY);
-        console.log('Raw position from localStorage:', rawPosition);
-      } catch (e) {
-        console.error('Error reading raw position from localStorage:', e);
-      }
-      
-      // Initialize the map
-      initializeMap();
-    } catch (error) {
-      console.error('Error initializing Mapbox map:', error);
-    }
-  });
-  
-  onDestroy(() => {
-    console.log('Training component destroying');
-    if (watchId !== null) {
-      navigator.geolocation.clearWatch(watchId);
-    }
-    
-    // Сохраняем последнюю позицию перед уничтожением компонента
-    if (map && userLocation) {
-      const center = map.getCenter();
-      console.log('Saving final position before destroy:', center.lng, center.lat);
-      saveCurrentPosition(center.lng, center.lat);
-    }
-    
-    // Удалим обработчик кликов
-    document.removeEventListener('click', handleClickOutside);
-  });
   
   // Helper function to format distance
   function formatDistance(distance: number): string {
@@ -716,6 +871,10 @@
     {handleDevicesClick}
     {handleProfileClick}
     {handleSettingsClick}
+    {handleStartWorkout}
+    {handleStopWorkout}
+    {handlePauseWorkout}
+    {handleResumeWorkout}
     isInTrainingMode={isInTrainingMode}
   />
 </div>
@@ -797,16 +956,10 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     will-change: transform;
-    
-    /* Добавим свойства для правильного масштабирования */
     height: clamp(200px, 40vh, 500px);
     width: 100%;
     box-sizing: border-box;
-    
-    /* Добавим плавное изменение размеров */
     transition: all 0.3s ease-in-out;
-    
-    /* Ensure the map container has the same width as other panels */
     max-width: 100%;
     margin: 0 auto;
   }

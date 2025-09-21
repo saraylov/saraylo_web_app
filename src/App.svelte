@@ -214,6 +214,27 @@
     currentView = 'calendar';
   }
   
+  // Handle workout navigation
+  function handleStartWorkout() {
+    console.log('handleStartWorkout called');
+    // TODO: Implement workout start functionality
+  }
+  
+  function handleStopWorkout() {
+    console.log('handleStopWorkout called');
+    // TODO: Implement workout stop functionality
+  }
+  
+  function handlePauseWorkout() {
+    console.log('handlePauseWorkout called');
+    // TODO: Implement workout pause functionality
+  }
+  
+  function handleResumeWorkout() {
+    console.log('handleResumeWorkout called');
+    // TODO: Implement workout resume functionality
+  }
+  
   // Handle setting current view (for Login component)
   function setCurrentView(view: string) {
     currentView = view;
@@ -287,6 +308,10 @@
     {handleProfileClick} 
     {handleSettingsClick} 
     {handleHistoryClick}
+    onStartWorkoutProp={handleStartWorkout}
+    onStopWorkoutProp={handleStopWorkout}
+    onPauseWorkoutProp={handlePauseWorkout}
+    onResumeWorkoutProp={handleResumeWorkout}
   />
 {:else if currentView === 'devices'}
   <Devices {handleBackToDashboard} {handleHealthClick} {handleTrainingClick} {handleDevicesClick} {handleProfileClick} />

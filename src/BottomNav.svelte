@@ -6,6 +6,19 @@
   export let handleProfileClick;
   export let handleSettingsClick;
   export let isInTrainingMode;
+  
+  // New handlers for workout button actions
+  /** @type {() => void} */
+  export let handleStartWorkout;
+  /** @type {() => void} */
+  export let handleStopWorkout;
+  /** @type {() => void} */
+  export let handlePauseWorkout;
+  /** @type {() => void} */
+  export let handleResumeWorkout;
+  
+  // Import the new WorkoutButton component
+  import WorkoutButton from './WorkoutButton.svelte';
 </script>
 
 <!-- Bottom navigation panel -->
@@ -34,19 +47,17 @@
     </svg>
     <span>Здоровье</span>
   </div>
+  
+  <!-- Replace the original circle button with the new WorkoutButton component -->
   <div class="nav-item nav-item-center">
-    <div 
-      class="circle-button"
-      class:training-mode={isInTrainingMode}
-      on:click={handleTrainingClick}
-      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTrainingClick(); }}
-      role="button"
-      tabindex="0"
-      aria-label="Начать тренировку"
-    >
-      <img src="images/Run3.png" alt="Начать тренировку" width="40" height="40" />
-    </div>
+    <WorkoutButton 
+      handleStartWorkout={handleStartWorkout}
+      handleStopWorkout={handleStopWorkout}
+      handlePauseWorkout={handlePauseWorkout}
+      handleResumeWorkout={handleResumeWorkout}
+    />
   </div>
+  
   <div 
     class="nav-item"
     on:click={handleDevicesClick}
@@ -73,3 +84,63 @@
     <span>Профиль</span>
   </div>
 </div>
+
+<style>
+  /* Add styles for the bottom panel to accommodate the new button layout */
+  .bottom-panel {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(51, 51, 51, 0.2));
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: clamp(10px, 2vw, 15px) 0;
+    box-sizing: border-box;
+    z-index: 100;
+  }
+  
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: clamp(5px, 1vw, 10px);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+  }
+  
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .nav-item span {
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+    color: var(--white);
+    margin-top: clamp(3px, 0.5vw, 5px);
+    text-align: center;
+  }
+  
+  .nav-item img,
+  .nav-item svg {
+    width: clamp(20px, 4vw, 24px);
+    height: clamp(20px, 4vw, 24px);
+    color: var(--white);
+  }
+  
+  .nav-item-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin: 0 clamp(5px, 1vw, 15px);
+  }
+</style>
